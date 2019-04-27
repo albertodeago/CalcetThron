@@ -92,7 +92,7 @@ export default {
             return (this.signinPassword.length > 0 && this.signinPassword === this.signinPasswordRe) || 'Password mismatch'
         },
         nicknameRule() {
-            return Object.values(this.allUsers).find(u => u.nickname === this.signinNickname) ? 'Nickname already in use' : true
+            return this.allUsers === null ? true : (Object.values(this.allUsers).find(u => u.nickname === this.signinNickname) ? 'Nickname already in use' : true)
         },
         async onLogin() {
             this.setLoading(true)

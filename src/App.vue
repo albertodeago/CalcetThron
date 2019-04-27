@@ -51,7 +51,6 @@ export default {
   async created() {
 
     firebase.auth().onAuthStateChanged(user => {
-      console.log("USER LOGGED", user.uid)
       if (user) {
         this.$store.dispatch('User/getUser', user.uid).then(_user => {
           this.$store.commit('User/setUser', _user)
