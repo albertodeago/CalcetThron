@@ -29,7 +29,7 @@ export class Result {
 export class Game {
     constructor({
         id,
-        creationDate = new Date(),
+        creationDate = new Date().getTime(),
         redTeam,
         blueTeam,
         result,

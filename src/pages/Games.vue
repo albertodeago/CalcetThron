@@ -1,6 +1,6 @@
 <template>
     <div class="q-pa-md row items-start q-gutter-md text-white">
-        <q-card class="my-card" v-for="game in allGames" :key="game.id">
+        <q-card class="my-card" v-for="game in sortedGames" :key="game.id">
             <!-- {{ game }} -->
             <q-card-section v-ripple>
                 <div class="game">
@@ -82,7 +82,7 @@
             </q-card-section>
         </q-card>
 
-        <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="user">
             <q-btn fab icon="add" color="secondary" @click="openModal" />
         </q-page-sticky>
 
@@ -185,7 +185,7 @@
                                 <div class="text-h6">Confirm data</div>
                                 <div class="text-subtitle1">Red team</div>
                                 <div>{{ redGoalKeeper.nickname }} - {{ redStriker.nickname }}</div>
-                                <div>Goals: {{ parseInt(redGoalKeeperGoals) + parseInt(redStrikerGoals) }}</div>
+                                <div>Goals: {{ (parseInt(redGoalKeeperGoals) || 0) + (parseInt(redStrikerGoals) || 0) }}</div>
                                 
                                 <div class="text-subtitle1">Blue team</div>
                                 <div>{{ blueGoalKeeper.nickname }} - {{ blueStriker.nickname }}</div>
@@ -242,7 +242,16 @@ export default {
     },
     computed: {
         ...mapGetters('Game', ['allGames']),
-        ...mapGetters('User', ['allUsers']),
+        ...mapGetters('User', ['allUsers', 'user']),
+
+        sortedGames() {
+            if(this.allGames === null)
+                return []
+            
+            const allGamesArray = Object.values(this.allGames)
+            const sortedGames = allGamesArray.sort((a,b) => a.creationDate - b.creationDate)
+            return sortedGames
+        },
 
         usersArray() {
             if(this.allUsers === null) 
@@ -341,6 +350,7 @@ export default {
 
                 // prepare data to save on DB
                 const gameObj = {
+                    creationDate: new Date().getTime(),
                     redTeam: {
                         striker: this.redStriker.id,
                         keeper: this.redGoalKeeper.id
