@@ -102,6 +102,27 @@ export default {
             }
         },
 
+        async saveAvatar({}, { userId, image }) {
+            const db = firebase.firestore()
+            const usersCollection = db.collection("users")
+            const storageRef = firebase.storage().ref()
+            const imageRef = storageRef.child("avatars/" + userId + ".jpg")
+
+            try {
+                const imageSnapshot = await imageRef.put(image)
+                const avatarUrl = await imageSnapshot.ref.getDownloadURL()
+                await usersCollection.doc(userId).update({
+                    avatar: avatarUrl
+                })
+
+                return true
+            } catch (error) {
+                console.error(error)
+                dispatch("Global/setErrorMessage", error.message, { root: true })
+                return error.message
+            }
+        },
+
         async login({ commit, dispatch }, { email, password }) {
             try {
                 const response = await firebase.auth().signInWithEmailAndPassword(email, password)

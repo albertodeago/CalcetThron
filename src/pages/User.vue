@@ -7,7 +7,8 @@
                         <div class="info-container">
                             <div class="info-container__avatar">
                                 <q-avatar size="10rem">
-                                    <q-img :src="computedAvatar" :ratio="1" />
+                                    <q-img :src="imageSource !== null ? imageSource : computedAvatar" :ratio="1" @click="selectImage" v-ripple />
+                                    <input type="file" accept="image/*" style="display: none" ref="image_picker" @change="imageSelected">
                                 </q-avatar>
                             </div>
                             <div class="info-container__text">
@@ -22,7 +23,8 @@
 
                     <div v-if="isLoggedUser">
                         <q-separator />
-                        <q-card-actions align="right">
+                        <q-card-actions align="around">
+                            <q-btn flat @click="saveImage" v-if="imageSource !== null">Save Avatar</q-btn>
                             <q-btn flat @click="onLogout">Logout</q-btn>
                         </q-card-actions>
                     </div>
@@ -85,6 +87,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { enrichUser } from "../models/ranking/RankingBuilder"
+import EditableAvatar from "../mixins/EditableAvatar"
 
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/darthron-6a632.appspot.com/o/avatars%2Fdefault_avatar.png?alt=media&token=ebd85bb5-b11c-4ca9-b7d3-4fab14d56d88";
 
@@ -92,9 +95,11 @@ export default {
     components: {
         
     },
+    mixins: [EditableAvatar],
     data() {
         return {
-            ready: false
+            ready: false,
+            imageSource: null
         }
     },
     computed: {
@@ -122,7 +127,7 @@ export default {
 
     methods: {
         ...mapMutations('User', ['setSelectedUser']),
-        ...mapActions('User', ['getUser', 'logout']),
+        ...mapActions('User', ['getUser', 'logout', 'saveAvatar']),
         ...mapActions('Global', ['setLoading']),
 
         async onLogout() {
@@ -135,6 +140,23 @@ export default {
             }
             this.setLoading(false)
             this.$router.push('/')
+        },
+
+        async saveImage() {
+            await this.saveAvatar({
+                userId: this.user.id, 
+                image: this.image
+            })
+        },
+        
+        /**
+         * Open up the image picker on the device by triggering a click into an input[type="file"]
+         */
+        selectImage() {
+            if(this.selectedUser.id === this.user.id) {
+                // ok, I'm watching my profile, I can change my own avatar
+                this.$refs["image_picker"].click()
+            }
         }
     },
 
@@ -166,9 +188,10 @@ export default {
     vertical-align: top
 
 .info-container__text
-    width: 49%
+    width: calc(49% - 1rem)
     display: inline-flex
     flex-direction: column
+    margin-left: 1rem;
 
 .stat-section
     position: relative
