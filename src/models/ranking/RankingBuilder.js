@@ -69,7 +69,7 @@ export const enrichUser = function(user, allGames) {
                     won = false
                 }
             }
-            enrichedUser.winRate = enrichedUser.played === 0 ? "0%" : (enrichedUser.won / enrichedUser.played * 100) + "%"
+            enrichedUser.winRate = enrichedUser.played === 0 ? "0%" : Math.round((enrichedUser.won / enrichedUser.played * 100)) + "%"
 
             if (won) {
                 if (role === "striker") {
@@ -85,8 +85,8 @@ export const enrichUser = function(user, allGames) {
                 }
             }
 
-            enrichedUser.winRateStriker = enrichedUser.playedStriker === 0 ? "0%" : (enrichedUser.wonStriker / enrichedUser.playedStriker * 100) + "%"
-            enrichedUser.winRateGoalkeeper = enrichedUser.playedGoalkeeper === 0 ? "0%" : (enrichedUser.wonGoalkeeper / enrichedUser.playedGoalkeeper * 100) + "%"
+            enrichedUser.winRateStriker = enrichedUser.playedStriker === 0 ? "0%" : Math.round((enrichedUser.wonStriker / enrichedUser.playedStriker * 100)) + "%"
+            enrichedUser.winRateGoalkeeper = enrichedUser.playedGoalkeeper === 0 ? "0%" : Math.round((enrichedUser.wonGoalkeeper / enrichedUser.playedGoalkeeper * 100)) + "%"
 
             // get goals
             const _role = role === "striker" ? "Striker" : "Keeper"
