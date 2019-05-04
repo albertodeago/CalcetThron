@@ -15,7 +15,7 @@
                                 <div>{{ currentUser.nickname }}</div>
                                 <br>
                                 <div class="text-h6">Signed:</div>
-                                <div>{{ currentUser.creationDate }}</div>
+                                <div>{{ new Date(currentUser.creationDate).toLocaleString('en-GB') }}</div>
                             </div>
                         </div>
                     </q-card-section>
