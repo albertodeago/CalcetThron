@@ -221,6 +221,7 @@ export default {
         return {
             showModal: false,
             step: 1,
+            firstTime: null,
 
             /* values to add a game */
             // players
@@ -248,8 +249,14 @@ export default {
             if(this.allGames === null)
                 return []
             
+            // this is to fix missing loader on first app load TODO: horrible, should fix this like a human being would do it
+            if(this.firstTime === true) {
+                this.firstTime = false
+                this.setLoading(false)
+            }
+
             const allGamesArray = Object.values(this.allGames)
-            const sortedGames = allGamesArray.sort((a,b) => a.creationDate - b.creationDate)
+            const sortedGames = allGamesArray.sort((a,b) => b.creationDate - a.creationDate)
             return sortedGames
         },
 
@@ -313,12 +320,28 @@ export default {
     },
     methods: {
         ...mapActions('Game', ['saveGame']),
+        ...mapActions('Global', ['setLoading']),
 
         getUsername(id) {
             return this.allUsers === null ? "Loading" : this.allUsers[id].nickname
         },
         getAvatar(id) {
             return this.allUsers === null ? defaultAvatar : this.allUsers[id].avatar
+        },
+
+        resetGameInputs() {
+            this.redGoalKeeper = null;
+            this.redStriker = null;
+            this.blueGoalKeeper = null;
+            this.blueStriker = null;
+            this.redGoalKeeperGoals = null;
+            this.redStrikerGoals = null;
+            this.redGoalKeeperAutogoals = null;
+            this.redStrikerAutogoals = null;
+            this.blueGoalKeeperGoals = null;
+            this.blueStrikerGoals = null;
+            this.blueGoalKeeperAutogoals = null;
+            this.blueStrikerAutogoals = null;
         },
 
         openModal() {
@@ -328,6 +351,7 @@ export default {
         closeModal() {
             this.showModal = false
             this.step = 1
+            this.resetGameInputs()
         },
 
         previousStep() {
@@ -381,6 +405,14 @@ export default {
                 this.closeModal()
             }
         }
+    },
+
+    mounted() {
+        if(this.allGames === null) {
+            this.firstTime = true
+            this.setLoading(true)
+        } else 
+            this.firstTime = false
     }
 }
 </script>
