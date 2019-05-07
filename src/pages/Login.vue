@@ -22,8 +22,8 @@
                     </q-card-section>
 
                     <q-card-section>
-                        <q-input v-model="loginEmail" filled type="email" hint="Email" />
-                        <q-input v-model="loginPassword" filled type="password" hint="Password" />
+                        <q-input v-model="loginEmail" filled class="q-mb-md" type="email" label="Email" />
+                        <q-input v-model="loginPassword" filled type="password" class="q-mb-md" label="Password" />
                     </q-card-section>
 
                     <q-separator/>
@@ -43,10 +43,10 @@
                     <q-card-section>
                         <q-img class="signin-image" :src="imageSource" :ratio="1" @click="selectImage" v-ripple/>
                         <input type="file" accept="image/*" style="display: none" ref="image_picker" @change="imageSelected">
-                        <q-input v-model="signinNickname" filled type="text" hint="Nickname" :rules="[nicknameRule]" lazy-rules />
-                        <q-input v-model="signinEmail" filled type="email" hint="Email" />
-                        <q-input v-model="signinPassword" filled type="password" hint="Password" />
-                        <q-input v-model="signinPasswordRe" filled type="password" hint="Confirm password" :rules="[passwordReRule]" lazy-rules/>
+                        <q-input v-model="signinNickname"   class="q-mb-md signin-nickname" filled type="text"      label="Nickname" :rules="[nicknameRule]" lazy-rules />
+                        <q-input v-model="signinEmail"      class="q-mb-md" filled type="email"     label="Email" />
+                        <q-input v-model="signinPassword"   class="q-mb-md" filled type="password"  label="Password" />
+                        <q-input v-model="signinPasswordRe" class="q-mb-md" filled type="password"  label="Confirm password" :rules="[passwordReRule]" lazy-rules />
                     </q-card-section>
 
                     <q-separator/>
@@ -126,10 +126,13 @@ export default {
 <style lang="stylus">
 
 .signin-image 
-    width: 50%;
-    margin-left: 25%;
-    margin-bottom: 20px;
-    border-radius: 50%;
+    width: 50%
+    margin-left: 25%
+    margin-bottom: 20px
+    border-radius: 50%
+
+.signin-nickname 
+    padding-bottom: 0
 
 </style>
 
