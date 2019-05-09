@@ -8,13 +8,15 @@ export default {
     state: {
         user: null,
         selectedUser: null,
-        allUsers: null
+        allUsers: null,
+        allUsersArray: []
     },
 
     getters: {
         user: state => state.user,
         selectedUser: state => state.selectedUser,
-        allUsers: state => state.allUsers
+        allUsers: state => state.allUsers,
+        allUsersArray: state => state.allUsersArray
     },
     mutations: {
         setUser(state, user) {
@@ -34,6 +36,9 @@ export default {
                 state.allUsers = {}
 
             state.allUsers[user.id] = user
+
+            if (!state.allUsersArray.find(u => u.id === user.id))
+                state.allUsersArray.push(user)
         }
     },
     actions: {

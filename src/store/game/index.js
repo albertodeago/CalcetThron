@@ -5,11 +5,13 @@ export default {
     namespaced: true,
     state: {
         allGames: null,
+        allGamesArray: [],
         currentGame: null
     },
 
     getters: {
         allGames: state => state.allGames,
+        allGamesArray: state => state.allGamesArray,
         currentGame: state => state.currentGame
     },
     mutations: {
@@ -25,31 +27,12 @@ export default {
             }
 
             state.allGames[game.id] = game
+
+            if (!state.allGamesArray.find(g => g.id === game.id))
+                state.allGamesArray.push(game)
         }
     },
     actions: {
-        // Never used
-        // async getAllGames({ commit, dispatch }) {
-        //     const db = firebase.firestore()
-        //     const gamesCollection = db.collection("games")
-
-        //     try {
-        //         const gamesSnapshot = await gamesCollection.get()
-        //         let games = {}
-        //         gamesSnapshot.forEach(function(doc) {
-        //             // doc.data() is never undefined for query doc snapshots
-        //             games[doc.id] = new Game({ id: doc.id, ...doc.data() })
-        //         });
-        //         commit("setAllGames", games);
-
-        //         return games;
-
-        //     } catch (error) {
-        //         console.error(error)
-        //         dispatch("Global/setErrorMessage", error.message, { root: true })
-        //         return error.message
-        //     }
-        // },
 
         async saveGame({ commit, dispatch }, gameObj) {
             const db = firebase.firestore()
