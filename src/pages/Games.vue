@@ -1,11 +1,9 @@
 <template>
     <div class="q-pa-md ">
-        <transition-group name="custom-classes-transition"
-                          enter-active-class="animated slideInRight"
-                          tag="div" 
+        <transition-group enter-active-class="animated slideInRight" tag="div"
                           class="transition-container row items-start q-gutter-md text-white"
-        >
-            <q-card class="my-card" v-for="game in gameList" :key="game.id">
+        >   
+            <q-card class="my-card" v-for="game in renderedGames" :key="game.id">
                 <q-card-section v-ripple>
                     <div class="game">
                         <div class="game__back game__back--red"></div>
@@ -215,6 +213,8 @@ export default {
             step: 1,
             firstTime: null,
             gameList: [],
+            renderedGames: [],
+            loadingItems: false,
 
             /* values to add a game */
             // players
@@ -239,13 +239,14 @@ export default {
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
 
         sortedGames() {
+            const sortedGames = this.allGamesArray.slice().sort((a,b) => b.creationDate - a.creationDate)
+
             // this is to fix missing loader on first app load TODO: horrible, should fix this like a human being would do it
             if(this.firstTime === true) {
                 this.firstTime = false
                 this.setLoading(false)
             }
 
-            const sortedGames = this.allGamesArray.slice().sort((a,b) => b.creationDate - a.creationDate)
             return sortedGames
         },
 
@@ -306,14 +307,16 @@ export default {
 
     watch: {
         sortedGames(val, prev) {
-            this.gameList.length = 0
+            if(val.length)
+                this.loadMoreGames()
+            // this.gameList.length = 0
 
-            const timeBetweenAnimation = 200
-            val.forEach((game, index) => {
-                setTimeout(() => {
-                    this.gameList.push(game)
-                }, index*timeBetweenAnimation)
-            })
+            // const timeBetweenAnimation = 125
+            // val.forEach((game, index) => {
+            //     setTimeout(() => {
+            //         this.gameList.push(game)
+            //     }, index*timeBetweenAnimation)
+            // })
         }
     },
 
@@ -326,6 +329,18 @@ export default {
         },
         getAvatar(id) {
             return this.allUsers === null ? defaultAvatar : this.allUsers[id].avatar
+        },
+
+        loadMoreGames() {
+            const i = this.renderedGames.length;
+            const newGames = this.sortedGames.slice(i, i + 10)
+
+            const timeBetweenAnimation = 125
+            newGames.forEach((game, index) => {
+                setTimeout(() => {
+                    this.renderedGames.push(game)
+                }, index*timeBetweenAnimation)
+            })
         },
 
         resetGameInputs() {
@@ -403,6 +418,14 @@ export default {
 
                 this.closeModal()
             }
+        },
+
+        onWindowScroll() {
+            if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 500 && !this.loadingItems) {
+                this.loadingItems = true
+                this.loadMoreGames()
+                setTimeout(() => this.loadingItems = false, 500)
+            }
         }
     },
 
@@ -412,24 +435,18 @@ export default {
             this.setLoading(true)
         } else 
             this.firstTime = false
+
+        window.addEventListener("scroll", this.onWindowScroll)
+    },
+
+    beforeDestroy() {
+        window.removeEventListener("scroll", this.onWindowScroll)
     }
 }
 </script>
 
 <style lang="stylus">
 @import "../css/quasar.variables.styl"
-
-// .list-item {
-//   display: inline-block;
-//   margin-right: 10px;
-// }
-// .list-enter-active, .list-leave-active {
-//   transition: all 1s;
-// }
-// .list-enter, .list-leave-to {
-//   opacity: 0;
-//   transform: translateY(30px);
-// }
 
 .transition-container 
     width: 100%
