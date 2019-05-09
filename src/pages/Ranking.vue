@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-list bordered padding>
         <template v-for="(enrichedUser, index) in enrichedUsers">
-            <q-item :key="enrichedUser.id"  v-ripple clickable @click="openUser(enrichedUser)">
+            <q-item :key="enrichedUser.id" clickable @click="openUser(enrichedUser)">
                 <q-item-section top avatar>
                     <q-avatar>
                         <q-img :src="enrichedUser.avatar" :ratio="1" />

@@ -25,7 +25,11 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <transition enter-active-class="animated fadeIn"
+                  exit-active-class="animated fadeOut"
+      >
+        <router-view />
+      </transition>
     </q-page-container>
   </q-layout>
 </template>

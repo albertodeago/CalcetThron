@@ -96,7 +96,9 @@ module.exports = function(ctx) {
 
         // animations: 'all' --- includes all animations
         animations: [
-            'slideInRight'
+            'slideInRight',
+            'fadeIn',
+            'fadeOut'
         ],
 
         ssr: {
