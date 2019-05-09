@@ -1,86 +1,91 @@
 <template>
-    <div class="q-pa-md row items-start q-gutter-md text-white">
-        <q-card class="my-card" v-for="game in sortedGames" :key="game.id">
-            <!-- {{ game }} -->
-            <q-card-section v-ripple>
-                <div class="game">
-                    <div class="game__back game__back--red"></div>
-                    <div class="game__back game__back--blue"></div>
+    <div class="q-pa-md ">
+        <transition-group name="custom-classes-transition"
+                          enter-active-class="animated slideInRight"
+                          tag="div" 
+                          class="transition-container row items-start q-gutter-md text-white"
+        >
+            <q-card class="my-card" v-for="game in gameList" :key="game.id">
+                <q-card-section v-ripple>
+                    <div class="game">
+                        <div class="game__back game__back--red"></div>
+                        <div class="game__back game__back--blue"></div>
 
-                    <div class="game__team game__team--red">
-                        <div class="game__team__top">
-                            <div class="game__team__top__player game__team__player">
-                                <q-item>
-                                    <q-item-section top avatar>
-                                        <q-avatar>
-                                            <q-img :src="getAvatar(game.redTeam.striker)" :ratio="1" />
-                                        </q-avatar>
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>{{ getUsername(game.redTeam.striker) }}</q-item-label>
-                                        <q-item-label caption lines="1" class="text-white">Striker</q-item-label>
-                                    </q-item-section>
-                                </q-item>
+                        <div class="game__team game__team--red">
+                            <div class="game__team__top">
+                                <div class="game__team__top__player game__team__player">
+                                    <q-item>
+                                        <q-item-section top avatar>
+                                            <q-avatar>
+                                                <q-img :src="getAvatar(game.redTeam.striker)" :ratio="1" />
+                                            </q-avatar>
+                                        </q-item-section>
+                                        <q-item-section>
+                                            <q-item-label>{{ getUsername(game.redTeam.striker) }}</q-item-label>
+                                            <q-item-label caption lines="1" class="text-white">Striker</q-item-label>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
+                            </div>
+
+                            <div class="game__team__mid text-h3">{{ game.result.red }}</div>
+
+                            <div class="game__team__bottom">
+                                <div class="game__team__bottom__player game__team__player">
+                                    <q-item>
+                                        <q-item-section top avatar>
+                                            <q-avatar>
+                                                <q-img :src="getAvatar(game.redTeam.keeper)" :ratio="1" />
+                                            </q-avatar>
+                                        </q-item-section>
+                                        <q-item-section>
+                                            <q-item-label>{{ getUsername(game.redTeam.keeper) }}</q-item-label>
+                                            <q-item-label caption lines="1" class="text-white">Goalkeeper</q-item-label>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="game__team game__team--blue">
+                            <div class="game__team__top">
+                                <div class="game__team__top__player game__team__player">
+                                    <q-item>
+                                        <q-item-section>
+                                            <q-item-label>{{ getUsername(game.blueTeam.striker) }}</q-item-label>
+                                            <q-item-label caption lines="1" class="text-white">Striker</q-item-label>
+                                        </q-item-section>
+                                        <q-item-section top avatar>
+                                            <q-avatar>
+                                                <q-img :src="getAvatar(game.blueTeam.striker)" :ratio="1" />
+                                            </q-avatar>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
+                            </div>
+
+                            <div class="game__team__mid text-h3">{{ game.result.blue }}</div>
+
+                            <div class="game__team__bottom">
+                                <div class="game__team__bottom__player game__team__player">
+                                    <q-item>
+                                        <q-item-section>
+                                            <q-item-label>{{ getUsername(game.blueTeam.keeper) }}</q-item-label>
+                                            <q-item-label caption lines="1" class="text-white">Goalkeeper</q-item-label>
+                                        </q-item-section>
+                                        <q-item-section top avatar>
+                                            <q-avatar>
+                                                <q-img :src="getAvatar(game.blueTeam.keeper)" :ratio="1" />
+                                            </q-avatar>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="game__team__mid text-h3">{{ game.result.red }}</div>
-
-                        <div class="game__team__bottom">
-                            <div class="game__team__bottom__player game__team__player">
-                                <q-item>
-                                    <q-item-section top avatar>
-                                        <q-avatar>
-                                            <q-img :src="getAvatar(game.redTeam.keeper)" :ratio="1" />
-                                        </q-avatar>
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>{{ getUsername(game.redTeam.keeper) }}</q-item-label>
-                                        <q-item-label caption lines="1" class="text-white">Goalkeeper</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </div>
-                        </div>
                     </div>
-                    <div class="game__team game__team--blue">
-                        <div class="game__team__top">
-                            <div class="game__team__top__player game__team__player">
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label>{{ getUsername(game.blueTeam.striker) }}</q-item-label>
-                                        <q-item-label caption lines="1" class="text-white">Striker</q-item-label>
-                                    </q-item-section>
-                                    <q-item-section top avatar>
-                                        <q-avatar>
-                                            <q-img :src="getAvatar(game.blueTeam.striker)" :ratio="1" />
-                                        </q-avatar>
-                                    </q-item-section>
-                                </q-item>
-                            </div>
-                        </div>
-
-                        <div class="game__team__mid text-h3">{{ game.result.blue }}</div>
-
-                        <div class="game__team__bottom">
-                            <div class="game__team__bottom__player game__team__player">
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label>{{ getUsername(game.blueTeam.keeper) }}</q-item-label>
-                                        <q-item-label caption lines="1" class="text-white">Goalkeeper</q-item-label>
-                                    </q-item-section>
-                                    <q-item-section top avatar>
-                                        <q-avatar>
-                                            <q-img :src="getAvatar(game.blueTeam.keeper)" :ratio="1" />
-                                        </q-avatar>
-                                    </q-item-section>
-                                </q-item>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </q-card-section>
-        </q-card>
+                </q-card-section>
+            </q-card>
+        </transition-group>
 
         <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="user">
             <q-btn fab icon="add" color="secondary" @click="openModal" />
@@ -98,112 +103,99 @@
                 </q-card-section>
 
                 <q-card-section>
-                    <!-- <q-stepper v-model="step" ref="stepper" contracted color="primary" animated> -->
-                        <!-- <q-step :name="1" title="Insert players" icon="face" :done="step > 1"> -->
-                        <template v-if="step === 1">
-                            <div class="text-h6">Insert the players of the game</div>
-                            
-                            <q-select class="q-my-md" filled v-model="redGoalKeeper" :options="usersArray" label="Red goalkeeper">
-                                <template v-slot:option="user">
-                                    <q-item v-bind="user.itemProps" v-on="user.itemEvents">
-                                        <q-item-section avatar>
-                                            <q-avatar>
-                                                <q-img :src="user.opt.avatar" :ratio="1" />
-                                            </q-avatar>
-                                        </q-item-section>
-                                        <q-item-section>
-                                            <q-item-label v-html="user.opt.nickname" />
-                                        </q-item-section>
-                                    </q-item>
-                                </template>
-                            </q-select>
-                            
-                            <q-select class="q-my-md" filled v-model="redStriker" :options="usersArray" label="Red striker">
-                                <template v-slot:option="user">
-                                    <q-item v-bind="user.itemProps" v-on="user.itemEvents">
-                                        <q-item-section avatar>
-                                            <q-avatar>
-                                                <q-img :src="user.opt.avatar" :ratio="1" />
-                                            </q-avatar>
-                                        </q-item-section>
-                                        <q-item-section>
-                                            <q-item-label v-html="user.opt.nickname" />
-                                        </q-item-section>
-                                    </q-item>
-                                </template>
-                            </q-select>
-                            
-                            <q-select class="q-my-md" filled v-model="blueGoalKeeper" :options="usersArray" label="Blue goalkeeper">
-                                <template v-slot:option="user">
-                                    <q-item v-bind="user.itemProps" v-on="user.itemEvents">
-                                        <q-item-section avatar>
-                                            <q-avatar>
-                                                <q-img :src="user.opt.avatar" :ratio="1" />
-                                            </q-avatar>
-                                        </q-item-section>
-                                        <q-item-section>
-                                            <q-item-label v-html="user.opt.nickname" />
-                                        </q-item-section>
-                                    </q-item>
-                                </template>
-                            </q-select>
-                            
-                            <q-select class="q-my-md" filled v-model="blueStriker" :options="usersArray" label="Blue striker">
-                                <template v-slot:option="user">
-                                    <q-item v-bind="user.itemProps" v-on="user.itemEvents">
-                                        <q-item-section avatar>
-                                            <q-avatar>
-                                                <q-img :src="user.opt.avatar" :ratio="1" />
-                                            </q-avatar>
-                                        </q-item-section>
-                                        <q-item-section>
-                                            <q-item-label v-html="user.opt.nickname" />
-                                        </q-item-section>
-                                    </q-item>
-                                </template>
-                            </q-select>
-                        </template>
-                        <!-- </q-step> -->
-
-                        <!-- <q-step :name="2" title="Insert scores" icon="accessible" :done="step > 2"> -->
-                            <template v-if="step === 2">
-                                <div class="text-h6">Insert the scores of the match</div>
-                                <q-input v-model="redGoalKeeperGoals"       type="number" :label="'Goals made by ' + redGoalKeeper.nickname" />
-                                <q-input v-model="redStrikerGoals"          type="number" :label="'Goals made by ' + redStriker.nickname" />
-                                <q-input v-model="redGoalKeeperAutogoals"   type="number" :label="'Autogoals made by ' + redGoalKeeper.nickname" />
-                                <q-input v-model="redStrikerAutogoals"      type="number" :label="'Autogoals made by ' + redStriker.nickname" />
-                                
-                                <q-input v-model="blueGoalKeeperGoals"      type="number" :label="'Goals made by ' + blueGoalKeeper.nickname" />
-                                <q-input v-model="blueStrikerGoals"         type="number" :label="'Goals made by ' + blueStriker.nickname" />
-                                <q-input v-model="blueGoalKeeperAutogoals"  type="number" :label="'Autogoals made by ' + blueGoalKeeper.nickname" />
-                                <q-input v-model="blueStrikerAutogoals"     type="number" :label="'Autogoals made by ' + blueStriker.nickname" />
+                    <template v-if="step === 1">
+                        <div class="text-h6">Insert the players of the game</div>
+                        
+                        <q-select class="q-my-md" filled v-model="redGoalKeeper" :options="usersArray" label="Red goalkeeper">
+                            <template v-slot:option="user">
+                                <q-item v-bind="user.itemProps" v-on="user.itemEvents">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="user.opt.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <q-item-label v-html="user.opt.nickname" />
+                                    </q-item-section>
+                                </q-item>
                             </template>
-                        <!-- </q-step> -->
-
-                        <!-- <q-step :name="3" title="Create an ad" icon="add_comment"> -->
-                            <template v-if="step === 3">
-                                <div class="text-h6">Confirm data</div>
-                                <div class="text-subtitle1">Red team</div>
-                                <div>{{ redGoalKeeper.nickname }} - {{ redStriker.nickname }}</div>
-                                <div>Goals: {{ (parseInt(redGoalKeeperGoals) || 0) + (parseInt(redStrikerGoals) || 0) }}</div>
-                                
-                                <div class="text-subtitle1">Blue team</div>
-                                <div>{{ blueGoalKeeper.nickname }} - {{ blueStriker.nickname }}</div>
-                                <div>Goals: {{ (parseInt(blueGoalKeeperGoals) || 0) + (parseInt(blueStrikerGoals) || 0) }}</div>
+                        </q-select>
+                        
+                        <q-select class="q-my-md" filled v-model="redStriker" :options="usersArray" label="Red striker">
+                            <template v-slot:option="user">
+                                <q-item v-bind="user.itemProps" v-on="user.itemEvents">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="user.opt.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <q-item-label v-html="user.opt.nickname" />
+                                    </q-item-section>
+                                </q-item>
                             </template>
-
-                        <!-- </q-step> -->
-
-                        <!-- <template v-slot:navigation>
-                            <q-stepper-navigation> -->
-                            <q-separator style="margin: 20px 0" />
-                            <template>
-                                <q-btn @click="nextStep()" color="primary" :disable="nextStepDisabled" :label="step === 3 ? 'Save' : 'Continue'" />
-                                <q-btn v-if="step > 1" flat color="primary" @click="previousStep()" label="Back" class="q-ml-sm" />
+                        </q-select>
+                        
+                        <q-select class="q-my-md" filled v-model="blueGoalKeeper" :options="usersArray" label="Blue goalkeeper">
+                            <template v-slot:option="user">
+                                <q-item v-bind="user.itemProps" v-on="user.itemEvents">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="user.opt.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <q-item-label v-html="user.opt.nickname" />
+                                    </q-item-section>
+                                </q-item>
                             </template>
-                            <!-- </q-stepper-navigation> -->
-                        <!-- </template> -->
-                    <!-- </q-stepper> -->
+                        </q-select>
+                        
+                        <q-select class="q-my-md" filled v-model="blueStriker" :options="usersArray" label="Blue striker">
+                            <template v-slot:option="user">
+                                <q-item v-bind="user.itemProps" v-on="user.itemEvents">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="user.opt.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <q-item-label v-html="user.opt.nickname" />
+                                    </q-item-section>
+                                </q-item>
+                            </template>
+                        </q-select>
+                    </template>
+
+                    <template v-if="step === 2">
+                        <div class="text-h6">Insert the scores of the match</div>
+                        <q-input v-model="redGoalKeeperGoals"       class="q-mb-xs" filled type="number" :label="'Goals made by ' + redGoalKeeper.nickname" />
+                        <q-input v-model="redStrikerGoals"          class="q-mb-sm" filled type="number" :label="'Goals made by ' + redStriker.nickname" />
+                        <q-input v-model="redGoalKeeperAutogoals"   class="q-mb-xs" filled type="number" :label="'Autogoals made by ' + redGoalKeeper.nickname" />
+                        <q-input v-model="redStrikerAutogoals"      class="q-mb-md" filled type="number" :label="'Autogoals made by ' + redStriker.nickname" />
+                        
+                        <q-input v-model="blueGoalKeeperGoals"      class="q-mb-xs" filled type="number" :label="'Goals made by ' + blueGoalKeeper.nickname" />
+                        <q-input v-model="blueStrikerGoals"         class="q-mb-sm" filled type="number" :label="'Goals made by ' + blueStriker.nickname" />
+                        <q-input v-model="blueGoalKeeperAutogoals"  class="q-mb-xs" filled type="number" :label="'Autogoals made by ' + blueGoalKeeper.nickname" />
+                        <q-input v-model="blueStrikerAutogoals"     class="q-mb-sm" filled type="number" :label="'Autogoals made by ' + blueStriker.nickname" />
+                    </template>
+
+                    <template v-if="step === 3">
+                        <div class="text-h6">Confirm data</div>
+                        <div class="text-subtitle1">Red team</div>
+                        <div>{{ redGoalKeeper.nickname }} - {{ redStriker.nickname }}</div>
+                        <div>Goals: {{ (parseInt(redGoalKeeperGoals) || 0) + (parseInt(redStrikerGoals) || 0) + (parseInt(blueGoalKeeperAutogoals) || 0) + (parseInt(blueStrikerAutogoals) || 0) }}</div>
+                        
+                        <div class="text-subtitle1">Blue team</div>
+                        <div>{{ blueGoalKeeper.nickname }} - {{ blueStriker.nickname }}</div>
+                        <div>Goals: {{ (parseInt(blueGoalKeeperGoals) || 0) + (parseInt(blueStrikerGoals) || 0) + (parseInt(redGoalKeeperAutogoals) || 0) + (parseInt(redStrikerAutogoals) || 0) }}</div>
+                    </template>
+                            
+                    <q-separator style="margin: 20px 0" />
+                    <template>
+                        <q-btn @click="nextStep()" color="primary" :disable="nextStepDisabled" :label="step === 3 ? 'Save' : 'Continue'" />
+                        <q-btn v-if="step > 1" flat color="primary" @click="previousStep()" label="Back" class="q-ml-sm" />
+                    </template>
                 </q-card-section>
             </q-card>
         </q-dialog>
@@ -222,6 +214,7 @@ export default {
             showModal: false,
             step: 1,
             firstTime: null,
+            gameList: [],
 
             /* values to add a game */
             // players
@@ -242,36 +235,28 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('Game', ['allGames']),
-        ...mapGetters('User', ['allUsers', 'user']),
+        ...mapGetters('Game', ['allGamesArray', 'allGames']),
+        ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
 
         sortedGames() {
-            if(this.allGames === null)
-                return []
-            
             // this is to fix missing loader on first app load TODO: horrible, should fix this like a human being would do it
             if(this.firstTime === true) {
                 this.firstTime = false
                 this.setLoading(false)
             }
 
-            const allGamesArray = Object.values(this.allGames)
-            const sortedGames = allGamesArray.sort((a,b) => b.creationDate - a.creationDate)
+            const sortedGames = this.allGamesArray.slice().sort((a,b) => b.creationDate - a.creationDate)
             return sortedGames
         },
 
         usersArray() {
-            if(this.allUsers === null) 
-                return []
-
-            const usersArray = Object.values(this.allUsers)
-            usersArray.forEach(u => {
+            return this.allUsersArray.map(u => {
                 u.value = u.id,
                 u.label = u.nickname,
                 u.avatar = u.avatar,
                 u.disable = this.alreadySelectedUsers.indexOf(u.id) !== -1
+                return u
             })
-            return usersArray
         },
 
         alreadySelectedUsers() {
@@ -318,6 +303,20 @@ export default {
             return false
         }
     },
+
+    watch: {
+        sortedGames(val, prev) {
+            this.gameList.length = 0
+
+            const timeBetweenAnimation = 200
+            val.forEach((game, index) => {
+                setTimeout(() => {
+                    this.gameList.push(game)
+                }, index*timeBetweenAnimation)
+            })
+        }
+    },
+
     methods: {
         ...mapActions('Game', ['saveGame']),
         ...mapActions('Global', ['setLoading']),
@@ -419,6 +418,21 @@ export default {
 
 <style lang="stylus">
 @import "../css/quasar.variables.styl"
+
+// .list-item {
+//   display: inline-block;
+//   margin-right: 10px;
+// }
+// .list-enter-active, .list-leave-active {
+//   transition: all 1s;
+// }
+// .list-enter, .list-leave-to {
+//   opacity: 0;
+//   transform: translateY(30px);
+// }
+
+.transition-container 
+    width: 100%
 
 .my-card 
     width: 100%
