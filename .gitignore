@@ -21,3 +21,4 @@ src/boot/firebase.js
 *.ntvs*
 *.njsproj
 *.sln
+functions/package-lock.json
