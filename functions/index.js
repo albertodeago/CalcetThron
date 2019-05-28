@@ -59,7 +59,7 @@ admin.initializeApp();
  */
 exports.updateRankings = functions.firestore
     .document('games/{gameId}')
-    .onCreate(async function(snap, context) {
+    .onCreate(async(snap, context) => {
         // Get an object representing the document
         const newGame = snap.data();
         console.log("onCreation new Game " + newGame.creationDate)
@@ -144,9 +144,9 @@ exports.updateRankings = functions.firestore
         redStriker.winRate = Math.round(redStriker.won / redStriker.played * 100) + "%"
             // update win rates for specific roles
         blueKeeper.winRateGoalkeeper = Math.round(blueKeeper.wonGoalkeeper / blueKeeper.playedGoalkeeper * 100) + "%"
-        blueStriker.winRateGoalkeeper = Math.round(blueStriker.wonStriker / blueStriker.playedStriker * 100) + "%"
+        blueStriker.winRateStriker = Math.round(blueStriker.wonStriker / blueStriker.playedStriker * 100) + "%"
         redKeeper.winRateGoalkeeper = Math.round(redKeeper.wonGoalkeeper / redKeeper.playedGoalkeeper * 100) + "%"
-        redStriker.winRateGoalkeeper = Math.round(redStriker.wonStriker / redStriker.playedStriker * 100) + "%"
+        redStriker.winRateStriker = Math.round(redStriker.wonStriker / redStriker.playedStriker * 100) + "%"
 
         // update goals / autogoals
         blueKeeper.goalDone = blueKeeper.goalDone + newGame.blueKeeperGoals;
