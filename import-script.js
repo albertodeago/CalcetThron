@@ -38,7 +38,7 @@ const data = require("./import-data/tmp-ranking");
 const values = Object.values(data);
 
 values.forEach(function(obj) {
-    db.collection("ranking2").doc(obj.id).set(obj)
+    db.collection("rankings").doc(obj.id).set(obj)
         .then(function(docRef) {
             console.log("Document written");
         })
