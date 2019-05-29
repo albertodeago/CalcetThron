@@ -5,55 +5,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-
-/* 
-    Sample game object
-    const game = {
-        blueKeeperAutogoals: 0,
-        blueKeeperGoals: 1,
-        blueStrikerAutogoals: 0,
-        blueStrikerGoals: 4,
-        *blueTeam: {
-        *    keeper: 2,
-        *    striker: 2
-        *},
-        creationDate: 7,
-        redKeeperAutogoals: 1,
-        redKeeperGoals: 3,
-        redStrikerAutogoals: 0,
-        redStrikerGoals: 4,
-        *redTeam: {
-        *    keeper: 2,
-        *    striker: 3
-        *},
-        result: {
-            blue: 6,
-            red: 7
-        }
-    }
-*/
-/*
-    This is the kind of object to return (update)
-    const enrichedUser = {
-        id: id
-        played: 0,
-        won: 0,
-        lost: 0,
-        winRate: "0%",
-        playedGoalkeeper: 0,
-        wonGoalkeeper: 0,
-        lostGoalkeeper: 0,
-        winRateGoalkeeper: "0%",
-        playedStriker: 0,
-        wonStriker: 0,
-        lostStriker: 0,
-        winRateStriker: "0%",
-        goalDone: 0,
-        goalReceived: 0,
-        autogoalDone: 0
-    };
-*/
-
 /**
  * When a match is inserted, update the rankings value of players.
  */
@@ -62,7 +13,7 @@ exports.updateRankings = functions.firestore
     .onCreate(async(snap, context) => {
         // Get an object representing the document
         const newGame = snap.data();
-        console.log("onCreation new Game " + newGame.creationDate)
+        console.log("onCreation new Game " + newGame.creationDate);
 
         // create the model to update the db value
         const userRanking = {
@@ -96,7 +47,24 @@ exports.updateRankings = functions.firestore
         console.log("Getting ranking of players " + newGame.blueTeam.keeper + " " + newGame.blueTeam.striker + " " + newGame.redTeam.keeper + " " + newGame.redTeam.striker);
         const results = await Promise.all([blueKeeperPromise, blueStrikerPromise, redKeeperPromise, redStrikerPromise]);
 
-        console.log("Got ranking of player " + results.toString());
+        // log something to have some more info in dashboard logs
+        if (results[0].data())
+            console.log("blueKeeper had already a ranking reference");
+        else
+            console.log("blueKeeper is new for rankings");
+        if (results[1].data())
+            console.log("blueStriker had already a ranking reference");
+        else
+            console.log("blueStriker is new for rankings");
+        if (results[2].data())
+            console.log("redKeeper had already a ranking reference");
+        else
+            console.log("redKeeper is new for rankings");
+        if (results[3].data())
+            console.log("redStriker had already a ranking reference");
+        else
+            console.log("redStriker is new for rankings");
+
         const blueKeeper = results[0].data() ? results[0].data() : Object.assign({}, userRanking, { id: newGame.blueTeam.keeper });
         const blueStriker = results[1].data() ? results[1].data() : Object.assign({}, userRanking, { id: newGame.blueTeam.striker });
         const redKeeper = results[2].data() ? results[2].data() : Object.assign({}, userRanking, { id: newGame.redTeam.keeper });
