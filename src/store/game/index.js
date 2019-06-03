@@ -1,38 +1,59 @@
-import { User, Game } from "src/models"
-// import Utils from "src/Utils"
+import { Game } from "src/models"
 
 export default {
     namespaced: true,
     state: {
-        allGames: null,
-        allGamesArray: [],
+        games: null,
+        gamesArray: [],
         currentGame: null
     },
 
     getters: {
-        allGames: state => state.allGames,
-        allGamesArray: state => state.allGamesArray,
+        games: state => state.games,
+        gamesArray: state => state.gamesArray,
         currentGame: state => state.currentGame
     },
     mutations: {
-        setAllGames(state, games) {
-            state.allGames = games
+        addGames(state, games) {
+            if (!state.games)
+                state.games = {}
+
+            Object.values(games).forEach(game => {
+                state.games[game.id] = game
+
+                if (!state.gamesArray.find(g => g.id === game.id))
+                    state.gamesArray.push(game)
+            })
+        },
+        addGame(state, game) {
+            if (!state.games)
+                state.games = {}
+
+            state.games[game.id] = game
+
+            if (!state.gamesArray.find(g => g.id === game.id))
+                state.gamesArray.push(game)
         },
         setCurrentGame(state, game) {
             state.currentGame = game
-        },
-        addGame(state, game) {
-            if (!state.allGames) {
-                state.allGames = {}
-            }
-
-            state.allGames[game.id] = game
-
-            if (!state.allGamesArray.find(g => g.id === game.id))
-                state.allGamesArray.push(game)
         }
     },
     actions: {
+
+        async getGames({ commit, state }, offset = 0, amount = 5) {
+            const db = firebase.firestore()
+            const gamesCollection = db.collection("games")
+
+            const gamesSnapshot = await gamesCollection.orderBy("creationDate").limit(offset + amount).get()
+            const games = {}
+            gamesSnapshot.forEach(game => {
+                const data = game.data()
+                games[game.id] = new Game({ id: game.id, ...data })
+            })
+
+            commit("addGames", games)
+            return games
+        },
 
         async saveGame({ commit, dispatch }, gameObj) {
             const db = firebase.firestore()

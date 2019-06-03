@@ -235,20 +235,20 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('Game', ['allGamesArray', 'allGames']),
+        ...mapGetters('Game', ['gamesArray']),
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
 
-        sortedGames() {
-            const sortedGames = this.allGamesArray.slice().sort((a,b) => b.creationDate - a.creationDate)
+        // sortedGames() {
+        //     const sortedGames = this.allGamesArray.slice().sort((a,b) => b.creationDate - a.creationDate)
 
-            // this is to fix missing loader on first app load TODO: horrible, should fix this like a human being would do it
-            if(this.firstTime === true) {
-                this.firstTime = false
-                this.setLoading(false)
-            }
+        //     // this is to fix missing loader on first app load TODO: horrible, should fix this like a human being would do it
+        //     if(this.firstTime === true) {
+        //         this.firstTime = false
+        //         this.setLoading(false)
+        //     }
 
-            return sortedGames
-        },
+        //     return sortedGames
+        // },
 
         usersArray() {
             return this.allUsersArray.map(u => {
@@ -305,23 +305,23 @@ export default {
         }
     },
 
-    watch: {
-        sortedGames(val, prev) {
-            if(val.length)
-                this.loadMoreGames()
-            // this.gameList.length = 0
+    // watch: {
+    //     sortedGames(val, prev) {
+    //         if(val.length)
+    //             this.loadMoreGames()
+    //         // this.gameList.length = 0
 
-            // const timeBetweenAnimation = 125
-            // val.forEach((game, index) => {
-            //     setTimeout(() => {
-            //         this.gameList.push(game)
-            //     }, index*timeBetweenAnimation)
-            // })
-        }
-    },
+    //         // const timeBetweenAnimation = 125
+    //         // val.forEach((game, index) => {
+    //         //     setTimeout(() => {
+    //         //         this.gameList.push(game)
+    //         //     }, index*timeBetweenAnimation)
+    //         // })
+    //     }
+    // },
 
     methods: {
-        ...mapActions('Game', ['saveGame']),
+        ...mapActions('Game', ['saveGame', 'getGames']),
         ...mapActions('Global', ['setLoading']),
 
         getUsername(id) {
@@ -331,16 +331,34 @@ export default {
             return this.allUsers === null ? defaultAvatar : this.allUsers[id].avatar
         },
 
-        loadMoreGames() {
-            const i = this.renderedGames.length;
-            const newGames = this.sortedGames.slice(i, i + 10)
+        pushWithoutDuplication(game) {
+            if(!this.renderedGames.find(g => g.id === game.id)) 
+                this.renderedGames.push(game)
+        },
 
-            const timeBetweenAnimation = 125
-            newGames.forEach((game, index) => {
+        pushGames() {
+            const timeBetweenAnimation = 200
+            this.gamesArray.slice(this.renderedGames.length).forEach((game, index) => {
                 setTimeout(() => {
-                    this.renderedGames.push(game)
-                }, index*timeBetweenAnimation)
+                    this.pushWithoutDuplication(game)
+                }, index * timeBetweenAnimation)
             })
+        },
+
+        async loadMoreGames() {
+            await this.getGames(this.gamesArray.length)
+            this.pushGames()
+            return true
+
+            // const i = this.renderedGames.length;
+            // const newGames = this.sortedGames.slice(i, i + 10)
+
+            // const timeBetweenAnimation = 125
+            // newGames.forEach((game, index) => {
+            //     setTimeout(() => {
+            //         this.renderedGames.push(game)
+            //     }, index*timeBetweenAnimation)
+            // })
         },
 
         resetGameInputs() {
@@ -420,21 +438,30 @@ export default {
             }
         },
 
-        onWindowScroll() {
-            if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 500 && !this.loadingItems) {
+        async onWindowScroll() {
+            if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 250 && !this.loadingItems) {
                 this.loadingItems = true
-                this.loadMoreGames()
-                setTimeout(() => this.loadingItems = false, 500)
+                await this.loadMoreGames()
+                setTimeout(() => this.loadingItems = false, 200)
             }
         }
     },
 
+    async created() {
+        this.setLoading(true)
+        this.loadingItems = true
+        const games = await this.getGames()
+        this.setLoading(false)
+        this.pushGames()
+        this.loadingItems = false
+    },
+
     mounted() {
-        if(this.allGames === null) {
-            this.firstTime = true
-            this.setLoading(true)
-        } else 
-            this.firstTime = false
+        // if(this.allGames === null) {
+        //     this.firstTime = true
+        //     this.setLoading(true)
+        // } else 
+        //     this.firstTime = false
 
         window.addEventListener("scroll", this.onWindowScroll)
     },
