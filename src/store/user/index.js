@@ -29,6 +29,7 @@ export default {
 
         setAllUsers(state, users) {
             state.allUsers = users
+            state.allUsersArray = Object.values(users)
         },
 
         addUser(state, user) {
@@ -43,24 +44,23 @@ export default {
     },
     actions: {
 
-        // Never used
-        // async getAllUsers({ commit, dispatch }) {
-        //     const db = firebase.firestore()
-        //     const usersCollection = db.collection("users")
+        async getAllUsers({ commit, dispatch }) {
+            const db = firebase.firestore()
+            const usersCollection = db.collection("users")
 
-        //     try {
-        //         let users = {}
-        //         const usersSnapshot = await usersCollection.get()
-        //         usersSnapshot.forEach(doc => users[doc.id] = new User(doc.data()))
-        //         commit('setAllUsers', users)
+            try {
+                let users = {}
+                const usersSnapshot = await usersCollection.get()
+                usersSnapshot.forEach(doc => users[doc.id] = new User(doc.data()))
+                commit('setAllUsers', users)
 
-        //         return users
-        //     } catch (error) {
-        //         console.error(error)
-        //         dispatch("Global/setErrorMessage", error.message, { root: true })
-        //         return error.message
-        //     }
-        // },
+                return users
+            } catch (error) {
+                console.error(error)
+                dispatch("Global/setErrorMessage", error.message, { root: true })
+                return error.message
+            }
+        },
 
         async register({ commit, dispatch }, { email, password, nickname, image }) {
             const db = firebase.firestore()
@@ -172,26 +172,26 @@ export default {
             }
         },
 
-        async subscribeToUsers({ commit, dispatch }) {
-            const db = firebase.firestore()
-            const usersCollection = db.collection("users")
+        // async subscribeToUsers({ commit, dispatch }) {
+        //     const db = firebase.firestore()
+        //     const usersCollection = db.collection("users")
 
-            usersCollection.onSnapshot(snapshot => {
-                snapshot.docChanges().forEach(change => {
-                    if (change.type === "added") {
-                        // Added a new user, we have to push into allUsers
-                        // console.log("New user: ", change.doc.data(), change.doc.id)
-                        const newUser = new User(change.doc.data())
-                        commit("addUser", newUser)
-                    }
-                    // if (change.type === "modified") {    // the app doesn't allow this action yet
-                    //      // An user was modified, we should update the allGames right index
-                    // }
-                    // if (change.type === "removed") {        // the app doesn't allow this action yet
-                    // An user was removed, we should remove from allGames
-                    // }
-                })
-            })
-        }
+        //     usersCollection.onSnapshot(snapshot => {
+        //         snapshot.docChanges().forEach(change => {
+        //             if (change.type === "added") {
+        //                 // Added a new user, we have to push into allUsers
+        //                 // console.log("New user: ", change.doc.data(), change.doc.id)
+        //                 const newUser = new User(change.doc.data())
+        //                 commit("addUser", newUser)
+        //             }
+        //             // if (change.type === "modified") {    // the app doesn't allow this action yet
+        //             //      // An user was modified, we should update the allGames right index
+        //             // }
+        //             // if (change.type === "removed") {        // the app doesn't allow this action yet
+        //             // An user was removed, we should remove from allGames
+        //             // }
+        //         })
+        //     })
+        // }
     }
 }

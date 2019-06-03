@@ -39,8 +39,8 @@ export default {
 
   methods: {
     ...mapActions('Global', [ 'setErrorMessage', 'setLoading' ]),
-    ...mapActions('Game', ['subscribeToGames']),
-    ...mapActions('User', ['subscribeToUsers']),
+    // ...mapActions('Game', ['subscribeToGames']),
+    ...mapActions('User', ['subscribeToUsers', 'getAllUsers']),
 
     dismissMessage() {
       // TODO: add transition to banner enter and exit
@@ -68,10 +68,11 @@ export default {
       // const usersPromise = this.getAllUsers()
 
       // subscribe to realtime changes
-      this.subscribeToGames()
-      this.subscribeToUsers()
+      // this.subscribeToGames()
+      // this.subscribeToUsers()
+      await this.getAllUsers()
 
-      await Promise.all(gamesPromise, usersPromise)
+      // await Promise.all(gamesPromise, usersPromise)
     } catch(e) {}
 
     this.ready = true
