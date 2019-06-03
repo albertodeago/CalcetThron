@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import User from './user'
 import Game from './game'
 import Global from './global'
+import Rankings from './rankings'
 
 Vue.use(Vuex)
 
@@ -10,13 +11,13 @@ Vue.use(Vuex)
  * If not building with SSR mode, you can
  * directly export the Store instantiation
  */
-
-export default function( /* { ssrContext } */ ) {
+export default function() {
     const Store = new Vuex.Store({
         modules: {
             User,
             Global,
-            Game
+            Game,
+            Rankings
         },
 
         // enable strict mode (adds overhead!)
