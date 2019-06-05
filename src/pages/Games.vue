@@ -238,18 +238,6 @@ export default {
         ...mapGetters('Game', ['gamesArray']),
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
 
-        // sortedGames() {
-        //     const sortedGames = this.allGamesArray.slice().sort((a,b) => b.creationDate - a.creationDate)
-
-        //     // this is to fix missing loader on first app load TODO: horrible, should fix this like a human being would do it
-        //     if(this.firstTime === true) {
-        //         this.firstTime = false
-        //         this.setLoading(false)
-        //     }
-
-        //     return sortedGames
-        // },
-
         usersArray() {
             return this.allUsersArray.map(u => {
                 u.value = u.id,
@@ -305,21 +293,6 @@ export default {
         }
     },
 
-    // watch: {
-    //     sortedGames(val, prev) {
-    //         if(val.length)
-    //             this.loadMoreGames()
-    //         // this.gameList.length = 0
-
-    //         // const timeBetweenAnimation = 125
-    //         // val.forEach((game, index) => {
-    //         //     setTimeout(() => {
-    //         //         this.gameList.push(game)
-    //         //     }, index*timeBetweenAnimation)
-    //         // })
-    //     }
-    // },
-
     methods: {
         ...mapActions('Game', ['saveGame', 'getGames']),
         ...mapActions('Global', ['setLoading']),
@@ -349,16 +322,6 @@ export default {
             await this.getGames(this.gamesArray.length)
             this.pushGames()
             return true
-
-            // const i = this.renderedGames.length;
-            // const newGames = this.sortedGames.slice(i, i + 10)
-
-            // const timeBetweenAnimation = 125
-            // newGames.forEach((game, index) => {
-            //     setTimeout(() => {
-            //         this.renderedGames.push(game)
-            //     }, index*timeBetweenAnimation)
-            // })
         },
 
         resetGameInputs() {
@@ -457,12 +420,6 @@ export default {
     },
 
     mounted() {
-        // if(this.allGames === null) {
-        //     this.firstTime = true
-        //     this.setLoading(true)
-        // } else 
-        //     this.firstTime = false
-
         window.addEventListener("scroll", this.onWindowScroll)
     },
 

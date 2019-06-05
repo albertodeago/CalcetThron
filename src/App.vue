@@ -29,7 +29,7 @@ export default {
 
   data() {
     return {
-      ready: false
+      
     }
   },
 
@@ -39,7 +39,6 @@ export default {
 
   methods: {
     ...mapActions('Global', [ 'setErrorMessage', 'setLoading' ]),
-    // ...mapActions('Game', ['subscribeToGames']),
     ...mapActions('User', ['subscribeToUsers', 'getAllUsers']),
 
     dismissMessage() {
@@ -64,25 +63,8 @@ export default {
 
     // download all useful informations (users, games.... )    
     try {
-      // const gamesPromise = this.getAllGames()
-      // const usersPromise = this.getAllUsers()
-
-      // subscribe to realtime changes
-      // this.subscribeToGames()
-      // this.subscribeToUsers()
       await this.getAllUsers()
-
-      // await Promise.all(gamesPromise, usersPromise)
     } catch(e) {}
-
-    this.ready = true
-    this.setLoading(false)
-  },
-
-  mounted() {
-    if(!this.ready){
-      this.setLoading(true) // TODO: seems like this is not working as intended
-    }
   }
 }
 </script>
