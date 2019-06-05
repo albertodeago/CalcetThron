@@ -34,6 +34,17 @@
             <q-item-label>Ranking</q-item-label>
           </q-item-section>
         </q-item>
+        
+        <q-separator />
+
+        <q-item clickable v-ripple tag="a" href="#/settings" @click="onClick">
+          <q-item-section avatar>
+            <q-icon name="settings" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Settings</q-item-label>
+          </q-item-section>
+        </q-item>
 
     </q-list>
 </template>

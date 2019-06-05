@@ -23,6 +23,11 @@ const routes = [{
                 import ('pages/Ranking.vue')
         },
         {
+            path: 'settings',
+            component: () =>
+                import ('pages/Settings.vue')
+        },
+        {
             path: 'user/:id',
             component: () =>
                 import ('pages/User.vue')
