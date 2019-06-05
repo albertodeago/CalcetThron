@@ -86,7 +86,6 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import { enrichUser } from "../models/ranking/RankingBuilder"
 import EditableAvatar from "../mixins/EditableAvatar"
 
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/darthron-6a632.appspot.com/o/avatars%2Fdefault_avatar.png?alt=media&token=ebd85bb5-b11c-4ca9-b7d3-4fab14d56d88";
@@ -104,7 +103,7 @@ export default {
     },
     computed: {
         ...mapGetters('User', ['user', 'selectedUser']),
-        ...mapGetters('Game', ['allGames']),
+        ...mapGetters("Rankings", ["allRankings"]),
 
         isLoggedUser() {
             return this.ready && 
@@ -117,6 +116,7 @@ export default {
         },
 
         currentEnrichedUser() {
+            return this.selectedUser ? this.allRankings[this.selectedUser.id] : null
             return this.selectedUser ? enrichUser(this.selectedUser, this.allGames) : null
         },
 
@@ -129,6 +129,7 @@ export default {
         ...mapMutations('User', ['setSelectedUser']),
         ...mapActions('User', ['getUser', 'logout', 'saveAvatar']),
         ...mapActions('Global', ['setLoading']),
+        ...mapActions('Rankings', ['getRankings']),
 
         async onLogout() {
             this.setLoading(true)
@@ -160,18 +161,20 @@ export default {
         }
     },
 
-    created() {
+    async created() {
+        this.setLoading(true)
+        await this.getRankings()
+
         if(this.selectedUser === null) {
-            this.setLoading(true)
             const userId = this.$route.params.id
             this.getUser(userId).then((firebaseUser) => {
                 this.setSelectedUser(firebaseUser);
                 this.ready = true
-                this.setLoading(false)
             })
         } else {
             this.ready = true
         }
+        this.setLoading(false)
     },
 
     beforeDestroy() {
