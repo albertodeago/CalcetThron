@@ -60,7 +60,12 @@ export default {
             const gamesCollection = db.collection("games")
 
             try {
-                await gamesCollection.add(gameObj)
+                const docRef = await gamesCollection.add(gameObj)
+                    // TODO: should get the new game and return it to add in the list
+                    // const newGameObj = await docRef.get()
+                    // var newGame = new Game(newGameObj.data())
+                    // commit("addGames", [newGame])
+                    // return newGame
             } catch (error) {
                 console.error(error)
                 dispatch("Global/setErrorMessage", error.message, { root: true })
