@@ -44,7 +44,7 @@ export default {
             const db = firebase.firestore()
             const gamesCollection = db.collection("games")
 
-            const gamesSnapshot = await gamesCollection.orderBy("creationDate").limit(offset + amount).get()
+            const gamesSnapshot = await gamesCollection.orderBy("creationDate", "desc").limit(offset + amount).get()
             const games = {}
             gamesSnapshot.forEach(game => {
                 const data = game.data()
