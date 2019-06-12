@@ -167,53 +167,53 @@
 
                     <template v-if="step === 2">
                         <div class="text-h6">Insert the scores of the match</div>
-                        <q-input v-model="redGoalKeeperGoals"       class="q-mb-xs" filled type="number" :label="'Goals made by ' + redGoalKeeper.nickname" >
+                        <q-input v-model="redGoalKeeperGoals"           class="q-mb-xs" filled type="number" :label="'Goals made by ' + redGoalKeeper.nickname" >
                             <template v-slot:append>
-                                <q-btn round dense flat icon="add" @click="redGoalKeeperGoals++" />
-                                <q-btn round dense flat icon="remove" @click="redGoalKeeperGoals--" />
+                                <q-btn round dense flat icon="add"      @click="redGoalKeeperGoals = Math.min(redGoalKeeperGoals + 1, 7)" />
+                                <q-btn round dense flat icon="remove"   @click="redGoalKeeperGoals = Math.max(redGoalKeeperGoals -1, 0)" />
                             </template>
                         </q-input>
-                        <q-input v-model="redStrikerGoals"          class="q-mb-sm" filled type="number" :label="'Goals made by ' + redStriker.nickname" >
+                        <q-input v-model="redStrikerGoals"              class="q-mb-sm" filled type="number" :label="'Goals made by ' + redStriker.nickname" >
                             <template v-slot:append>
-                                <q-btn round dense flat icon="add" @click="redStrikerGoals++" />
-                                <q-btn round dense flat icon="remove" @click="redStrikerGoals--" />
+                                <q-btn round dense flat icon="add"      @click="redStrikerGoals = Math.min(redStrikerGoals + 1, 7)" />
+                                <q-btn round dense flat icon="remove"   @click="redStrikerGoals = Math.max(redStrikerGoals -1, 0)" />
                             </template>
                         </q-input>
-                        <q-input v-model="redGoalKeeperAutogoals"   class="q-mb-xs" filled type="number" :label="'Autogoals made by ' + redGoalKeeper.nickname" >
+                        <q-input v-model="redGoalKeeperAutogoals"       class="q-mb-xs" filled type="number" :label="'Autogoals made by ' + redGoalKeeper.nickname" >
                             <template v-slot:append>
-                                <q-btn round dense flat icon="add" @click="redGoalKeeperAutogoals++" />
-                                <q-btn round dense flat icon="remove" @click="redGoalKeeperAutogoals--" />
+                                <q-btn round dense flat icon="add"      @click="redGoalKeeperAutogoals = Math.min(redGoalKeeperAutogoals + 1, 7)" />
+                                <q-btn round dense flat icon="remove"   @click="redGoalKeeperAutogoals = Math.max(redGoalKeeperAutogoals -1, 0)" />
                             </template>
                         </q-input>
-                        <q-input v-model="redStrikerAutogoals"      class="q-mb-md" filled type="number" :label="'Autogoals made by ' + redStriker.nickname" >
+                        <q-input v-model="redStrikerAutogoals"          class="q-mb-md" filled type="number" :label="'Autogoals made by ' + redStriker.nickname" >
                             <template v-slot:append>
-                                <q-btn round dense flat icon="add" @click="redStrikerAutogoals++" />
-                                <q-btn round dense flat icon="remove" @click="redStrikerAutogoals--" />
+                                <q-btn round dense flat icon="add"      @click="redStrikerAutogoals = Math.min(redStrikerAutogoals + 1, 7)" />
+                                <q-btn round dense flat icon="remove"   @click="redStrikerAutogoals = Math.max(redStrikerAutogoals -1, 0)" />
                             </template>
                         </q-input>
                         
-                        <q-input v-model="blueGoalKeeperGoals"      class="q-mb-xs" filled type="number" :label="'Goals made by ' + blueGoalKeeper.nickname" >
+                        <q-input v-model="blueGoalKeeperGoals"          class="q-mb-xs" filled type="number" :label="'Goals made by ' + blueGoalKeeper.nickname" >
                             <template v-slot:append>
-                                <q-btn round dense flat icon="add" @click="blueGoalKeeperGoals++" />
-                                <q-btn round dense flat icon="remove" @click="blueGoalKeeperGoals--" />
+                                <q-btn round dense flat icon="add"      @click="blueGoalKeeperGoals = Math.min(blueGoalKeeperGoals + 1, 7)" />
+                                <q-btn round dense flat icon="remove"   @click="blueGoalKeeperGoals = Math.max(blueGoalKeeperGoals -1, 0)" />
                             </template>
                         </q-input>
-                        <q-input v-model="blueStrikerGoals"         class="q-mb-sm" filled type="number" :label="'Goals made by ' + blueStriker.nickname" >
+                        <q-input v-model="blueStrikerGoals"             class="q-mb-sm" filled type="number" :label="'Goals made by ' + blueStriker.nickname" >
                             <template v-slot:append>
-                                <q-btn round dense flat icon="add" @click="blueStrikerGoals++" />
-                                <q-btn round dense flat icon="remove" @click="blueStrikerGoals--" />
+                                <q-btn round dense flat icon="add"      @click="blueStrikerGoals = Math.min(blueStrikerGoals + 1, 7)" />
+                                <q-btn round dense flat icon="remove"   @click="blueStrikerGoals = Math.max(blueStrikerGoals -1, 0)" />
                             </template>
                         </q-input>
-                        <q-input v-model="blueGoalKeeperAutogoals"  class="q-mb-xs" filled type="number" :label="'Autogoals made by ' + blueGoalKeeper.nickname" >
+                        <q-input v-model="blueGoalKeeperAutogoals"      class="q-mb-xs" filled type="number" :label="'Autogoals made by ' + blueGoalKeeper.nickname" >
                             <template v-slot:append>
-                                <q-btn round dense flat icon="add" @click="blueGoalKeeperAutogoals++" />
-                                <q-btn round dense flat icon="remove" @click="blueGoalKeeperAutogoals--" />
+                                <q-btn round dense flat icon="add"      @click="blueGoalKeeperAutogoals = Math.min(blueGoalKeeperAutogoals + 1, 7)" />
+                                <q-btn round dense flat icon="remove"   @click="blueGoalKeeperAutogoals = Math.max(blueGoalKeeperAutogoals -1, 0)" />
                             </template>
                         </q-input>
-                        <q-input v-model="blueStrikerAutogoals"     class="q-mb-sm" filled type="number" :label="'Autogoals made by ' + blueStriker.nickname" >
+                        <q-input v-model="blueStrikerAutogoals"         class="q-mb-sm" filled type="number" :label="'Autogoals made by ' + blueStriker.nickname" >
                             <template v-slot:append>
-                                <q-btn round dense flat icon="add" @click="blueStrikerAutogoals++" />
-                                <q-btn round dense flat icon="remove" @click="blueStrikerAutogoals--" />
+                                <q-btn round dense flat icon="add"      @click="blueStrikerAutogoals = Math.min(blueStrikerAutogoals + 1, 7)" />
+                                <q-btn round dense flat icon="remove"   @click="blueStrikerAutogoals = Math.max(blueStrikerAutogoals -1, 0)" />
                             </template>
                         </q-input>
                     </template>
