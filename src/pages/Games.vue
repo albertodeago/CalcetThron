@@ -434,9 +434,9 @@ export default {
 
                 // Save the game to DB and close modal
                 try {
-                    /*const newGame = */await this.saveGame(gameObj)
+                    const newGame = await this.saveGame(gameObj)
                     // TODO: should add the new game created
-                    // this.renderedGames.unshift(newGame)
+                    this.renderedGames.unshift(newGame)
                 } catch(e) {}
 
                 this.closeModal()

@@ -1,5 +1,7 @@
 import { Game } from "src/models"
 
+const collectionName = "games";
+
 export default {
     namespaced: true,
     state: {
@@ -42,7 +44,7 @@ export default {
 
         async getGames({ commit, state }, offset = 0, amount = 5) {
             const db = firebase.firestore()
-            const gamesCollection = db.collection("games")
+            const gamesCollection = db.collection(collectionName)
 
             const gamesSnapshot = await gamesCollection.orderBy("creationDate", "desc").limit(offset + amount).get()
             const games = {}
@@ -57,15 +59,17 @@ export default {
 
         async saveGame({ commit, dispatch }, gameObj) {
             const db = firebase.firestore()
-            const gamesCollection = db.collection("games")
+            const gamesCollection = db.collection(collectionName)
 
             try {
                 const docRef = await gamesCollection.add(gameObj)
-                    // TODO: should get the new game and return it to add in the list
-                    // const newGameObj = await docRef.get()
-                    // var newGame = new Game(newGameObj.data())
-                    // commit("addGames", [newGame])
-                    // return newGame
+                const newGameObj = await docRef.get()
+                var newGame = new Game({
+                    id: docRef.id,
+                    ...newGameObj.data()
+                })
+                commit("addGames", [newGame])
+                return newGame
             } catch (error) {
                 console.error(error)
                 dispatch("Global/setErrorMessage", error.message, { root: true })
@@ -73,26 +77,26 @@ export default {
             }
         },
 
-        async subscribeToGames({ commit, dispatch }) {
-            const db = firebase.firestore()
-            const gamesCollection = db.collection("games")
+        // async subscribeToGames({ commit, dispatch }) {
+        //     const db = firebase.firestore()
+        //     const gamesCollection = db.collection(collectionName)
 
-            gamesCollection.onSnapshot(snapshot => {
-                snapshot.docChanges().forEach(change => {
-                    if (change.type === "added") {
-                        // Added a new game, we have to push into allGames
-                        // console.log("New game: ", change.doc.data(), change.doc.id)
-                        const newGame = new Game({ id: change.doc.id, ...change.doc.data() })
-                        commit("addGame", newGame)
-                    }
-                    // if (change.type === "modified") {    // the app doesn't allow this action yet
-                    //     // A game was modified, we should update the allGames right index
-                    // }
-                    // if (change.type === "removed") {        // the app doesn't allow this action yet
-                    // A game was removed, we should remove from allGames
-                    // }
-                })
-            })
-        }
+        //     gamesCollection.onSnapshot(snapshot => {
+        //         snapshot.docChanges().forEach(change => {
+        //             if (change.type === "added") {
+        //                 // Added a new game, we have to push into allGames
+        //                 // console.log("New game: ", change.doc.data(), change.doc.id)
+        //                 const newGame = new Game({ id: change.doc.id, ...change.doc.data() })
+        //                 commit("addGame", newGame)
+        //             }
+        //             // if (change.type === "modified") {    // the app doesn't allow this action yet
+        //             //     // A game was modified, we should update the allGames right index
+        //             // }
+        //             // if (change.type === "removed") {        // the app doesn't allow this action yet
+        //             // A game was removed, we should remove from allGames
+        //             // }
+        //         })
+        //     })
+        // }
     }
 }
