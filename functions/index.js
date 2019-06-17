@@ -141,3 +141,54 @@ exports.updateRankings = functions.firestore
         console.log("Everything is done!");
         return true;
     });
+
+exports.updateSeason = functions.firestore
+    .document('games2/{gameId}')
+    .onCreate(async(snap, context) => {
+        // Get an object representing the document
+        const newGame = snap.data();
+        console.log("[season] updateSeason new Game " + newGame.creationDate);
+
+        // Understand what season is it. the first season starts on 1° june 2019 TODO: write down the right 1° season date
+        // A season is 2 month long
+        const startSeasonYear = 2019;
+        const seasonOffset = 2; // because we started seasons not in january TODO: when deciding when actually the season will start update this value
+
+        const gameDate = new Date(newGame.creationDate);
+        let gameSeasonNumber = 1;
+
+        gameSeasonNumber = gameSeasonNumber + (Math.max(0, (gameDate.getFullYear() - startSeasonYear) * 6)); // every year is 6 seasons
+        gameSeasonNumber += Math.max(0, Math.floor(gameDate.getMonth() / 2)); // seasons are 2 month long
+        gameSeasonNumber -= seasonOffset; // shift back of the offset amount
+        console.log("the game inserted with date " + gameDate + " belongs to season " + gameSeasonNumber);
+
+        // gameSeasonNumber is now correct, just write the game on the games collection of the right season 
+        // and then update also the ranking collection of that season
+
+        const seasonsCollection = db.collection("seasons");
+        let seasonDoc = await seasonsCollection.doc("season_" + gameSeasonNumber).get();
+        if (seasonDoc.exists) {
+            // season already created, read it
+            const season = seasonDoc.data();
+            //TODO: read it, then push the game into the games collection and create/update the rankings docs
+        } else {
+            // season has to be initialized
+            seasonDoc.collection("games")
+                // TODO: create the games collection, then push the game into it
+                // TODO: create the rankings collection, then create also the entries for the players and set the values.
+        }
+
+
+
+        // docRef.get().then(function(doc) {
+        //     if (doc.exists) {
+        //         console.log("Document data:", doc.data());
+        //     } else {
+        //         // doc.data() will be undefined in this case
+        //         console.log("No such document!");
+        //     }
+        // }).catch(function(error) {
+        //     console.log("Error getting document:", error);
+        // });
+
+    });

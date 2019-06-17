@@ -1,6 +1,6 @@
 import { Game } from "src/models"
 
-const collectionName = "games";
+const collectionName = "games2";
 
 export default {
     namespaced: true,
