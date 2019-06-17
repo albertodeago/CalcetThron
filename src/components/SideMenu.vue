@@ -34,6 +34,15 @@
             <q-item-label>Ranking</q-item-label>
           </q-item-section>
         </q-item>
+
+        <q-item clickable v-ripple tag="a" href="#/charts" @click="onClick">
+          <q-item-section avatar>
+            <q-icon name="bar_chart" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Charts</q-item-label>
+          </q-item-section>
+        </q-item>
         
         <q-separator />
 

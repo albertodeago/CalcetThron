@@ -28,6 +28,11 @@ const routes = [{
                 import ('pages/Settings.vue')
         },
         {
+            path: 'charts',
+            component: () =>
+                import ('pages/Charts.vue')
+        },
+        {
             path: 'user/:id',
             component: () =>
                 import ('pages/User.vue')

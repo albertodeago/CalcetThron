@@ -6,7 +6,8 @@ module.exports = function(ctx) {
         // --> boot files are part of "main.js"
         boot: [
             'axios',
-            'firebase'
+            'firebase',
+            'apexcharts'
         ],
 
         css: [
@@ -60,7 +61,8 @@ module.exports = function(ctx) {
                 'QStepper',
                 'QStep',
                 'QSelect',
-                'QBadge'
+                'QBadge',
+                'QChip'
             ],
 
             directives: [
