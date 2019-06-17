@@ -8,7 +8,7 @@
                     <q-item-section>
                         <q-item-label>Application version</q-item-label>
                         <q-item-label caption>
-                            0.2.0-rc3
+                            1.2.0
                         </q-item-label>
                     </q-item-section>
                 </q-item>
