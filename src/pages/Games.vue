@@ -277,6 +277,7 @@ export default {
     computed: {
         ...mapGetters('Game', ['gamesArray']),
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
+        ...mapGetters('Seasons', ['selectedSeason']),
 
         usersArray() {
             return this.allUsersArray.map(u => {
@@ -330,6 +331,13 @@ export default {
             }
 
             return false
+        }
+    },
+
+    watch: {
+        selectedSeason() {
+            this.renderedGames = []
+            this.loadMoreGames()
         }
     },
 

@@ -1,10 +1,12 @@
 import { Game } from "src/models"
 
-const collectionName = "games2";
+// const collectionName = "games";
+// const collectionName = "seasons/season_2/games";
 
 export default {
     namespaced: true,
     state: {
+        collectionName: "games",
         games: null,
         gamesArray: [],
         currentGame: null
@@ -36,15 +38,26 @@ export default {
             if (!state.gamesArray.find(g => g.id === game.id))
                 state.gamesArray.push(game)
         },
+        emptyGames(state) {
+            state.gamesArray = []
+            state.games = {}
+        },
         setCurrentGame(state, game) {
             state.currentGame = game
+        },
+        setSeason(state, season) {
+            if (season.number === 0) {
+                state.collectionName = "games"
+            } else {
+                state.collectionName = "seasons/season_" + season.number + "/games";
+            }
         }
     },
     actions: {
 
         async getGames({ commit, state }, offset = 0, amount = 5) {
             const db = firebase.firestore()
-            const gamesCollection = db.collection(collectionName)
+            const gamesCollection = db.collection(state.collectionName)
 
             const gamesSnapshot = await gamesCollection.orderBy("creationDate", "desc").limit(offset + amount).get()
             const games = {}
@@ -57,9 +70,9 @@ export default {
             return games
         },
 
-        async saveGame({ commit, dispatch }, gameObj) {
+        async saveGame({ commit, dispatch, state }, gameObj) {
             const db = firebase.firestore()
-            const gamesCollection = db.collection(collectionName)
+            const gamesCollection = db.collection(state.collectionName)
 
             try {
                 const docRef = await gamesCollection.add(gameObj)
@@ -77,9 +90,14 @@ export default {
             }
         },
 
-        // async subscribeToGames({ commit, dispatch }) {
+        selectSeason({ commit, dispatch }, season) {
+            commit("setSeason", season)
+            commit("emptyGames")
+        }
+
+        // async subscribeToGames({ commit, dispatch, state }) {
         //     const db = firebase.firestore()
-        //     const gamesCollection = db.collection(collectionName)
+        //     const gamesCollection = db.collection(state.collectionName)
 
         //     gamesCollection.onSnapshot(snapshot => {
         //         snapshot.docChanges().forEach(change => {

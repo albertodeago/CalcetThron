@@ -16,6 +16,27 @@
         </q-item>
 
         <q-separator />
+
+        <!-- SEASONS -->
+        <q-item clickable v-ripple tag="span" @click="onClickSeason({number: 0, animalName: 'ALL TIME'})">
+          <q-item-section avatar>
+            <q-icon name="school" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>All time</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item v-for="season in seasonsArray" :key="season.number" clickable v-ripple tag="span" @click="onClickSeason(season)">
+          <q-item-section avatar>
+            <q-icon name="school" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Season {{ season.number }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        
+        <q-separator />
         
         <q-item clickable v-ripple tag="a" href="#/games" @click="onClick">
           <q-item-section avatar>
@@ -62,9 +83,8 @@ export default {
         }
     },
     computed: {
-      ...mapGetters('User', [
-        'user'
-      ]),
+      ...mapGetters('User', ['user']),
+      ...mapGetters('Seasons', ['seasonsArray']),
 
       username() {
           return this.user ? this.user.nickname : "Anonymous - login/register"
@@ -85,9 +105,14 @@ export default {
     methods: {
       ...mapMutations('User', ['setSelectedUser']),
       ...mapActions('Global', ['setLoading']),
+      ...mapActions('Seasons', ['setSeason']),
 
       onClick() {
         this.$emit("navigated");
+      },
+
+      onClickSeason(season) {
+        this.setSeason(season)
       },
 
       openSelf() {
