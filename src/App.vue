@@ -40,6 +40,7 @@ export default {
   methods: {
     ...mapActions('Global', [ 'setErrorMessage', 'setLoading' ]),
     ...mapActions('User', ['subscribeToUsers', 'getAllUsers']),
+    ...mapActions('Seasons', ['getSeasons']),
 
     dismissMessage() {
       // TODO: add transition to banner enter and exit
@@ -61,10 +62,9 @@ export default {
       }
     })
 
-    // download all useful informations (users, games.... )    
-    try {
-      await this.getAllUsers()
-    } catch(e) {}
+    // download all useful informations (users, games.... )
+    this.getAllUsers();
+    this.getSeasons();
   }
 }
 </script>
