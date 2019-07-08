@@ -155,7 +155,7 @@ exports.updateSeason = functions.firestore
         // Understand what season is it. the first season starts on 1° june 2019 TODO: write down the right 1° season date
         // A season is 2 month long
         const startSeasonYear = 2019;
-        const seasonOffset = 2; // because we started seasons not in january TODO: when deciding when actually the season will start update this value
+        const seasonOffset = 3; // because we started seasons not in january TODO: when deciding when actually the season will start update this value
 
         const gameDate = new Date(newGame.creationDate);
         let gameSeasonNumber = 1;
@@ -183,6 +183,10 @@ exports.updateSeason = functions.firestore
             await updateRankings(snap, context, "season_" + gameSeasonNumber);
         } else {
             // season has to be initialized
+            await seasonDoc.set({
+                number: gameSeasonNumber,
+                animalName: "Cat" // TODO: we should fetch a random animal from somewhere
+            });
 
             // create the games subcollection then add the new game
             const seasonGamesCollection = seasonDoc.ref.collection("games");
