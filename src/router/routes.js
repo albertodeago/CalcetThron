@@ -7,20 +7,25 @@ const routes = [{
             component: () =>
                 import ('pages/Games.vue')
         },
-        {
-            path: 'games',
-            component: () =>
-                import ('pages/Games.vue')
-        },
+        // {
+        //     path: 'games',
+        //     component: () =>
+        //         import ('pages/Games.vue')
+        // },
         {
             path: 'login',
             component: () =>
                 import ('pages/Login.vue')
         },
+        // {
+        //     path: 'ranking',
+        //     component: () =>
+        //         import ('pages/Ranking.vue')
+        // },
         {
-            path: 'ranking',
+            path: 'season-view',
             component: () =>
-                import ('pages/Ranking.vue')
+                import ('pages/SeasonView.vue')
         },
         {
             path: 'settings',

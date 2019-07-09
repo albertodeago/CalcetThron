@@ -28,7 +28,7 @@ export default {
         }
     },
     actions: {
-        async getSeasons({ commit, state }) {
+        async getSeasons({ commit, dispatch }) {
             const db = firebase.firestore()
             const seasonsCollection = db.collection(collectionName)
 
@@ -36,10 +36,13 @@ export default {
             const seasonsSnapshot = await seasonsCollection.get()
             seasonsSnapshot.forEach(doc => seasons[doc.id] = doc.data())
             commit('addSeasons', seasons)
+            const currentSeasonKey = Object.keys(seasons).reduce((a, b) => seasons[a].number > seasons[b].number ? a : b)
+            dispatch('setSeason', seasons[currentSeasonKey])
         },
 
         setSeason({ commit, dispatch }, season) {
             dispatch("Game/selectSeason", season, { root: true })
+            dispatch("Rankings/selectSeason", season, { root: true })
             commit("setSelectedSeason", season)
         }
     }

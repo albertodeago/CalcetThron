@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="">
     <q-list bordered padding>
         <template  v-if="!isLoading">
             <template v-for="(enrichedUser, index) in sortedRankings">
@@ -44,9 +44,19 @@ export default {
     computed: {
         ...mapGetters("Global", ["isLoading"]),
         ...mapGetters("Rankings", ["allRankingsArray"]),
+        ...mapGetters('Seasons', ['selectedSeason']),
 
         sortedRankings() {
             return this.allRankingsArray.slice().sort((a, b) => parseInt(b[this.sortBy].slice(0, -1)) - parseInt(a[this.sortBy].slice(0, -1)))
+        }
+    },
+
+    watch: {
+        async selectedSeason() {
+            console.log("selected season watcher - rankings")
+            this.setLoading(true)
+            await this.getRankings()
+            this.setLoading(false)
         }
     },
 

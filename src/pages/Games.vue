@@ -1,5 +1,5 @@
 <template>
-    <div class="q-pa-md ">
+    <div class="">
         <transition-group enter-active-class="animated slideInRight" tag="div"
                           class="transition-container row items-start q-gutter-md text-white"
         >   
