@@ -38,7 +38,14 @@ To build for production
 quasar build -m pwa
 ```
 
-If you want to deploy with firebase the build process will create all the files you need in `dist/pwa`, move that files into `public` and then test/release using firebase cli (`firebase serve` and `firebase deploy`) (or configure the firebase.json file to change the default deploy folder)
+If you want to deploy with firebase the build process will create all the files you need in `dist/pwa`, move that files into `public` and then test/release using firebase cli (`firebase serve` and `firebase deploy`) (or configure the firebase.json file to change the default deploy folder).
+
+This project makes use of firebase cloud functions. To deploy only cloud functions (firebase deploy will deploy both the app and the functions) you can run from the project root folder
+
+
+```
+firebase depoloy --only functions
+```
 
 ### Licence
 
