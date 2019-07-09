@@ -183,7 +183,7 @@ exports.updateSeason = functions.firestore
             await updateRankings(snap, context, "season_" + gameSeasonNumber);
         } else {
             // season has to be initialized
-            await seasonDoc.set({
+            await seasonDoc.ref.set({
                 number: gameSeasonNumber,
                 animalName: "Cat" // TODO: we should fetch a random animal from somewhere
             });
