@@ -1,7 +1,7 @@
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/darthron-6a632.appspot.com/o/avatars%2Fdefault_avatar.png?alt=media&token=ebd85bb5-b11c-4ca9-b7d3-4fab14d56d88"
 
 export default class User {
-    constructor({ id, nickname, creationDate = new Date().getTime(), email, lastLogin = new Date().getTime(), lastUpdate = new Date().getTime(), password, avatar = defaultAvatar }) {
+    constructor({ id, nickname, creationDate = new Date().getTime(), email, lastLogin = new Date().getTime(), lastUpdate = new Date().getTime(), password, avatar = defaultAvatar, gameManager = false }) {
         this.id = id
         this.nickname = nickname
         this.creationDate = creationDate
@@ -10,6 +10,9 @@ export default class User {
         this.lastUpdate = lastUpdate
         this.password = password
         this.avatar = avatar
+
+        // Roles
+        this.gameManager = gameManager
     }
 
     toJSON() {
@@ -21,7 +24,8 @@ export default class User {
             lastLogin: this.lastLogin,
             lastUpdate: this.lastUpdate,
             password: this.password,
-            avatar: this.avatar
+            avatar: this.avatar,
+            gameManager: this.gameManager
         }
     }
 }

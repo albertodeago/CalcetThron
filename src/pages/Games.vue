@@ -85,7 +85,7 @@
             </q-card>
         </transition-group>
 
-        <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="user">
+        <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="user && user.gameManager">
             <q-btn fab icon="add" color="secondary" @click="openModal" />
         </q-page-sticky>
 

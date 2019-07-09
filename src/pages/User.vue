@@ -116,8 +116,33 @@ export default {
         },
 
         currentEnrichedUser() {
-            return this.selectedUser ? this.allRankings[this.selectedUser.id] : null
-            return this.selectedUser ? enrichUser(this.selectedUser, this.allGames) : null
+            if (!this.selectedUser)
+                return null
+            
+            let enrichedUser = this.allRankings[this.selectedUser.id]
+            if (enrichedUser)
+                return enrichedUser
+
+            const defaultRanking = {
+                id: null,
+                played: 0,
+                won: 0,
+                lost: 0,
+                winRate: "0%",
+                playedGoalkeeper: 0,
+                wonGoalkeeper: 0,
+                lostGoalkeeper: 0,
+                winRateGoalkeeper: "0%",
+                playedStriker: 0,
+                wonStriker: 0,
+                lostStriker: 0,
+                winRateStriker: "0%",
+                goalDone: 0,
+                goalReceived: 0,
+                autogoalDone: 0
+            }
+            enrichedUser = Object.assign({}, defaultRanking, this.selectedUser)
+            return enrichedUser
         },
 
         computedAvatar() {
@@ -168,7 +193,7 @@ export default {
         if(this.selectedUser === null) {
             const userId = this.$route.params.id
             this.getUser(userId).then((firebaseUser) => {
-                this.setSelectedUser(firebaseUser);
+                this.setSelectedUser(firebaseUser)
                 this.ready = true
             })
         } else {
