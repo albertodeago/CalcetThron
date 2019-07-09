@@ -5,7 +5,7 @@ const routes = [{
     children: [{
             path: '',
             component: () =>
-                import ('pages/Games.vue')
+                import ('pages/SeasonView.vue')
         },
         // {
         //     path: 'games',
