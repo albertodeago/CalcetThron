@@ -1,9 +1,9 @@
 <template>
     <div>
-        <q-tabs v-model="tab" dense class="bg-grey-3" align="justify" narrow-indicator>
-            <q-tab name="games" label="Games" />
-            <q-tab name="statistics" label="Statistics" />
-            <q-tab name="elo" label="Elo" />
+        <q-tabs v-model="tab" inline-label class="bg-grey-3" align="justify" narrow-indicator>
+            <q-tab name="games" icon="list" label="Games" />
+            <q-tab name="statistics" icon="bar_chart" label="Statistics" />
+            <q-tab name="elo" icon="whatshot" label="Elo" />
         </q-tabs>
 
         <q-separator />
