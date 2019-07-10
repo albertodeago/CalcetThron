@@ -19,6 +19,9 @@
 
             <q-tab-panel name="elo">
                 TODO: has to be done yet
+                <div v-for="rank in allRankingsArray" :key="rank.id">
+                    {{ rank.nickname }} => {{ rank.ELO }}
+                </div>
             </q-tab-panel>
         </q-tab-panels>
     </div>
@@ -46,6 +49,7 @@ export default {
         ...mapGetters('Game', ['gamesArray']),
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
         ...mapGetters('Seasons', ['selectedSeason']),
+        ...mapGetters("Rankings", ["allRankingsArray"]), // TODO: remove this
     },
 
     methods: {

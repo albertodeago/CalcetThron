@@ -3,7 +3,7 @@
         <transition-group enter-active-class="animated slideInRight" tag="div"
                           class="transition-container row items-start q-gutter-md text-white"
         >   
-            <q-card class="my-card" v-for="game in renderedGames" :key="game.id">
+            <q-card class="my-card" v-for="game in renderedGames" :key="game.id" @click="openGameDetails(game)">
                 <q-card-section v-ripple>
                     <div class="game">
                         <div class="game__back game__back--red"></div>
@@ -237,6 +237,24 @@
                 </q-card-section>
             </q-card>
         </q-dialog>
+
+        <q-dialog v-model="showGameDetail">
+            <q-card>
+                <q-card-section>
+                    <div class="text-h6">Game details</div>
+                </q-card-section>
+
+                <q-card-section>
+                    <pre>
+                        {{ JSON.stringify(selectedGame, null, 2) }}
+                    </pre>
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn flat label="OK" color="primary" @click="closeGameDetails"/>
+                </q-card-actions>
+            </q-card>
+            </q-dialog>
     </div>
 </template>
 
@@ -272,6 +290,9 @@ export default {
             blueGoalKeeperAutogoals: null,
             blueStrikerAutogoals: null,
             /* end values to add a game */
+
+            showGameDetail: false,
+            selectedGame: null
         }
     },
     computed: {
@@ -370,6 +391,17 @@ export default {
             await this.getGames(this.gamesArray.length)
             this.pushGames()
             return true
+        },
+
+        openGameDetails(game) {
+            this.selectedGame = game
+            this.showGameDetail = true
+            console.log(game)
+        },
+        
+        closeGameDetails() {
+            this.showGameDetail = false
+            this.selectedGame = null
         },
 
         resetGameInputs() {
