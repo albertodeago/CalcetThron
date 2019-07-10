@@ -127,7 +127,7 @@ const updateRankings = async function(snap, context, season) {
     redStriker.autogoalDone = redStriker.autogoalDone + newGame.redStrikerAutogoals;
     redStriker.goalReceived = redStriker.goalReceived + newGame.result.blue;
 
-    let updateGamePromise = null;
+    let updateGamesPromise = null;
     if (season) {
         // calculate new ELO for players
         const blueTeamELO = blueKeeper.ELO + blueStriker.ELO;
@@ -152,9 +152,13 @@ const updateRankings = async function(snap, context, season) {
         }
 
         // Update the game doc with the ELO
-        updateGamePromise = snap.ref.update({
+        const updateGamePromise = snap.ref.update({
             "exchangedELO": amountELO
         });
+        const updateGameCopyPromise = db.collection("seasons2").doc(season).collection("games").doc(snap.id).update({
+            "exchangedELO": amountELO
+        });
+        updateGamesPromise = Promise.all([updateGamePromise, updateGameCopyPromise]);
     } else {
         updateGamePromise = new Promise((resolve, reject) => resolve());
     }
@@ -175,7 +179,7 @@ const updateRankings = async function(snap, context, season) {
  * When a match is inserted, update the rankings value of players.
  */
 exports.updateRankings = functions.firestore
-    .document('games2/{gameId}')
+    .document('games/{gameId}')
     .onCreate(updateRankings);
 
 exports.updateSeason = functions.firestore
