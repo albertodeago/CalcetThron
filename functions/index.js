@@ -34,7 +34,7 @@ const updateRankings = async function(snap, context, season) {
 
     // get ranking of the game players
     const db = admin.firestore()
-    const rankingsCollection = season ? db.collection("seasons2").doc(season).collection("rankings") : db.collection("rankings2")
+    const rankingsCollection = season ? db.collection("seasons").doc(season).collection("rankings") : db.collection("rankings")
 
     const blueKeeperPromise = rankingsCollection.doc(newGame.blueTeam.keeper).get();
     const blueStrikerPromise = rankingsCollection.doc(newGame.blueTeam.striker).get();
@@ -155,7 +155,7 @@ const updateRankings = async function(snap, context, season) {
         const updateGamePromise = snap.ref.update({
             "exchangedELO": amountELO
         });
-        const updateGameCopyPromise = db.collection("seasons2").doc(season).collection("games").doc(snap.id).update({
+        const updateGameCopyPromise = db.collection("seasons").doc(season).collection("games").doc(snap.id).update({
             "exchangedELO": amountELO
         });
         updateGamesPromise = Promise.all([updateGamePromise, updateGameCopyPromise]);
@@ -183,7 +183,7 @@ exports.updateRankings = functions.firestore
     .onCreate(updateRankings);
 
 exports.updateSeason = functions.firestore
-    .document('games2/{gameId}')
+    .document('games/{gameId}')
     .onCreate(async(snap, context) => {
         // Get an object representing the document
         const newGame = snap.data();
@@ -206,7 +206,7 @@ exports.updateSeason = functions.firestore
         // and then update also the ranking collection of that season
 
         const db = admin.firestore()
-        const seasonsCollection = db.collection("seasons2");
+        const seasonsCollection = db.collection("seasons");
         let seasonDoc = await seasonsCollection.doc("season_" + gameSeasonNumber).get();
         if (seasonDoc.exists) {
             // season already created, read it
