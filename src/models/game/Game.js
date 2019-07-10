@@ -40,7 +40,8 @@ export class Game {
         blueKeeperGoals,
         blueKeeperAutogoals,
         blueStrikerGoals,
-        blueStrikerAutogoals
+        blueStrikerAutogoals,
+        exchangedELO = null
     }) {
 
         this.id = id;
@@ -57,6 +58,8 @@ export class Game {
         this.blueKeeperAutogoals = blueKeeperAutogoals
         this.blueStrikerGoals = blueStrikerGoals
         this.blueStrikerAutogoals = blueStrikerAutogoals
+
+        this.exchangedELO = exchangedELO
     }
 
     toJSON() {
@@ -73,7 +76,8 @@ export class Game {
             blueKeeperGoals: this.blueKeeperGoals,
             blueKeeperAutogoals: this.blueKeeperAutogoals,
             blueStrikerGoals: this.blueStrikerGoals,
-            blueStrikerAutogoals: this.blueStrikerAutogoals
+            blueStrikerAutogoals: this.blueStrikerAutogoals,
+            exchangedELO: this.exchangedELO
         }
     }
 }

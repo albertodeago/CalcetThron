@@ -17,7 +17,8 @@ export const enrichUser = function(user, allGames) {
         winRateStriker: "0%",
         goalDone: 0,
         goalReceived: 0,
-        autogoalDone: 0
+        autogoalDone: 0,
+        ELO: 1000
     };
     games.forEach(game => {
         let userPlayed = false
