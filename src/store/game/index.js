@@ -72,7 +72,7 @@ export default {
 
         async saveGame({ commit, dispatch, state }, gameObj) {
             const db = firebase.firestore()
-            const gamesCollection = db.collection(state.collectionName)
+            const gamesCollection = db.collection("games")
 
             try {
                 const docRef = await gamesCollection.add(gameObj)
