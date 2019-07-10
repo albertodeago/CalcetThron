@@ -18,21 +18,25 @@
         <q-separator />
 
         <!-- SEASONS -->
-        <q-item clickable v-ripple tag="span" @click="onClickSeason({number: 0, animalName: 'ALL TIME'})">
+        <q-item clickable v-ripple tag="span" @click="onClickSeason({number: 0, animalName: 'ALL TIME'})" 
+                :active="selectedSeason.number === 0" active-class="text-primary"
+        >
           <q-item-section avatar>
             <q-icon name="star" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>All time <span v-if="selectedSeason.number === 0">selected</span></q-item-label>
+            <q-item-label>All time</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item v-for="season in seasonsArray" :key="season.number" clickable v-ripple tag="span" @click="onClickSeason(season)">
+        <q-item v-for="season in seasonsArray" :key="season.number" clickable v-ripple tag="span" @click="onClickSeason(season)" 
+                :active="selectedSeason.number === season.number" active-class="text-primary"
+        >
           <q-item-section avatar>
             <q-icon :name="'looks_' + getEnglishNumber(season.number)" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Season {{ season.number }} <span v-if="selectedSeason.number === season.number">selected</span></q-item-label>
+            <q-item-label>Season {{ season.number }}</q-item-label>
           </q-item-section>
         </q-item>
         
@@ -114,6 +118,7 @@ export default {
       async onClickSeason(season) {
         await this.setSeason(season)
         this.$router.push("/season-view")
+        this.$emit("navigated");
       },
 
       getEnglishNumber(number) {

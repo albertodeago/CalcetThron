@@ -3,7 +3,7 @@
         <q-tabs v-model="tab" inline-label class="bg-grey-3" align="justify" narrow-indicator>
             <q-tab name="games" icon="list" label="Games" />
             <q-tab name="statistics" icon="bar_chart" label="Statistics" />
-            <q-tab name="elo" icon="whatshot" label="Elo" />
+            <q-tab name="elo" icon="whatshot" label="Elo" v-if="selectedSeason.number !== 0" />
         </q-tabs>
 
         <q-separator />
@@ -51,6 +51,13 @@ export default {
     methods: {
         ...mapActions('Game', ['saveGame', 'getGames']),
         ...mapActions('Global', ['setLoading']),
+    },
+
+    watch: {
+        selectedSeason(val) {
+            if (val.number === 0 && this.tab === "elo")
+                this.tab = "games"
+        }
     },
 
     created() {
