@@ -127,32 +127,37 @@ const updateRankings = async function(snap, context, season) {
     redStriker.autogoalDone = redStriker.autogoalDone + newGame.redStrikerAutogoals;
     redStriker.goalReceived = redStriker.goalReceived + newGame.result.blue;
 
-    // calculate new ELO for players
-    const blueTeamELO = blueKeeper.ELO + blueStriker.ELO;
-    const redTeamELO = redKeeper.ELO + redStriker.ELO;
-    let amountELO;
-    if (newGame.result.blue === 7) {
-        // blue team won
-        amountELO = Math.min(Math.max(25 - Math.round(((blueTeamELO - redTeamELO) * 2) / 25), 2), 40); // min 2 max 40
-        console.log("Blue won, amount of ELO exchanged is " + amountELO);
-        blueKeeper.ELO += amountELO;
-        blueStriker.ELO += amountELO;
-        redKeeper.ELO -= amountELO;
-        redStriker.ELO -= amountELO
-    } else {
-        // red team won
-        amountELO = Math.min(Math.max(25 - Math.round(((redTeamELO - blueTeamELO) * 2) / 25), 2), 40); // min 2 max 40
-        console.log("Red won, amount of ELO exchanged is " + amountELO);
-        blueKeeper.ELO -= amountELO;
-        blueStriker.ELO -= amountELO;
-        redKeeper.ELO += amountELO;
-        redStriker.ELO += amountELO;
-    }
+    let updateGamePromise = null;
+    if (season) {
+        // calculate new ELO for players
+        const blueTeamELO = blueKeeper.ELO + blueStriker.ELO;
+        const redTeamELO = redKeeper.ELO + redStriker.ELO;
+        let amountELO;
+        if (newGame.result.blue === 7) {
+            // blue team won
+            amountELO = Math.min(Math.max(25 - Math.round(((blueTeamELO - redTeamELO) * 2) / 25), 2), 40); // min 2 max 40
+            console.log("Blue won, amount of ELO exchanged is " + amountELO);
+            blueKeeper.ELO += amountELO;
+            blueStriker.ELO += amountELO;
+            redKeeper.ELO -= amountELO;
+            redStriker.ELO -= amountELO
+        } else {
+            // red team won
+            amountELO = Math.min(Math.max(25 - Math.round(((redTeamELO - blueTeamELO) * 2) / 25), 2), 40); // min 2 max 40
+            console.log("Red won, amount of ELO exchanged is " + amountELO);
+            blueKeeper.ELO -= amountELO;
+            blueStriker.ELO -= amountELO;
+            redKeeper.ELO += amountELO;
+            redStriker.ELO += amountELO;
+        }
 
-    // TODO: add ELO informations to the game doc
-    await snap.ref.update({
-        exchangedELO: amountELO
-    });
+        // Update the game doc with the ELO
+        updateGamePromise = snap.ref.update({
+            "exchangedELO": amountELO
+        });
+    } else {
+        updateGamePromise = new Promise((resolve, reject) => resolve());
+    }
 
     console.log("Done calculating, now write back on DB");
     // actually update the values on DB
@@ -161,7 +166,7 @@ const updateRankings = async function(snap, context, season) {
     const _redKeeperPromise = rankingsCollection.doc(newGame.redTeam.keeper).set(redKeeper);
     const _redStrikerPromise = rankingsCollection.doc(newGame.redTeam.striker).set(redStriker);
 
-    const _results = await Promise.all([_blueKeeperPromise, _blueStrikerPromise, _redKeeperPromise, _redStrikerPromise]);
+    const _results = await Promise.all([_blueKeeperPromise, _blueStrikerPromise, _redKeeperPromise, _redStrikerPromise, updateGamePromise]);
     console.log("Everything is done!");
     return true;
 }
@@ -197,7 +202,7 @@ exports.updateSeason = functions.firestore
         // and then update also the ranking collection of that season
 
         const db = admin.firestore()
-        const seasonsCollection = db.collection("seasons");
+        const seasonsCollection = db.collection("seasons2");
         let seasonDoc = await seasonsCollection.doc("season_" + gameSeasonNumber).get();
         if (seasonDoc.exists) {
             // season already created, read it
