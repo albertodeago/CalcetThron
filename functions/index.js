@@ -160,7 +160,7 @@ const updateRankings = async function(snap, context, season) {
         });
         updateGamesPromise = Promise.all([updateGamePromise, updateGameCopyPromise]);
     } else {
-        updateGamePromise = new Promise((resolve, reject) => resolve());
+        updateGamesPromise = new Promise((resolve, reject) => resolve());
     }
 
     console.log("Done calculating, now write back on DB");
