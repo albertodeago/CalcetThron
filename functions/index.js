@@ -170,7 +170,7 @@ const updateRankings = async function(snap, context, season) {
     const _redKeeperPromise = rankingsCollection.doc(newGame.redTeam.keeper).set(redKeeper);
     const _redStrikerPromise = rankingsCollection.doc(newGame.redTeam.striker).set(redStriker);
 
-    const _results = await Promise.all([_blueKeeperPromise, _blueStrikerPromise, _redKeeperPromise, _redStrikerPromise, updateGamePromise]);
+    const _results = await Promise.all([_blueKeeperPromise, _blueStrikerPromise, _redKeeperPromise, _redStrikerPromise, updateGamesPromise]);
     console.log("Everything is done!");
     return true;
 }
