@@ -28,12 +28,13 @@ const updateRankings = async function(snap, context, season) {
         winRateStriker: "0%",
         goalDone: 0,
         goalReceived: 0,
-        autogoalDone: 0
+        autogoalDone: 0,
+        ELO: 1000
     }
 
     // get ranking of the game players
     const db = admin.firestore()
-    const rankingsCollection = season ? db.collection("seasons").doc(season).collection("rankings") : db.collection("rankings")
+    const rankingsCollection = season ? db.collection("seasons2").doc(season).collection("rankings") : db.collection("rankings2")
 
     const blueKeeperPromise = rankingsCollection.doc(newGame.blueTeam.keeper).get();
     const blueStrikerPromise = rankingsCollection.doc(newGame.blueTeam.striker).get();
@@ -126,6 +127,33 @@ const updateRankings = async function(snap, context, season) {
     redStriker.autogoalDone = redStriker.autogoalDone + newGame.redStrikerAutogoals;
     redStriker.goalReceived = redStriker.goalReceived + newGame.result.blue;
 
+    // calculate new ELO for players
+    const blueTeamELO = blueKeeper.ELO + blueStriker.ELO;
+    const redTeamELO = redKeeper.ELO + redStriker.ELO;
+    let amountELO;
+    if (newGame.result.blue === 7) {
+        // blue team won
+        amountELO = Math.min(Math.max(25 - Math.round(((blueTeamELO - redTeamELO) * 2) / 25), 2), 40); // min 2 max 40
+        console.log("Blue won, amount of ELO exchanged is " + amountELO);
+        blueKeeper.ELO += amountELO;
+        blueStriker.ELO += amountELO;
+        redKeeper.ELO -= amountELO;
+        redStriker.ELO -= amountELO
+    } else {
+        // red team won
+        amountELO = Math.min(Math.max(25 - Math.round(((redTeamELO - blueTeamELO) * 2) / 25), 2), 40); // min 2 max 40
+        console.log("Red won, amount of ELO exchanged is " + amountELO);
+        blueKeeper.ELO -= amountELO;
+        blueStriker.ELO -= amountELO;
+        redKeeper.ELO += amountELO;
+        redStriker.ELO += amountELO;
+    }
+
+    // TODO: add ELO informations to the game doc
+    await snap.ref.update({
+        exchangedELO: amountELO
+    });
+
     console.log("Done calculating, now write back on DB");
     // actually update the values on DB
     const _blueKeeperPromise = rankingsCollection.doc(newGame.blueTeam.keeper).set(blueKeeper);
@@ -142,11 +170,11 @@ const updateRankings = async function(snap, context, season) {
  * When a match is inserted, update the rankings value of players.
  */
 exports.updateRankings = functions.firestore
-    .document('games/{gameId}')
+    .document('games2/{gameId}')
     .onCreate(updateRankings);
 
 exports.updateSeason = functions.firestore
-    .document('games/{gameId}')
+    .document('games2/{gameId}')
     .onCreate(async(snap, context) => {
         // Get an object representing the document
         const newGame = snap.data();
