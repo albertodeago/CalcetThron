@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="season-container">
         <q-tabs v-model="tab" inline-label class="bg-grey-3" align="justify" narrow-indicator>
             <q-tab name="games" icon="list" label="Games" />
             <q-tab name="statistics" icon="bar_chart" label="Statistics" />
-            <q-tab name="elo" icon="whatshot" label="Elo" v-if="selectedSeason.number !== 0" />
+            <q-tab name="elo" icon="whatshot" label="Elo" v-if="selectedSeason && selectedSeason.number !== 0" />
         </q-tabs>
 
         <q-separator />
@@ -14,14 +14,11 @@
             </q-tab-panel>
 
             <q-tab-panel name="statistics">
-                <ranking></ranking>
+                <statistics></statistics>
             </q-tab-panel>
 
             <q-tab-panel name="elo">
-                TODO: has to be done yet
-                <div v-for="rank in allRankingsArray" :key="rank.id">
-                    {{ rank.nickname }} => {{ rank.ELO }}
-                </div>
+                <rankings></rankings>
             </q-tab-panel>
         </q-tab-panels>
     </div>
@@ -31,7 +28,8 @@
 import { mapActions, mapGetters } from "vuex"
 import { Game } from "../models"
 import GameComponent from "./Games.vue"
-import RankingComponent from "./Ranking.vue"
+import StatisticsComponent from "./Statistics.vue"
+import RankingsComponent from "./Rankings.vue"
 
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/darthron-6a632.appspot.com/o/avatars%2Fdefault_avatar.png?alt=media&token=ebd85bb5-b11c-4ca9-b7d3-4fab14d56d88"
 
@@ -43,7 +41,8 @@ export default {
     },
     components: {
         "games": GameComponent,
-        "ranking": RankingComponent
+        "statistics": StatisticsComponent,
+        "rankings": RankingsComponent
     },
     computed: {
         ...mapGetters('Game', ['gamesArray']),
@@ -64,8 +63,7 @@ export default {
         }
     },
 
-    created() {
-
+    mounted() {
     }
 }
 </script>

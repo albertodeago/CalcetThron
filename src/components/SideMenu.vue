@@ -19,7 +19,7 @@
 
         <!-- SEASONS -->
         <q-item clickable v-ripple tag="span" @click="onClickSeason({number: 0, animalName: 'ALL TIME'})" 
-                :active="selectedSeason.number === 0" active-class="text-primary"
+                :active="selectedSeason && selectedSeason.number === 0" active-class="text-primary"
         >
           <q-item-section avatar>
             <q-icon name="star" />
@@ -30,7 +30,7 @@
         </q-item>
 
         <q-item v-for="season in seasonsArray" :key="season.number" clickable v-ripple tag="span" @click="onClickSeason(season)" 
-                :active="selectedSeason.number === season.number" active-class="text-primary"
+                :active="selectedSeason && selectedSeason.number === season.number" active-class="text-primary"
         >
           <q-item-section avatar>
             <q-icon :name="'looks_' + getEnglishNumber(season.number)" />
