@@ -26,6 +26,7 @@
                                 </div>
                             </div>
 
+                            <!-- <div class="game__team__elo" v-if="game.exchangedELO">{{ game.exchangedELO }}</div> -->
                             <div class="game__team__mid text-h3">{{ game.result.red }}</div>
 
                             <div class="game__team__bottom">
@@ -61,6 +62,7 @@
                                 </div>
                             </div>
 
+                            <!-- <div class="game__team__elo" v-if="game.exchangedELO">{{ game.exchangedELO }}</div> -->
                             <div class="game__team__mid text-h3">{{ game.result.blue }}</div>
 
                             <div class="game__team__bottom">
@@ -238,23 +240,100 @@
             </q-card>
         </q-dialog>
 
-        <q-dialog v-model="showGameDetail">
-            <q-card>
+        <q-dialog v-model="showGameDetail" full-width>
+            <q-card v-if="selectedGame">
                 <q-card-section>
-                    <div class="text-h6">Game details</div>
+                    <div class="text-h4">Game details</div>
+                    <div class="text-subtitle2">{{ selectedGame.creationDate | prettyDate }}</div>
                 </q-card-section>
 
                 <q-card-section>
-                    <pre>
-                        {{ JSON.stringify(selectedGame, null, 2) }}
-                    </pre>
+                    <div class="text-h6" style="display: flex; align-items: center; justify-content: space-between">
+                        <div v-if="selectedGame.exchangedELO === null">
+                            Game not elaborated yet, wait
+                        </div>
+                        <template v-else>
+                            <span v-if="selectedGame.result.blue === 7">Blue team won</span>
+                            <span v-else>Red team won</span>
+                            <span>{{ selectedGame.exchangedELO }}</span>
+                        </template>
+                    </div>
+                    <br>
+
+                    <div class="text-bold">Blue goalkeeper</div>
+                    <q-item>
+                        <q-item-section avatar>
+                            <q-avatar>
+                                <q-img :src="selecteGameBlueKeeper.avatar" :ratio="1" />
+                            </q-avatar>
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label v-html="selecteGameBlueKeeper.nickname" />
+                        </q-item-section>
+                        <q-item-section side top>
+                            <q-item-label caption>goals done: {{ selectedGame.blueKeeperGoals }}</q-item-label>
+                            <q-item-label caption>autogoals done {{ selectedGame.blueKeeperAutogoals }}</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                    
+                    </br>
+                    <div class="text-bold">Blue striker</div>
+                    <q-item>
+                        <q-item-section avatar>
+                            <q-avatar>
+                                <q-img :src="selecteGameBlueStriker.avatar" :ratio="1" />
+                            </q-avatar>
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label v-html="selecteGameBlueStriker.nickname" />
+                        </q-item-section>
+                        <q-item-section side top>
+                            <q-item-label caption>goals done: {{ selectedGame.blueStrikerGoals }}</q-item-label>
+                            <q-item-label caption>autogoals done {{ selectedGame.blueStrikerAutogoals }}</q-item-label>
+                        </q-item-section>
+                    </q-item>
+
+                    </br>
+                    <div class="text-bold">Red goalkeeper</div>
+                    <q-item>
+                        <q-item-section avatar>
+                            <q-avatar>
+                                <q-img :src="selecteGameRedKeeper.avatar" :ratio="1" />
+                            </q-avatar>
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label v-html="selecteGameRedKeeper.nickname" />
+                        </q-item-section>
+                        <q-item-section side top>
+                            <q-item-label caption>goals done: {{ selectedGame.redKeeperGoals }}</q-item-label>
+                            <q-item-label caption>autogoals done {{ selectedGame.redKeeperAutogoals }}</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                    
+                    </br>
+                    <div class="text-bold">Red striker</div>
+                    <q-item>
+                        <q-item-section avatar>
+                            <q-avatar>
+                                <q-img :src="selecteGameRedStriker.avatar" :ratio="1" />
+                            </q-avatar>
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label v-html="selecteGameRedStriker.nickname" />
+                        </q-item-section>
+                        <q-item-section side top>
+                            <q-item-label caption>goals done: {{ selectedGame.redStrikerGoals }}</q-item-label>
+                            <q-item-label caption>autogoals done {{ selectedGame.redStrikerAutogoals }}</q-item-label>
+                        </q-item-section>
+                    </q-item>
+
                 </q-card-section>
 
                 <q-card-actions align="right">
                     <q-btn flat label="OK" color="primary" @click="closeGameDetails"/>
                 </q-card-actions>
             </q-card>
-            </q-dialog>
+        </q-dialog>
     </div>
 </template>
 
@@ -295,6 +374,13 @@ export default {
             selectedGame: null
         }
     },
+
+    filters: {
+        prettyDate(date) {
+            return new Date(date).toLocaleString()
+        }
+    },
+
     computed: {
         ...mapGetters('Game', ['gamesArray']),
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
@@ -316,6 +402,26 @@ export default {
                     return 1;
                 return 0;
             })
+        },
+
+        selecteGameBlueKeeper() {
+            if (!this.selectedGame) return null  
+            return this.allUsers[this.selectedGame.blueTeam.keeper]
+        },
+        
+        selecteGameBlueStriker() {
+            if (!this.selectedGame) return null  
+            return this.allUsers[this.selectedGame.blueTeam.striker]
+        },
+        
+        selecteGameRedKeeper() {
+            if (!this.selectedGame) return null  
+            return this.allUsers[this.selectedGame.redTeam.keeper]
+        },
+        
+        selecteGameRedStriker() {
+            if (!this.selectedGame) return null  
+            return this.allUsers[this.selectedGame.redTeam.striker]
         },
 
         alreadySelectedUsers() {
@@ -404,7 +510,7 @@ export default {
         openGameDetails(game) {
             this.selectedGame = game
             this.showGameDetail = true
-            console.log(game)
+            console.log("selected game", game)
         },
         
         closeGameDetails() {
@@ -483,7 +589,6 @@ export default {
                 // Save the game to DB and close modal
                 try {
                     const newGame = await this.saveGame(gameObj)
-                    // TODO: should add the new game created
                     this.renderedGames.unshift(newGame)
                 } catch(e) {}
 
@@ -547,9 +652,13 @@ export default {
             width: 57%;
             -webkit-clip-path: polygon(0 0, 97% 0, 68% 100%, 0 100%);
             clip-path: polygon(0 0, 100% 0, 73% 100%, 0 100%);
-        .game__team__mid 
-            text-align: right;
-            margin-right: 15%;
+        .game__team__mid
+            text-align: right
+            margin-right: 15%
+        .game__team__elo
+            position: absolute
+            top: 47%
+            left: 13%
 
         &--blue 
             position: absolute;
@@ -563,5 +672,9 @@ export default {
                 text-align: left;
                 width: 100%;
                 margin-left: 20%;
+            .game__team__elo
+                position: absolute
+                top: 47%
+                right: 17%
 
 </style>
