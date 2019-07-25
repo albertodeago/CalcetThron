@@ -12,7 +12,7 @@
 
                         <q-item-section>
                             <q-item-label>{{ enrichedUser.nickname }}</q-item-label>
-                            <q-item-label caption>Played games: {{ enrichedUser.played }}</q-item-label>
+                            <q-item-label caption>Played games: {{ enrichedUser.played | tierize }}</q-item-label>
                             <q-item-label caption>Goals done: {{ enrichedUser.goalDone }}</q-item-label>
                             <q-item-label caption>Goals received: {{ enrichedUser.goalReceived }}</q-item-label>
                             <q-item-label caption>Autogoals done: {{ enrichedUser.autogoalDone }}</q-item-label>
@@ -38,6 +38,12 @@ export default {
         return {
             enrichedUsers: [],
             sortBy: "winRate"
+        }
+    },
+    
+    filters: {
+        tierize(value) {
+            return value > 200 ? "200+": ""+value
         }
     },
 
