@@ -1,7 +1,7 @@
 <template>
     <div class="">
-        <canvas class="background" ref="canvas"></canvas>
         <template  v-if="!isLoading">
+            <div class="background"></div>
             <q-list bordered padding>
                 <template v-for="enrichedUser in sortedRankings">
                 <q-item :key="enrichedUser.id">
@@ -12,11 +12,11 @@
                     </q-item-section>
 
                     <q-item-section>
-                        <q-item-label>{{ enrichedUser.nickname }}</q-item-label>    
+                        <q-item-label class="text-white">{{ enrichedUser.nickname }}</q-item-label>    
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-item-label>{{ enrichedUser.ELO }}</q-item-label>   
+                        <q-item-label class="text-white">{{ enrichedUser.ELO }}</q-item-label>   
                     </q-item-section>
                 </q-item>
                 <q-separator spaced inset="item" :key="enrichedUser.id + 'sep'"/>
@@ -58,33 +58,21 @@ export default {
         this.setLoading(true)
         await this.getRankings()
         this.setLoading(false)
-
-        this.$nextTick(() => {
-            const canvas = this.$refs.canvas
-            const panelEl = document.querySelector(".q-tab-panel")
-            canvas.height = panelEl.clientHeight
-            canvas.width = panelEl.clientWidth
-
-            Particles.init({
-                selector: '.background',
-                color: ['#1937e0', '#cc1010'],
-                connectParticles: false,
-                maxParticles: 225,
-                sizeVariations: 7
-            });
-        })
     }
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 
 .background
     position: absolute
-    display: block 
     top: 0
+    bottom: 0
     left: 0
-    z-index: 0
+    right: 0
+    background: -moz-linear-gradient(top,  rgba(25,55,224,1) 0%, rgba(43,51,203,0.5) 10%, rgba(186,20,37,0.5) 90%, rgba(204,16,16,1) 100%) /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(25,55,224,1) 0%,rgba(43,51,203,0.5) 10%,rgba(186,20,37,0.5) 90%,rgba(204,16,16,1) 100%) /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(25,55,224,1) 0%,rgba(43,51,203,0.5) 10%,rgba(186,20,37,0.5) 90%,rgba(204,16,16,1) 100%) /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 
 </style>
 

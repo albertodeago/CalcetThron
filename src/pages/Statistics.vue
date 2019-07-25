@@ -1,33 +1,33 @@
 <template>
-  <div class="">
-    <q-list bordered padding>
+    <div class="">
         <template  v-if="!isLoading">
-            <template v-for="(enrichedUser, index) in sortedRankings">
-                <q-item :key="enrichedUser.id" clickable @click="openUser(enrichedUser)">
-                    <q-item-section top avatar>
-                        <q-avatar>
-                            <q-img :src="enrichedUser.avatar" :ratio="1" />
-                        </q-avatar>
-                    </q-item-section>
+            <q-list bordered padding>
+                <template v-for="(enrichedUser, index) in sortedRankings">
+                    <q-item :key="enrichedUser.id" clickable @click="openUser(enrichedUser)">
+                        <q-item-section top avatar>
+                            <q-avatar>
+                                <q-img :src="enrichedUser.avatar" :ratio="1" />
+                            </q-avatar>
+                        </q-item-section>
 
-                    <q-item-section>
-                        <q-item-label>{{ enrichedUser.nickname }}</q-item-label>
-                        <q-item-label caption>Played games: {{ enrichedUser.played }}</q-item-label>
-                        <q-item-label caption>Goals done: {{ enrichedUser.goalDone }}</q-item-label>
-                        <q-item-label caption>Goals received: {{ enrichedUser.goalReceived }}</q-item-label>
-                        <q-item-label caption>Autogoals done: {{ enrichedUser.autogoalDone }}</q-item-label>
-                    </q-item-section>
+                        <q-item-section>
+                            <q-item-label>{{ enrichedUser.nickname }}</q-item-label>
+                            <q-item-label caption>Played games: {{ enrichedUser.played }}</q-item-label>
+                            <q-item-label caption>Goals done: {{ enrichedUser.goalDone }}</q-item-label>
+                            <q-item-label caption>Goals received: {{ enrichedUser.goalReceived }}</q-item-label>
+                            <q-item-label caption>Autogoals done: {{ enrichedUser.autogoalDone }}</q-item-label>
+                        </q-item-section>
 
-                    <q-item-section side top>
-                        <q-badge :label="'winrate: ' + enrichedUser.winRate" />
-                    </q-item-section>
+                        <q-item-section side top>
+                            <q-badge :label="'winrate: ' + enrichedUser.winRate" />
+                        </q-item-section>
 
-                </q-item>
-                <q-separator spaced inset="item" v-if="index !== enrichedUsers.length-1" :key="enrichedUser.id + '_separator'" />
-            </template>
+                    </q-item>
+                    <q-separator spaced inset="item" v-if="index !== enrichedUsers.length-1" :key="enrichedUser.id + '_separator'" />
+                </template>
+            </q-list>
         </template>
-    </q-list>
-  </div>
+    </div>
 </template>
 
 <script>
