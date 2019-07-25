@@ -307,6 +307,14 @@ export default {
                 u.avatar = u.avatar,
                 u.disable = this.alreadySelectedUsers.indexOf(u.id) !== -1
                 return u
+            }).sort((a,b) => {
+                const nickA = a.nickname.toLowerCase()
+                const nickB = b.nickname.toLowerCase()
+                if (nickA < nickB) //sort string ascending
+                    return -1;
+                if (nickA > nickB)
+                    return 1;
+                return 0;
             })
         },
 
