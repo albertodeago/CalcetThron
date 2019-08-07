@@ -239,25 +239,26 @@
                 </q-card-section>
             </q-card>
         </q-dialog>
-
+        
         <q-dialog v-model="showGameDetail" full-width>
             <q-card v-if="selectedGame">
-                <q-card-section>
-                    <div class="text-h4">Game details</div>
-                    <div class="text-subtitle2">{{ selectedGame.creationDate | prettyDate }}</div>
-                </q-card-section>
+                <q-toolbar class="bg-primary glossy text-white">
+                    <q-toolbar-title>Game details</q-toolbar-title>
+                    <q-btn flat round dense icon="close" @click="closeGameDetails" />
+                </q-toolbar>
 
                 <q-card-section>
-                    <div class="text-h6" style="display: flex; align-items: center; justify-content: space-between">
+                    <div class="text-subtitle1" style="display: flex; align-items: center; justify-content: space-between">
                         <div v-if="selectedGame.exchangedELO === null">
                             Game not elaborated yet, wait
                         </div>
                         <template v-else>
                             <span v-if="selectedGame.result.blue === 7">Blue team won</span>
                             <span v-else>Red team won</span>
-                            <span>{{ selectedGame.exchangedELO }}</span>
+                            <span class="text-bold">{{ selectedGame.exchangedELO }} points</span>
                         </template>
                     </div>
+                    <div class="text-subtitle2">Played: {{ selectedGame.creationDate | prettyDate }}</div>
                     <br>
 
                     <div class="text-bold">Blue goalkeeper</div>
@@ -276,7 +277,7 @@
                         </q-item-section>
                     </q-item>
                     
-                    </br>
+                    <br>
                     <div class="text-bold">Blue striker</div>
                     <q-item>
                         <q-item-section avatar>
@@ -293,7 +294,7 @@
                         </q-item-section>
                     </q-item>
 
-                    </br>
+                    <br>
                     <div class="text-bold">Red goalkeeper</div>
                     <q-item>
                         <q-item-section avatar>
@@ -310,7 +311,7 @@
                         </q-item-section>
                     </q-item>
                     
-                    </br>
+                    <br>
                     <div class="text-bold">Red striker</div>
                     <q-item>
                         <q-item-section avatar>
@@ -328,10 +329,6 @@
                     </q-item>
 
                 </q-card-section>
-
-                <q-card-actions align="right">
-                    <q-btn flat label="OK" color="primary" @click="closeGameDetails"/>
-                </q-card-actions>
             </q-card>
         </q-dialog>
     </div>
