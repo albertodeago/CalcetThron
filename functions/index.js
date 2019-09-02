@@ -1,12 +1,8 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
 
-// The Firebase Admin SDK to access the Firebase Realtime Database.
-const admin = require('firebase-admin');
-admin.initializeApp();
-
-const updateRankings = require('./updateRankings');
-const updateSeason = require('./updateSeason');
+const updateRankings = require('./updateRankings').default;
+const updateSeason = require('./updateSeason').default;
 
 /**
  * When a match is inserted, update the rankings value of players.

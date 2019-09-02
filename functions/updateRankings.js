@@ -1,12 +1,13 @@
+const { database } = require('./admin');
+
 /**
  * Cloud function that given a season (optional) and a new game created it update the 
  * season (optional) relative players and copy the game into the season if defined
  */
-exports.updateRankings = async function(snap, context, season, devMode = false) {
+exports.default = async function(snap, context, season, devMode = false) {
     // Get an object representing the document
     const newGame = snap.data();
-    console.log("[updateRankings] dev mode: " + devMode);
-    console.log("[updateRankings] for new game " + snap.id + " with season " + season);
+    console.log(`[updateRankings] devMode: ${devMode} - gameId: ${snap.id} - season: ${season}`);
 
     // create the model to update the db value
     const userRanking = {
@@ -30,7 +31,7 @@ exports.updateRankings = async function(snap, context, season, devMode = false) 
     }
 
     // get ranking of the game players
-    const db = admin.firestore()
+    const db = database
     let rankingsCollection;
     if (devMode) {
         if (season) { // dev mode and season defined
@@ -51,26 +52,28 @@ exports.updateRankings = async function(snap, context, season, devMode = false) 
     const redKeeperPromise = rankingsCollection.doc(newGame.redTeam.keeper).get();
     const redStrikerPromise = rankingsCollection.doc(newGame.redTeam.striker).get();
 
-    console.log("Getting ranking of players " + newGame.blueTeam.keeper + " " + newGame.blueTeam.striker + " " + newGame.redTeam.keeper + " " + newGame.redTeam.striker);
+    console.log(`[updateRankings] getting rankings of players: BK:${newGame.blueTeam.keeper} - BS:${newGame.blueTeam.striker} - RK:${newGame.redTeam.keeper} - RS:${newGame.redTeam.striker}`);
     const results = await Promise.all([blueKeeperPromise, blueStrikerPromise, redKeeperPromise, redStrikerPromise]);
 
     // log something to have some more info in dashboard logs
+    let logMessage = "";
     if (results[0].data())
-        console.log("blueKeeper had already a ranking reference");
+        logMessage += "BK had already a ranking ref - ";
     else
-        console.log("blueKeeper is new for rankings");
+        logMessage += "BK is new for rankings - ";
     if (results[1].data())
-        console.log("blueStriker had already a ranking reference");
+        logMessage += "BS had already a ranking ref - ";
     else
-        console.log("blueStriker is new for rankings");
+        logMessage += "BS is new for rankings - ";
     if (results[2].data())
-        console.log("redKeeper had already a ranking reference");
+        logMessage += "RK had already a ranking ref - ";
     else
-        console.log("redKeeper is new for rankings");
+        logMessage += "RK is new for rankings - ";
     if (results[3].data())
-        console.log("redStriker had already a ranking reference");
+        logMessage += "RS had already a ranking ref";
     else
-        console.log("redStriker is new for rankings");
+        logMessage += "RS is new for rankings";
+    console.log("[updateRankings] " + logMessage);
 
     const blueKeeper = results[0].data() ? results[0].data() : Object.assign({}, userRanking, { id: newGame.blueTeam.keeper });
     const blueStriker = results[1].data() ? results[1].data() : Object.assign({}, userRanking, { id: newGame.blueTeam.striker });
@@ -146,7 +149,7 @@ exports.updateRankings = async function(snap, context, season, devMode = false) 
         if (newGame.result.blue === 7) {
             // blue team won
             amountELO = Math.min(Math.max(25 - Math.round(((blueTeamELO - redTeamELO) * 2) / 25), 2), 40); // min 2 max 40
-            console.log("Blue won, amount of ELO exchanged is " + amountELO);
+            console.log("[updateRankings] - Blue won, amount of ELO exchanged is " + amountELO);
             blueKeeper.ELO += amountELO;
             blueStriker.ELO += amountELO;
             redKeeper.ELO -= amountELO;
@@ -154,7 +157,7 @@ exports.updateRankings = async function(snap, context, season, devMode = false) 
         } else {
             // red team won
             amountELO = Math.min(Math.max(25 - Math.round(((redTeamELO - blueTeamELO) * 2) / 25), 2), 40); // min 2 max 40
-            console.log("Red won, amount of ELO exchanged is " + amountELO);
+            console.log("[updateRankings] - Red won, amount of ELO exchanged is " + amountELO);
             blueKeeper.ELO -= amountELO;
             blueStriker.ELO -= amountELO;
             redKeeper.ELO += amountELO;
@@ -182,7 +185,7 @@ exports.updateRankings = async function(snap, context, season, devMode = false) 
         updateGamesPromise = new Promise((resolve, reject) => resolve());
     }
 
-    console.log("Done calculating, now write back on DB");
+    console.log("[updateRankings] - done calculating, now write back on DB");
     // actually update the values on DB
     const _blueKeeperPromise = rankingsCollection.doc(newGame.blueTeam.keeper).set(blueKeeper);
     const _blueStrikerPromise = rankingsCollection.doc(newGame.blueTeam.striker).set(blueStriker);
@@ -190,6 +193,6 @@ exports.updateRankings = async function(snap, context, season, devMode = false) 
     const _redStrikerPromise = rankingsCollection.doc(newGame.redTeam.striker).set(redStriker);
 
     const _results = await Promise.all([_blueKeeperPromise, _blueStrikerPromise, _redKeeperPromise, _redStrikerPromise, updateGamesPromise]);
-    console.log("Everything is done!");
+    console.log("[updateRankings] - Everything is done!");
     return true;
 }
