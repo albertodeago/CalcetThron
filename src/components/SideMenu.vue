@@ -103,7 +103,7 @@ export default {
       },
 
       computedAvatar() {
-        return this.user !== null ? this.user.avatar : defaultAvatar
+        return this.user != null ? this.user.avatar : defaultAvatar
       }
     },
     methods: {
@@ -137,7 +137,7 @@ export default {
       },
 
       openSelf() {
-        if(this.user === null) {
+        if(this.user == null) {
           // anonymous user, wants to login
           this.$router.push('login')
         } else {
