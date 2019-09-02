@@ -1,4 +1,6 @@
-const collectionName = "seasons";
+import Config from "src/Config"
+
+const collectionName = Config.devMode ? "DEV_seasons" : "seasons";
 
 export default {
     namespaced: true,

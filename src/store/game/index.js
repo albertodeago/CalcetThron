@@ -1,12 +1,11 @@
 import { Game } from "src/models"
+import Config from "src/Config"
 
-// const collectionName = "games";
-// const collectionName = "seasons/season_2/games";
 
 export default {
     namespaced: true,
     state: {
-        collectionName: "games",
+        collectionName: Config.devMode ? "DEV_games" : "games",
         games: null,
         gamesArray: [],
         currentGame: null
@@ -46,10 +45,18 @@ export default {
             state.currentGame = game
         },
         setSeason(state, season) {
-            if (season.number === 0) {
-                state.collectionName = "games"
+            if (Config.devMode) {
+                if (season.number === 0) {
+                    state.collectionName = "DEV_games"
+                } else {
+                    state.collectionName = "DEV_seasons/season_" + season.number + "/DEV_games";
+                }
             } else {
-                state.collectionName = "seasons/season_" + season.number + "/games";
+                if (season.number === 0) {
+                    state.collectionName = "games"
+                } else {
+                    state.collectionName = "seasons/season_" + season.number + "/games";
+                }
             }
         }
     },
@@ -72,7 +79,7 @@ export default {
 
         async saveGame({ commit, dispatch, state }, gameObj) {
             const db = firebase.firestore()
-            const gamesCollection = db.collection("games")
+            const gamesCollection = Config.devMode ? db.collection("DEV_games") : db.collection("games")
 
             try {
                 const docRef = await gamesCollection.add(gameObj)

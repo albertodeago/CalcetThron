@@ -1,3 +1,4 @@
+import Config from "src/Config"
 import { User } from "src/models"
 import Utils from "src/Utils"
 
@@ -46,7 +47,7 @@ export default {
 
         async getAllUsers({ commit, dispatch }) {
             const db = firebase.firestore()
-            const usersCollection = db.collection("users")
+            const usersCollection = Config.devMode ? db.collection("DEV_users") : db.collection("users")
 
             try {
                 let users = {}
@@ -64,7 +65,7 @@ export default {
 
         async register({ commit, dispatch }, { email, password, nickname, image }) {
             const db = firebase.firestore()
-            const usersCollection = db.collection("users")
+            const usersCollection = Config.devMode ? db.collection("DEV_users") : db.collection("users")
 
             try {
                 const response = await firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -109,7 +110,7 @@ export default {
 
         async saveAvatar({}, { userId, image }) {
             const db = firebase.firestore()
-            const usersCollection = db.collection("users")
+            const usersCollection = Config.devMode ? db.collection("DEV_users") : db.collection("users")
             const storageRef = firebase.storage().ref()
             const imageRef = storageRef.child("avatars/" + userId + ".jpg")
 
@@ -158,7 +159,7 @@ export default {
 
         async getUser({ commit, rootState, dispatch }, firebaseUserUid) {
             const db = firebase.firestore();
-            const usersCollection = db.collection('users');
+            const usersCollection = Config.devMode ? db.collection("DEV_users") : db.collection('users');
 
             try {
                 const snapshot = await usersCollection.doc(firebaseUserUid).get()

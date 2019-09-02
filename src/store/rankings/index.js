@@ -1,10 +1,12 @@
+import Config from "src/Config"
+
 export default {
     namespaced: true,
 
     state: {
         rankings: null,
         rankingsArray: [],
-        collectionName: "rankings"
+        collectionName: Config.devMode ? "DEV_rankings" : "rankings"
     },
 
     getters: {
@@ -25,10 +27,18 @@ export default {
         },
 
         setSeason(state, season) {
-            if (season.number === 0) {
-                state.collectionName = "rankings"
+            if (Config.devMode) {
+                if (season.number === 0) {
+                    state.collectionName = "DEV_rankings"
+                } else {
+                    state.collectionName = "DEV_seasons/season_" + season.number + "/DEV_rankings";
+                }
             } else {
-                state.collectionName = "seasons/season_" + season.number + "/rankings";
+                if (season.number === 0) {
+                    state.collectionName = "rankings"
+                } else {
+                    state.collectionName = "seasons/season_" + season.number + "/rankings";
+                }
             }
         },
 
