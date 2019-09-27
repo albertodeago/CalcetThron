@@ -39,9 +39,19 @@ export default {
     computed: {
         ...mapGetters("Global", ["isLoading"]),
         ...mapGetters("Rankings", ["allRankingsArray"]),
+        ...mapGetters('Seasons', ['selectedSeason']),
 
         sortedRankings() {
             return this.allRankingsArray.slice().sort((a, b) => parseInt(b.ELO) - parseInt(a.ELO))
+        }
+    },
+
+    watch: {
+        async selectedSeason() {
+            this.setLoading(true)
+            await this.getRankings()
+            this.setLoading(false)
+            this.subscribeToRankings()
         }
     },
 
