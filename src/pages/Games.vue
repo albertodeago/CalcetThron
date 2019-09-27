@@ -3,7 +3,7 @@
         <transition-group enter-active-class="animated slideInRight" tag="div"
                           class="transition-container row items-start q-gutter-md text-white"
         >   
-            <q-card class="my-card" v-for="game in renderedGames" :key="game.id" @click="openGameDetails(game)">
+            <q-card class="my-card" v-for="game in renderedGames" :key="game.id" @click="openGameDetails(game)" :class="{'without-elo': game.exchangedELO === null}">
                 <q-card-section v-ripple>
                     <div class="game">
                         <div class="game__back game__back--red"></div>
@@ -467,14 +467,15 @@ export default {
     },
 
     watch: {
-        selectedSeason() {
+        async selectedSeason() {
             this.renderedGames = []
-            this.loadMoreGames()
+            await this.loadMoreGames()
+            this.subscribeToGames()
         }
     },
 
     methods: {
-        ...mapActions('Game', ['saveGame', 'getGames']),
+        ...mapActions('Game', ['saveGame', 'getGames', 'subscribeToGames']),
         ...mapActions('Global', ['setLoading']),
 
         getUsername(id) {
@@ -609,6 +610,7 @@ export default {
         this.setLoading(false)
         this.pushGames()
         this.loadingItems = false
+        this.subscribeToGames()
     },
 
     mounted() {
@@ -630,6 +632,11 @@ export default {
 .my-card 
     width: 100%
     position: relative
+    filter: grayscale(0) drop-shadow(2px 4px 6px black)
+    transition: filter .3s
+
+    &.without-elo
+        filter: grayscale(1) drop-shadow(2px 4px 6px black)
 
 .game
     &__back
