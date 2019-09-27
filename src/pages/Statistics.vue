@@ -59,16 +59,16 @@ export default {
 
     watch: {
         async selectedSeason() {
-            console.log("selected season watcher - rankings")
             this.setLoading(true)
             await this.getRankings()
             this.setLoading(false)
+            this.subscribeToRankings()
         }
     },
 
     methods: {
         ...mapActions('Global', ['setLoading' ]),
-        ...mapActions('Rankings', ['getRankings']),
+        ...mapActions('Rankings', ['getRankings', 'subscribeToRankings']),
 
         openUser(enrichedUser) {
             this.$router.push(`user/${enrichedUser.id}`)
@@ -79,6 +79,7 @@ export default {
         this.setLoading(true)
         await this.getRankings()
         this.setLoading(false)
+        this.subscribeToRankings()
     }
 }
 </script>
