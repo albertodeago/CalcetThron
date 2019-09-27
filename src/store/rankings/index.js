@@ -6,7 +6,8 @@ export default {
     state: {
         rankings: null,
         rankingsArray: [],
-        collectionName: Config.devMode ? "DEV_rankings" : "rankings"
+        collectionName: Config.devMode ? "DEV_rankings" : "rankings",
+        rankingListener: null
     },
 
     getters: {
@@ -26,6 +27,25 @@ export default {
             state.rankingsArray = Object.values(enrichedRankings)
         },
 
+        emptyRankings(state) {
+            state.allRankings = {}
+            state.allRankingsArray = []
+        },
+
+        updateRanking(state, rank) {
+            // update object state
+            let rankInObj = state.rankings[rank.id]
+            if (rankInObj) {
+                Object.assign(rankInObj, rank)
+            }
+
+            // update array state
+            let rankInArray = state.rankingsArray.find(r => r.id === rank.id)
+            if (rankInArray) {
+                Object.assign(rankInArray, rank)
+            }
+        },
+
         setSeason(state, season) {
             if (Config.devMode) {
                 if (season.number === 0) {
@@ -41,10 +61,13 @@ export default {
                 }
             }
         },
-
-        emptyRankings(state) {
-            state.allRankings = {}
-            state.allRankingsArray = []
+        
+        setRankingsListener(state, listener) {
+            if (state.rankingListener) {
+                state.rankingListener()
+                state.rankingListener = null
+            }
+            state.rankingListener = listener
         }
     },
     actions: {
@@ -59,6 +82,23 @@ export default {
             });
 
             commit("setRankings", { rankings, users: rootState.User.allUsers })
+        },
+
+        subscribeToRankings({ commit, state }) {
+            const db = firebase.firestore()
+            const rankingsCollection = db.collection(state.collectionName)
+            let listener = rankingsCollection.onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === "modified") {
+                        const modifiedRank = {
+                            id: change.doc.id,
+                            ...change.doc.data()
+                        }
+                        commit("updateRanking", modifiedRank)
+                    }
+                })
+            })
+            commit("setRankingsListener", listener)
         },
 
         selectSeason({ commit }, season) {

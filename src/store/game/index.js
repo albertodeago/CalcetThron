@@ -86,13 +86,10 @@ export default {
         },
 
         setGameListener(state, listener) {
-            console.log("setting listener")
             if (state.gameListener) {
                 state.gameListener()
                 state.gameListener = null
-                console.log("detach listener")
             }
-            console.log("set listener")
             state.gameListener = listener
         }
     },
@@ -156,7 +153,6 @@ export default {
                             id: change.doc.id,
                             ...change.doc.data()
                         })
-                        console.log("Game modified", modifiedGame)
                         commit("updateGame", modifiedGame)
                     }
                     // if (change.type === "removed") {        // the app doesn't allow this action yet
