@@ -60,7 +60,8 @@ module.exports = function(ctx) {
                 'QStepper',
                 'QStep',
                 'QSelect',
-                'QBadge'
+                'QBadge',
+                'QChip'
             ],
 
             directives: [

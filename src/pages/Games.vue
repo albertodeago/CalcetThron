@@ -165,6 +165,16 @@
                                 </q-item>
                             </template>
                         </q-select>
+
+                        <q-separator style="margin: 20px 0" />
+                        <div>
+                            <q-chip v-for="user in usersChips" :key="user.id" @click="onChipClick(user)" clickable>
+                                <q-avatar>
+                                    <img :src="user.avatar">
+                                </q-avatar>
+                                {{ user.nickname }}
+                            </q-chip>
+                        </div>
                     </template>
 
                     <template v-if="step === 2">
@@ -337,6 +347,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex"
 import { Game } from "../models"
+import Utils from "../Utils"
 
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/darthron-6a632.appspot.com/o/avatars%2Fdefault_avatar.png?alt=media&token=ebd85bb5-b11c-4ca9-b7d3-4fab14d56d88"
 
@@ -399,6 +410,13 @@ export default {
                     return 1;
                 return 0;
             })
+        },
+
+        /**
+         * 10 random users
+         */
+        usersChips() {
+            return Utils.shuffle(this.allUsersArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1)).slice(0, 10);
         },
 
         selecteGameBlueKeeper() {
@@ -591,6 +609,20 @@ export default {
                 } catch(e) {}
 
                 this.closeModal()
+            }
+        },
+
+        onChipClick(user) {
+            if (!this.redGoalKeeper) {
+                this.redGoalKeeper = user
+            }
+            else if (!this.redStriker) {
+                this.redStriker = user
+            }
+            else if (!this.blueGoalKeeper) 
+                this.blueGoalKeeper = user
+            else if (!this.blueStriker) {
+                this.blueStriker = user
             }
         },
 
