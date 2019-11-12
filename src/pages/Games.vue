@@ -91,7 +91,7 @@
             <q-btn fab icon="add" color="secondary" @click="openModal" />
         </q-page-sticky>
 
-        <q-dialog v-model="showModal" persistent maximized transition-show="slide-up" transition-hide="slide-down">
+        <q-dialog v-model="showModal" persistent transition-show="slide-up" transition-hide="slide-down" content-class="add-game-modal" full-width full-height>
             <q-card>
                 <q-bar>
                     <q-space />
@@ -105,7 +105,6 @@
                 <q-card-section>
                     <template v-if="step === 1">
                         <div class="text-h6">Insert the players of the game</div>
-                        
                         <q-select class="q-my-md" filled v-model="redGoalKeeper" :options="usersArray" label="Red goalkeeper">
                             <template v-slot:option="user">
                                 <q-item v-bind="user.itemProps" v-on="user.itemEvents">
@@ -416,7 +415,7 @@ export default {
          * 10 random users
          */
         usersChips() {
-            return Utils.shuffle(this.allUsersArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1)).slice(0, 10);
+            return Utils.shuffle(this.allUsersArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1)).slice(0, 8);
         },
 
         selecteGameBlueKeeper() {
