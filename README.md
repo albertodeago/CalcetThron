@@ -4,13 +4,13 @@ A simple PWA to try [Quasar framework](https://v1.quasar-framework.org)
 
 The applicaiton basically stores and shows the table soccer games we play during coffee pauses in THRON.
 
-You can access it from [here](https://darthron-6a632.firebaseapp.com/#/)
+You can access it from [here](darthron-6a632.web.app)
 
 This is a toy project and it's not intended to be used "professionally"
 
 ### Create your own instance
 
-The application at the link provided in the [demo](https://darthron-6a632.firebaseapp.com/#/) is bound to a firebase account. You can create a new instance of CalcetThron by doing this simple steps:
+The application at the link provided in the [demo](darthron-6a632.web.app) is bound to a firebase account. You can create a new instance of CalcetThron by doing this simple steps:
  - fork this repo
  - fill the firebase configuration file (`src/boot/firebase-sample.js`) with your own config provided by firebase
  - feel free to change app name and other stuff
