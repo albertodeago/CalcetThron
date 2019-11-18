@@ -9,6 +9,11 @@ const routes = [{
             component: () => import ('pages/SeasonView.vue')
         },
         {
+            path: 'season-view',
+            redirect: 'games',
+            component: () => import ('pages/SeasonView.vue')
+        },
+        {
             path: "games",
             component: () => import("pages/SeasonView.vue")
         },
@@ -23,10 +28,6 @@ const routes = [{
         {
             path: 'login',
             component: () => import ('pages/Login.vue')
-        },
-        {
-            path: 'season-view',
-            component: () => import ('pages/SeasonView.vue')
         },
         {
             path: 'settings',
