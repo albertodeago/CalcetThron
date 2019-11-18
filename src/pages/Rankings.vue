@@ -1,9 +1,8 @@
 <template>
     <div class="">
         <template  v-if="!isLoading">
-            <div class="background"></div>
             <q-list bordered padding>
-                <template v-for="enrichedUser in sortedRankings">
+                <template v-for="(enrichedUser, i) in sortedRankings">
                 <q-item :key="enrichedUser.id">
                     <q-item-section avatar>
                         <q-avatar>
@@ -12,11 +11,16 @@
                     </q-item-section>
 
                     <q-item-section>
-                        <q-item-label class="text-white">{{ enrichedUser.nickname }}</q-item-label>    
+                        <q-item-label class="nickname">
+                            <span class="text-body1">{{ enrichedUser.nickname }}</span>
+                            <q-icon class="q-ml-sm medal medal--gold" name="star" v-if="i === 0"/>
+                            <q-icon class="q-ml-sm medal medal--silver" name="star" v-if="i === 1"/>
+                            <q-icon class="q-ml-sm medal medal--bronze" name="star" v-if="i === 2"/>
+                        </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-item-label class="text-white">{{ enrichedUser.ELO }}</q-item-label>   
+                        <q-item-label class="text-body1">{{ enrichedUser.ELO }}</q-item-label>   
                     </q-item-section>
                 </q-item>
                 <q-separator spaced inset="item" :key="enrichedUser.id + 'sep'"/>
@@ -75,15 +79,30 @@ export default {
 
 <style lang="stylus" scoped>
 
-.background
-    position: absolute
-    top: 0
-    bottom: 0
-    left: 0
-    right: 0
-    background: -moz-linear-gradient(top,  rgba(25,55,224,1) 0%, rgba(43,51,203,0.5) 10%, rgba(186,20,37,0.5) 90%, rgba(204,16,16,1) 100%) /* FF3.6-15 */
-    background: -webkit-linear-gradient(top,  rgba(25,55,224,1) 0%,rgba(43,51,203,0.5) 10%,rgba(186,20,37,0.5) 90%,rgba(204,16,16,1) 100%) /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom,  rgba(25,55,224,1) 0%,rgba(43,51,203,0.5) 10%,rgba(186,20,37,0.5) 90%,rgba(204,16,16,1) 100%) /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+.nickname
+    display: inline-flex;
+    align-items: center;
+
+.medal--gold 
+    background: linear-gradient(#8f6B29, #FDE08D, #DF9F28)
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+.medal--silver
+    background: linear-gradient(#262626,#eaeaea,#262626)
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+.medal--bronze
+    // background: linear-gradient(-72deg, #ca7345, #ffdeca 16%, #ca7345 21%, #ffdeca 24%, #a14521 27%, #ca7345 36%, #ffdeca 45%, #ffdeca 60%, #ca7345 72%, #ffdeca 80%, #ca7345 84%, #732100)
+    background: linear-gradient(#ca7345, #ffdeca 45%, #732100)
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+.medal
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2rem;
 
 </style>
 
