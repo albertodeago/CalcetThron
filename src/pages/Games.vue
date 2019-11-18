@@ -99,10 +99,6 @@
                 </q-bar>
 
                 <q-card-section>
-                    <div class="text-h4">Add a game</div>
-                </q-card-section>
-
-                <q-card-section>
                     <template v-if="step === 1">
                         <div class="text-h6">Insert the players of the game</div>
                         <q-select class="q-my-md" filled v-model="redGoalKeeper" :options="usersArray" label="Red goalkeeper">
@@ -392,6 +388,7 @@ export default {
         ...mapGetters('Game', ['gamesArray']),
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
         ...mapGetters('Seasons', ['selectedSeason']),
+        ...mapGetters('Rankings', ['allRankings']),
 
         usersArray() {
             return this.allUsersArray.map(u => {
@@ -415,7 +412,15 @@ export default {
          * 10 random users
          */
         usersChips() {
-            return Utils.shuffle(this.allUsersArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1)).slice(0, 8);
+            return Utils.shuffle(this.allUsersArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1)).slice(0, 8).sort((a,b) => {
+                const nickA = a.nickname.toLowerCase()
+                const nickB = b.nickname.toLowerCase()
+                if (nickA < nickB) //sort string ascending
+                    return -1;
+                if (nickA > nickB)
+                    return 1;
+                return 0;
+            });
         },
 
         selecteGameBlueKeeper() {
