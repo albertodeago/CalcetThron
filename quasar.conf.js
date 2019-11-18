@@ -44,6 +44,7 @@ module.exports = function(ctx) {
                 'QSeparator',
                 'QTabs',
                 'QTab',
+                'QRouteTab',
                 'QTabPanels',
                 'QTabPanel',
                 'QCard',

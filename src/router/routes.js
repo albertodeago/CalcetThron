@@ -2,40 +2,39 @@ const routes = [{
     path: '/',
     component: () =>
         import ('layouts/MyLayout.vue'),
-    children: [{
+    children: [
+        {
             path: '',
-            component: () =>
-                import ('pages/SeasonView.vue')
+            redirect: 'games',
+            component: () => import ('pages/SeasonView.vue')
         },
-        // {
-        //     path: 'games',
-        //     component: () =>
-        //         import ('pages/Games.vue')
-        // },
+        {
+            path: "games",
+            component: () => import("pages/SeasonView.vue")
+        },
+        {
+            path: "statistics",
+            component: () => import("pages/SeasonView.vue")
+        },
+        {
+            path: "elo",
+            component: () => import("pages/SeasonView.vue")
+        },
         {
             path: 'login',
-            component: () =>
-                import ('pages/Login.vue')
+            component: () => import ('pages/Login.vue')
         },
-        // {
-        //     path: 'ranking',
-        //     component: () =>
-        //         import ('pages/Ranking.vue')
-        // },
         {
             path: 'season-view',
-            component: () =>
-                import ('pages/SeasonView.vue')
+            component: () => import ('pages/SeasonView.vue')
         },
         {
             path: 'settings',
-            component: () =>
-                import ('pages/Settings.vue')
+            component: () => import ('pages/Settings.vue')
         },
         {
             path: 'user/:id',
-            component: () =>
-                import ('pages/User.vue')
+            component: () => import ('pages/User.vue')
         },
     ]
 }]

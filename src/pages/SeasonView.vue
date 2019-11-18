@@ -1,9 +1,9 @@
 <template>
     <div class="season-container">
         <q-tabs v-model="tab" inline-label class="bg-grey-3" align="justify" narrow-indicator>
-            <q-tab name="games" icon="list" label="Games" />
-            <q-tab name="statistics" icon="bar_chart" label="Statistics" />
-            <q-tab name="elo" icon="whatshot" label="Elo" v-if="selectedSeason && selectedSeason.number !== 0" />
+            <q-route-tab icon="list" name="games" to="/games" exact />
+            <q-route-tab icon="bar_chart" name="statistics" to="/statistics" exact />
+            <q-route-tab icon="whatshot" name="elo" to="/elo" exact v-if="selectedSeason && selectedSeason.number !== 0"/>
         </q-tabs>
 
         <q-separator />
@@ -48,7 +48,6 @@ export default {
         ...mapGetters('Game', ['gamesArray']),
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
         ...mapGetters('Seasons', ['selectedSeason']),
-        ...mapGetters("Rankings", ["allRankingsArray"]), // TODO: remove this
     },
 
     methods: {
@@ -61,9 +60,6 @@ export default {
             if (val.number === 0 && this.tab === "elo")
                 this.tab = "games"
         }
-    },
-
-    mounted() {
     }
 }
 </script>
