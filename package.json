@@ -1,6 +1,6 @@
 {
     "name": "CalcetThron",
-    "version": "2.0.0-rc8",
+    "version": "2.0.0",
     "description": "A Quasar app. Made to store THRON table soccer matches",
     "productName": "CalcetThron",
     "cordovaId": "org.cordova.quasar.app",
