@@ -525,7 +525,6 @@ export default {
         openGameDetails(game) {
             this.selectedGame = game
             this.showGameDetail = true
-            console.log("selected game", game)
         },
         
         closeGameDetails() {
@@ -603,7 +602,9 @@ export default {
 
                 // Save the game to DB and close modal
                 try {
+                    this.setLoading(true)
                     const newGame = await this.saveGame(gameObj)
+                    this.setLoading(false)
                     this.renderedGames.unshift(newGame)
                 } catch(e) {}
 
