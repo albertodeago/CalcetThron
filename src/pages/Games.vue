@@ -608,9 +608,7 @@ export default {
         },
 
         async nextStep() {
-            console.log(this.eloExchangePreview);
             if(this.step < 3)
-                // this.$refs.stepper.next()
                 this.step++
             else {
                 const _redGoalKeeperGoals = parseInt(this.redGoalKeeperGoals) || 0
@@ -644,7 +642,9 @@ export default {
                     blueKeeperGoals: _blueGoalKeeperGoals,
                     blueKeeperAutogoals: _blueGoalKeeperAutogoals,
                     blueStrikerGoals: _blueStrikerGoals,
-                    blueStrikerAutogoals: _blueStrikerAutogoals
+                    blueStrikerAutogoals: _blueStrikerAutogoals,
+                    uploaderId: this.user.id, // save who's the one who added this game
+                    uploaderNickname: this.user.nickname // save who's the one who added this game
                 }
 
                 // Save the game to DB and close modal
