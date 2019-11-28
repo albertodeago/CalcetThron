@@ -174,6 +174,10 @@
 
                     <template v-if="step === 2">
                         <div class="text-h6">Insert the scores of the match</div>
+                        <div class="ELO-exchange-preview text-h4">
+                            <span class="ELO-exchange-preview__red">{{eloExchangePreview.red}}</span>
+                            <span class="ELO-exchange-preview__blue">{{eloExchangePreview.blue}}</span>
+                        </div>
                         <q-input v-model="redGoalKeeperGoals"           class="q-mb-xs" filled type="number" :label="'Goals made by ' + redGoalKeeper.nickname" >
                             <template v-slot:append>
                                 <q-btn round dense flat icon="add"      @click="redGoalKeeperGoals = Math.min(redGoalKeeperGoals + 1, 7)" />
@@ -226,14 +230,24 @@
                     </template>
 
                     <template v-if="step === 3">
-                        <div class="text-h6">Confirm data</div>
+                        <div class="ELO-exchange-preview text-h6">
+                            <span>Confirm data</span>
+                            <span class="text-h5">
+                                <template v-if="redTeamTotalGoals === 7">
+                                    <span class="ELO-exchange-preview__red">{{eloExchangePreview.red}}</span>
+                                </template>
+                                <template v-else>
+                                    <span class="ELO-exchange-preview__blue">{{eloExchangePreview.blue}}</span>
+                                </template>
+                            </span>
+                        </div>
                         <div class="text-subtitle1">Red team</div>
                         <div>{{ redGoalKeeper.nickname }} - {{ redStriker.nickname }}</div>
-                        <div>Goals: {{ (parseInt(redGoalKeeperGoals) || 0) + (parseInt(redStrikerGoals) || 0) + (parseInt(blueGoalKeeperAutogoals) || 0) + (parseInt(blueStrikerAutogoals) || 0) }}</div>
+                        <div>Goals: {{ redTeamTotalGoals }}</div>
                         
                         <div class="text-subtitle1">Blue team</div>
                         <div>{{ blueGoalKeeper.nickname }} - {{ blueStriker.nickname }}</div>
-                        <div>Goals: {{ (parseInt(blueGoalKeeperGoals) || 0) + (parseInt(blueStrikerGoals) || 0) + (parseInt(redGoalKeeperAutogoals) || 0) + (parseInt(redStrikerAutogoals) || 0) }}</div>
+                        <div>Goals: {{ blueTeamTotalGoals }}</div>
                     </template>
                             
                     <q-separator style="margin: 20px 0" />
@@ -452,6 +466,14 @@ export default {
             return res
         },
 
+        redTeamTotalGoals() {
+            return (parseInt(this.redGoalKeeperGoals) || 0) + (parseInt(this.redStrikerGoals) || 0) + (parseInt(this.blueGoalKeeperAutogoals) || 0) + (parseInt(this.blueStrikerAutogoals) || 0)
+        },
+
+        blueTeamTotalGoals() {
+            return (parseInt(this.blueGoalKeeperGoals) || 0) + (parseInt(this.blueStrikerGoals) || 0) + (parseInt(this.redGoalKeeperAutogoals) || 0) + (parseInt(this.redStrikerAutogoals) || 0)
+        },
+
         nextStepDisabled() {
             if (this.step === 1)
                 return !this.redGoalKeeper || !this.redStriker || !this.blueGoalKeeper || !this.blueStriker
@@ -485,6 +507,30 @@ export default {
             }
 
             return false
+        },
+
+        /**
+         * Preview of the amount of ELO that this game will exchange.
+         * @returns {Object<red: Number, blue: Number>} an object with red and blue properties. Red contains
+         * the amount of ELO exchanged in case of Red team wins, blue the other case.
+         * Can return an empty object in case the players are not yet selected.
+         */
+        eloExchangePreview() {
+            if (!this.redGoalKeeper || !this.redStriker || !this.blueGoalKeeper || !this.blueStriker)
+                return {}
+            
+            // calculate the amount of ELO that this game will "exchange"
+            const blueKeeperELO = this.allRankings[this.blueGoalKeeper.id] ? this.allRankings[this.blueGoalKeeper.id].ELO : 1000
+            const blueStrikerELO = this.allRankings[this.blueStriker.id] ? this.allRankings[this.blueStriker.id].ELO : 1000
+            const redKeeperELO = this.allRankings[this.redGoalKeeper.id] ? this.allRankings[this.redGoalKeeper.id].ELO : 1000
+            const redStrikerELO = this.allRankings[this.redStriker.id] ? this.allRankings[this.redStriker.id].ELO : 1000
+            const blueTeamELO = blueKeeperELO + blueStrikerELO
+            const redTeamELO = redKeeperELO + redStrikerELO
+            
+            let redWinELO = Math.min(Math.max(25 - Math.round(((redTeamELO - blueTeamELO) * 2) / 25), 2), 40);
+            let blueWinELO = Math.min(Math.max(25 - Math.round(((blueTeamELO - redTeamELO) * 2) / 25), 2), 40);
+
+            return { red: redWinELO, blue: blueWinELO }
         }
     },
 
@@ -567,6 +613,7 @@ export default {
         },
 
         async nextStep() {
+            console.log(this.eloExchangePreview);
             if(this.step < 3)
                 // this.$refs.stepper.next()
                 this.step++
@@ -718,4 +765,14 @@ export default {
                 top: 47%
                 right: 17%
 
+.ELO-exchange-preview 
+    display: flex
+    justify-content: space-between
+
+    &__red, &__blue
+        padding: 1rem
+    &__red
+        color: $secondary
+    &__blue
+        color: $primary
 </style>
