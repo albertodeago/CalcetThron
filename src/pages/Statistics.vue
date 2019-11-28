@@ -43,7 +43,7 @@ export default {
     
     filters: {
         tierize(value) {
-            return value > 200 ? "200+": ""+value
+            return value > 100 ? "100+": ""+value
         }
     },
 
@@ -57,29 +57,10 @@ export default {
         }
     },
 
-    watch: {
-        async selectedSeason() {
-            this.setLoading(true)
-            await this.getRankings()
-            this.setLoading(false)
-            this.subscribeToRankings()
-        }
-    },
-
     methods: {
-        ...mapActions('Global', ['setLoading' ]),
-        ...mapActions('Rankings', ['getRankings', 'subscribeToRankings']),
-
         openUser(enrichedUser) {
             this.$router.push(`user/${enrichedUser.id}`)
         }
-    },
-
-    async created() {
-        this.setLoading(true)
-        await this.getRankings()
-        this.setLoading(false)
-        this.subscribeToRankings()
     }
 }
 </script>

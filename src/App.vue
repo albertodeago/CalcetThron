@@ -34,17 +34,30 @@ export default {
   },
 
   computed: {
-    ...mapGetters('Global', [ 'isLoading', 'errorMessage' ])
+    ...mapGetters('Global', [ 'isLoading', 'errorMessage' ]),
+    ...mapGetters('Seasons', ['selectedSeason'])
   },
 
   methods: {
     ...mapActions('Global', [ 'setErrorMessage', 'setLoading' ]),
     ...mapActions('User', ['subscribeToUsers', 'getAllUsers']),
     ...mapActions('Seasons', ['getSeasons']),
+    ...mapActions('Rankings', ['getRankings', 'subscribeToRankings']),
 
     dismissMessage() {
       // TODO: add transition to banner enter and exit
       this.setErrorMessage("")
+    }
+  },
+
+  watch: {
+    /**
+     * When the user select a season, we get the rankings of that season and subscribe to it's changes.
+     */
+    selectedSeason(season) {
+      this.getRankings().then(() => {
+        this.subscribeToRankings()
+      })
     }
   },
   
