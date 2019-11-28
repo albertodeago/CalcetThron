@@ -162,13 +162,16 @@
                         </q-select>
 
                         <q-separator style="margin: 20px 0" />
-                        <div>
+                        <div class="chips-container">
                             <q-chip v-for="user in usersChips" :key="user.id" @click="onChipClick(user)" clickable>
                                 <q-avatar>
                                     <img :src="user.avatar">
                                 </q-avatar>
                                 {{ user.nickname }}
                             </q-chip>
+                            <div class="text-subtitle" v-if="usersChips.length === 0">
+                                No user to suggest
+                            </div>
                         </div>
                     </template>
 
@@ -402,7 +405,7 @@ export default {
         ...mapGetters('Game', ['gamesArray']),
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
         ...mapGetters('Seasons', ['selectedSeason']),
-        ...mapGetters('Rankings', ['allRankings']),
+        ...mapGetters('Rankings', ['allRankings', 'allRankingsArray']),
 
         usersArray() {
             return this.allUsersArray.map(u => {
@@ -423,18 +426,10 @@ export default {
         },
 
         /**
-         * 10 random users
+         * The 8 player with the most amount of game in this season
          */
         usersChips() {
-            return Utils.shuffle(this.allUsersArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1)).slice(0, 8).sort((a,b) => {
-                const nickA = a.nickname.toLowerCase()
-                const nickB = b.nickname.toLowerCase()
-                if (nickA < nickB) //sort string ascending
-                    return -1;
-                if (nickA > nickB)
-                    return 1;
-                return 0;
-            });
+            return this.allRankingsArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1).sort((a,b) => b.played - a.played).slice(0,8)
         },
 
         selecteGameBlueKeeper() {
@@ -764,6 +759,11 @@ export default {
                 position: absolute
                 top: 47%
                 right: 17%
+
+.chips-container 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
 .ELO-exchange-preview 
     display: flex
