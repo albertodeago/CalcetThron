@@ -25,6 +25,8 @@ exports.default = async function(snap, context, season, devMode = false) {
         lostStriker: 0,
         winRateStriker: "0%",
         goalDone: 0,
+        goalDoneAsStriker: 0,
+        goalDoneAsGoalkeeper: 0,
         goalReceived: 0,
         autogoalDone: 0,
         ELO: 1000
@@ -75,10 +77,10 @@ exports.default = async function(snap, context, season, devMode = false) {
         logMessage += "RS is new for rankings";
     console.log("[updateRankings] " + logMessage);
 
-    const blueKeeper = results[0].data() ? results[0].data() : Object.assign({}, userRanking, { id: newGame.blueTeam.keeper });
-    const blueStriker = results[1].data() ? results[1].data() : Object.assign({}, userRanking, { id: newGame.blueTeam.striker });
-    const redKeeper = results[2].data() ? results[2].data() : Object.assign({}, userRanking, { id: newGame.redTeam.keeper });
-    const redStriker = results[3].data() ? results[3].data() : Object.assign({}, userRanking, { id: newGame.redTeam.striker });
+    const blueKeeper = results[0].data() ? Object.assign({}, userRanking, results[0].data()) : Object.assign({}, userRanking, { id: newGame.blueTeam.keeper });
+    const blueStriker = results[1].data() ? Object.assign({}, userRanking, results[1].data()) : Object.assign({}, userRanking, { id: newGame.blueTeam.striker });
+    const redKeeper = results[2].data() ? Object.assign({}, userRanking, results[2].data()) : Object.assign({}, userRanking, { id: newGame.redTeam.keeper });
+    const redStriker = results[3].data() ? Object.assign({}, userRanking, results[3].data()) : Object.assign({}, userRanking, { id: newGame.redTeam.striker });
 
     /* we got the players ranking objects, make the calculation to update values and then save it */
 
@@ -126,19 +128,32 @@ exports.default = async function(snap, context, season, devMode = false) {
     redKeeper.winRateGoalkeeper = Math.round(redKeeper.wonGoalkeeper / redKeeper.playedGoalkeeper * 100) + "%"
     redStriker.winRateStriker = Math.round(redStriker.wonStriker / redStriker.playedStriker * 100) + "%"
 
-    // update goals / autogoals
+    console.log(blueKeeper.goalDone, blueKeeper.autogoalDone, blueKeeper.goalReceived, blueKeeper.goalDoneAsGoalkeeper, blueKeeper.goalDoneAsStriker);
+    /* update goals / autogoals */
     blueKeeper.goalDone = blueKeeper.goalDone + newGame.blueKeeperGoals;
     blueKeeper.autogoalDone = blueKeeper.autogoalDone + newGame.blueKeeperAutogoals;
     blueKeeper.goalReceived = blueKeeper.goalReceived + newGame.result.red;
+    blueKeeper.goalDoneAsGoalkeeper = blueKeeper.goalDoneAsGoalkeeper + newGame.blueKeeperGoals;
+    blueKeeper.goalDoneAsStriker = blueKeeper.goalDoneAsStriker;
+
     blueStriker.goalDone = blueStriker.goalDone + newGame.blueStrikerGoals;
     blueStriker.autogoalDone = blueStriker.autogoalDone + newGame.blueStrikerAutogoals;
     blueStriker.goalReceived = blueStriker.goalReceived + newGame.result.red;
+    blueStriker.goalDoneAsGoalkeeper = blueStriker.goalDoneAsGoalkeeper;
+    blueStriker.goalDoneAsStriker = blueStriker.goalDoneAsStriker + newGame.blueStrikerGoals;
+    
     redKeeper.goalDone = redKeeper.goalDone + newGame.redKeeperGoals;
     redKeeper.autogoalDone = redKeeper.autogoalDone + newGame.redKeeperAutogoals;
     redKeeper.goalReceived = redKeeper.goalReceived + newGame.result.blue;
+    redKeeper.goalDoneAsGoalkeeper = redKeeper.goalDoneAsGoalkeeper + newGame.redKeeperGoals;
+    redKeeper.goalDoneAsStriker = redKeeper.goalDoneAsStriker;
+    
     redStriker.goalDone = redStriker.goalDone + newGame.redStrikerGoals;
     redStriker.autogoalDone = redStriker.autogoalDone + newGame.redStrikerAutogoals;
     redStriker.goalReceived = redStriker.goalReceived + newGame.result.blue;
+    redStriker.goalDoneAsGoalkeeper = redStriker.goalDoneAsGoalkeeper;
+    redStriker.goalDoneAsStriker = redStriker.goalDoneAsStriker + newGame.redStrikerGoals;
+    /* end update goals / autogoals */
 
     let updateGamesPromise = null;
     if (season) {
