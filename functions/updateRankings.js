@@ -128,7 +128,6 @@ exports.default = async function(snap, context, season, devMode = false) {
     redKeeper.winRateGoalkeeper = Math.round(redKeeper.wonGoalkeeper / redKeeper.playedGoalkeeper * 100) + "%"
     redStriker.winRateStriker = Math.round(redStriker.wonStriker / redStriker.playedStriker * 100) + "%"
 
-    console.log(blueKeeper.goalDone, blueKeeper.autogoalDone, blueKeeper.goalReceived, blueKeeper.goalDoneAsGoalkeeper, blueKeeper.goalDoneAsStriker);
     /* update goals / autogoals */
     blueKeeper.goalDone = blueKeeper.goalDone + newGame.blueKeeperGoals;
     blueKeeper.autogoalDone = blueKeeper.autogoalDone + newGame.blueKeeperAutogoals;
