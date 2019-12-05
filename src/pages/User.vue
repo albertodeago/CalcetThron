@@ -45,7 +45,7 @@
 
                     <q-card-section v-ripple>
                         <div class="stat-section stat-section__games">
-                            <div class="text-h6">Goals statistics</div>
+                            <div class="text-h6">General statistics</div>
                             <div>done: {{ currentEnrichedUser.goalDone }}</div>
                             <div>received: {{ currentEnrichedUser.goalReceived }}</div>
                             <div>autogoals done: {{ currentEnrichedUser.autogoalDone }}</div>
@@ -59,6 +59,7 @@
                         <div class="stat-section stat-section__goalkeeper">
                             <div class="text-h6">Goalkeeper statistics</div>
                             <div>played: {{ currentEnrichedUser.playedGoalkeeper }}</div>
+                            <div>goal done: {{ currentEnrichedUser.goalDoneAsGoalkeeper }}</div>
                             <div>won: {{ currentEnrichedUser.wonGoalkeeper }}</div>
                             <div>lost: {{ currentEnrichedUser.lostGoalkeeper }}</div>
                             <q-badge floating>Win rate: {{ currentEnrichedUser.winRateGoalkeeper }}</q-badge>
@@ -71,6 +72,7 @@
                         <div class="stat-section stat-section__games">
                             <div class="text-h6">Striker statistics</div>
                             <div>played: {{ currentEnrichedUser.playedStriker }}</div>
+                            <div>goal done: {{ currentEnrichedUser.goalDoneAsStriker }}</div>
                             <div>won: {{ currentEnrichedUser.wonStriker }}</div>
                             <div>lost: {{ currentEnrichedUser.lostStriker }}</div>
                             <q-badge floating>Win rate: {{ currentEnrichedUser.winRateStriker }}</q-badge>
