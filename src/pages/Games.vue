@@ -412,7 +412,8 @@ export default {
                 u.value = u.id,
                 u.label = u.nickname,
                 u.avatar = u.avatar,
-                u.disable = this.alreadySelectedUsers.indexOf(u.id) !== -1
+                u.disable = this.alreadySelectedUsers.indexOf(u.id) !== -1,
+                u.played = (this.allRankings && this.allRankings[u.id]) ? this.allRankings[u.id].played : 0 // user can have no rankings
                 return u
             }).sort((a,b) => {
                 const nickA = a.nickname.toLowerCase()
@@ -429,7 +430,8 @@ export default {
          * The 8 player with the most amount of game in this season
          */
         usersChips() {
-            return this.allRankingsArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1).sort((a,b) => b.played - a.played).slice(0,8)
+            return this.usersArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1).sort((a,b) => b.played - a.played).slice(0,8)
+            // this.allRankingsArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1).sort((a,b) => b.played - a.played).slice(0,8)
         },
 
         selecteGameBlueKeeper() {
