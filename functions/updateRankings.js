@@ -1,4 +1,5 @@
 const { database } = require('./admin');
+const updateHistory = require("./updateHistory");
 
 /**
  * Cloud function that given a season (optional) and a new game created it update the 
@@ -195,34 +196,9 @@ exports.default = async function(snap, context, season, devMode = false) {
             });
         }
 
-        const updateHistory = async function(blueKeeper, blueStriker, redKeeper, redStriker, game) {
-            // get history collection
-            let historyCollection;
-            if (devMode) {
-                historyCollection = db.collection("DEV_seasons").doc(season).collection("DEV_history");
-            } else {
-                historyCollection = db.collection("seasons").doc(season).collection("history");
-            }
-
-            // prepare date
-            const now = new Date(game.creationDate);
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const day = (now.getDate() + "").padStart(2, "0");
-            const date = `${year}_${month}_${day}`; // e.g. 2019_12_07
-            
-            const historyDoc = await historyCollection.doc(date).get();
-            let historyDay = historyDoc.exists ? historyDoc.data() : {}
-            historyDay[blueKeeper.id] = blueKeeper;
-            historyDay[blueStriker.id] = blueStriker;
-            historyDay[redKeeper.id] = redKeeper;
-            historyDay[redStriker.id] = redStriker;
-
-            // update history day doc
-            await historyDoc.ref.set(historyDay);
-        };
+        // wrapper in try catch because if it fails the rest of the operations will continue as usual
         try {
-            await updateHistory(blueKeeper, blueStriker, redKeeper, redStriker, newGame);
+            await updateHistory(blueKeeper, blueStriker, redKeeper, redStriker, newGame, season, devMode);
         } catch(error) {
             console.log("error in update history");
             console.log(error);
