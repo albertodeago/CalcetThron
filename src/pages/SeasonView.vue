@@ -3,7 +3,7 @@
         <q-tabs v-model="tab" inline-label class="bg-grey-3" align="justify" narrow-indicator>
             <q-route-tab icon="list" name="games" to="/games" exact />
             <q-route-tab icon="whatshot" name="elo" to="/elo" exact v-if="selectedSeason && selectedSeason.number !== 0"/>
-            <q-route-tab icon="emoji_events" name="awards" to="/awards" exact v-if="selectedSeason && selectedSeason.number !== 0"/>
+            <q-route-tab icon="emoji_events" name="awards" to="/awards" exact v-if="selectedSeason && selectedSeason.number >= seasonStartForAwards"/>
             <q-route-tab icon="bar_chart" name="statistics" to="/statistics" exact />
         </q-tabs>
 
@@ -42,7 +42,8 @@ const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/darthron-6a63
 export default {
     data() {
         return {
-            tab: "games"
+            tab: "games",
+            seasonStartForAwards: 4
         }
     },
     components: {

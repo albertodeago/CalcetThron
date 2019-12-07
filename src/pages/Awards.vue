@@ -1,305 +1,310 @@
 <template>
     <div class="">
         <template v-if="isReady">
-            <q-card class="my-card q-mb-md">
-                <q-card-section>
-                    <div class="text-h6">Best autogoller</div>
-                    <div class="text-subtitle2">Players with the highest number of autogoal per game</div>
-                </q-card-section>
+            <template v-if="notEnoughData">
+                <span class="text-h6">Not enough data, check this tab in some days</span>
+            </template>
+            <template v-else>
+                <q-card class="my-card q-mb-md">
+                    <q-card-section>
+                        <div class="text-h6">Best autogoller</div>
+                        <div class="text-subtitle2">Players with the highest number of autogoal per game</div>
+                    </q-card-section>
 
-                <q-separator />
+                    <q-separator />
 
-                <q-card-section>
-                    <q-list>
-                        <q-item>
-                            <q-item-section avatar>
-                                <q-avatar>
-                                    <q-img :src="bestAutogoller[0].avatar" :ratio="1" />
-                                </q-avatar>
-                            </q-item-section>
-
-                            <q-item-section>
-                                <q-item-label>{{bestAutogoller[0].nickname}}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side>
-                                <q-item-label>{{bestAutogoller[0].autogoalAverage}}</q-item-label>
-                            </q-item-section>
-                        </q-item>
-
-                        <q-expansion-item expand-separator label="Honorable mentions" >
-                            <q-item v-for="player in bestAutogoller.slice(1, 4)" :key="player.id">
+                    <q-card-section>
+                        <q-list>
+                            <q-item>
                                 <q-item-section avatar>
                                     <q-avatar>
-                                        <q-img :src="player.avatar" :ratio="1" />
+                                        <q-img :src="bestAutogoller[0].avatar" :ratio="1" />
                                     </q-avatar>
                                 </q-item-section>
 
                                 <q-item-section>
-                                    <q-item-label>{{player.nickname}}</q-item-label>
+                                    <q-item-label>{{bestAutogoller[0].nickname}}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
-                                    <q-item-label>{{player.autogoalAverage}}</q-item-label>
+                                    <q-item-label>{{bestAutogoller[0].autogoalAverage}}</q-item-label>
                                 </q-item-section>
                             </q-item>
-                        </q-expansion-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
 
-            <q-card class="my-card q-mb-md">
-                <q-card-section>
-                    <div class="text-h6">Most effective strikers</div>
-                    <div class="text-subtitle2">Players with the highest goals done as striker per game</div>
-                </q-card-section>
+                            <q-expansion-item expand-separator label="Honorable mentions" >
+                                <q-item v-for="player in bestAutogoller.slice(1, 4)" :key="player.id">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="player.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
 
-                <q-separator />
+                                    <q-item-section>
+                                        <q-item-label>{{player.nickname}}</q-item-label>
+                                    </q-item-section>
+                                    <q-item-section side>
+                                        <q-item-label>{{player.autogoalAverage}}</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-expansion-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
 
-                <q-card-section>
-                    <q-list>
-                        <q-item>
-                            <q-item-section avatar>
-                                <q-avatar>
-                                    <q-img :src="mostEffectiveStriker[0].avatar" :ratio="1" />
-                                </q-avatar>
-                            </q-item-section>
+                <q-card class="my-card q-mb-md">
+                    <q-card-section>
+                        <div class="text-h6">Most effective strikers</div>
+                        <div class="text-subtitle2">Players with the highest goals done as striker per game</div>
+                    </q-card-section>
 
-                            <q-item-section>
-                                <q-item-label>{{mostEffectiveStriker[0].nickname}}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side>
-                                <q-item-label>{{mostEffectiveStriker[0].goalDoneAsStriker}}</q-item-label>
-                            </q-item-section>
-                        </q-item>
+                    <q-separator />
 
-                        <q-expansion-item expand-separator label="Honorable mentions" >
-                            <q-item v-for="player in mostEffectiveStriker.slice(1, 4)" :key="player.id">
+                    <q-card-section>
+                        <q-list>
+                            <q-item>
                                 <q-item-section avatar>
                                     <q-avatar>
-                                        <q-img :src="player.avatar" :ratio="1" />
+                                        <q-img :src="mostEffectiveStriker[0].avatar" :ratio="1" />
                                     </q-avatar>
                                 </q-item-section>
 
                                 <q-item-section>
-                                    <q-item-label>{{player.nickname}}</q-item-label>
+                                    <q-item-label>{{mostEffectiveStriker[0].nickname}}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
-                                    <q-item-label>{{player.goalDoneAsStriker}}</q-item-label>
+                                    <q-item-label>{{mostEffectiveStriker[0].goalDoneAsStriker}}</q-item-label>
                                 </q-item-section>
                             </q-item>
-                        </q-expansion-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
 
-            <q-card class="my-card q-mb-md">
-                <q-card-section>
-                    <div class="text-h6">Most effective goalkeepers</div>
-                    <div class="text-subtitle2">Players with the highest goals done as goalkeeper per game</div>
-                </q-card-section>
+                            <q-expansion-item expand-separator label="Honorable mentions" >
+                                <q-item v-for="player in mostEffectiveStriker.slice(1, 4)" :key="player.id">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="player.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
 
-                <q-separator />
+                                    <q-item-section>
+                                        <q-item-label>{{player.nickname}}</q-item-label>
+                                    </q-item-section>
+                                    <q-item-section side>
+                                        <q-item-label>{{player.goalDoneAsStriker}}</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-expansion-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
 
-                <q-card-section>
-                    <q-list>
-                        <q-item>
-                            <q-item-section avatar>
-                                <q-avatar>
-                                    <q-img :src="mostEffectiveGoalkeeper[0].avatar" :ratio="1" />
-                                </q-avatar>
-                            </q-item-section>
+                <q-card class="my-card q-mb-md">
+                    <q-card-section>
+                        <div class="text-h6">Most effective goalkeepers</div>
+                        <div class="text-subtitle2">Players with the highest goals done as goalkeeper per game</div>
+                    </q-card-section>
 
-                            <q-item-section>
-                                <q-item-label>{{mostEffectiveGoalkeeper[0].nickname}}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side>
-                                <q-item-label>{{mostEffectiveGoalkeeper[0].goalDoneAsGoalkeeper}}</q-item-label>
-                            </q-item-section>
-                        </q-item>
+                    <q-separator />
 
-                        <q-expansion-item expand-separator label="Honorable mentions" >
-                            <q-item v-for="player in mostEffectiveGoalkeeper.slice(1, 4)" :key="player.id">
+                    <q-card-section>
+                        <q-list>
+                            <q-item>
                                 <q-item-section avatar>
                                     <q-avatar>
-                                        <q-img :src="player.avatar" :ratio="1" />
+                                        <q-img :src="mostEffectiveGoalkeeper[0].avatar" :ratio="1" />
                                     </q-avatar>
                                 </q-item-section>
 
                                 <q-item-section>
-                                    <q-item-label>{{player.nickname}}</q-item-label>
+                                    <q-item-label>{{mostEffectiveGoalkeeper[0].nickname}}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
-                                    <q-item-label>{{player.goalDoneAsGoalkeeper}}</q-item-label>
+                                    <q-item-label>{{mostEffectiveGoalkeeper[0].goalDoneAsGoalkeeper}}</q-item-label>
                                 </q-item-section>
                             </q-item>
-                        </q-expansion-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
 
-            <q-card class="my-card q-mb-md">
-                <q-card-section>
-                    <div class="text-h6">Best offensive player overall</div>
-                    <div class="text-subtitle2">Players with the highest goals done, no matter the role</div>
-                </q-card-section>
+                            <q-expansion-item expand-separator label="Honorable mentions" >
+                                <q-item v-for="player in mostEffectiveGoalkeeper.slice(1, 4)" :key="player.id">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="player.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
 
-                <q-separator />
+                                    <q-item-section>
+                                        <q-item-label>{{player.nickname}}</q-item-label>
+                                    </q-item-section>
+                                    <q-item-section side>
+                                        <q-item-label>{{player.goalDoneAsGoalkeeper}}</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-expansion-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
 
-                <q-card-section>
-                    <q-list>
-                        <q-item>
-                            <q-item-section avatar>
-                                <q-avatar>
-                                    <q-img :src="bestOffensiveOverall[0].avatar" :ratio="1" />
-                                </q-avatar>
-                            </q-item-section>
+                <q-card class="my-card q-mb-md">
+                    <q-card-section>
+                        <div class="text-h6">Best offensive player overall</div>
+                        <div class="text-subtitle2">Players with the highest goals done, no matter the role</div>
+                    </q-card-section>
 
-                            <q-item-section>
-                                <q-item-label>{{bestOffensiveOverall[0].nickname}}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side>
-                                <q-item-label>{{bestOffensiveOverall[0].goalDone}}</q-item-label>
-                            </q-item-section>
-                        </q-item>
+                    <q-separator />
 
-                        <q-expansion-item expand-separator label="Honorable mentions" >
-                            <q-item v-for="player in bestOffensiveOverall.slice(1, 4)" :key="player.id">
+                    <q-card-section>
+                        <q-list>
+                            <q-item>
                                 <q-item-section avatar>
                                     <q-avatar>
-                                        <q-img :src="player.avatar" :ratio="1" />
+                                        <q-img :src="bestOffensiveOverall[0].avatar" :ratio="1" />
                                     </q-avatar>
                                 </q-item-section>
 
                                 <q-item-section>
-                                    <q-item-label>{{player.nickname}}</q-item-label>
+                                    <q-item-label>{{bestOffensiveOverall[0].nickname}}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
-                                    <q-item-label>{{player.goalDone}}</q-item-label>
+                                    <q-item-label>{{bestOffensiveOverall[0].goalDone}}</q-item-label>
                                 </q-item-section>
                             </q-item>
-                        </q-expansion-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
 
-            <q-card class="my-card q-mb-md">
-                <q-card-section>
-                    <div class="text-h6">Best defensive player overall</div>
-                    <div class="text-subtitle2">Players with the lowest goals received, no matter the role</div>
-                </q-card-section>
+                            <q-expansion-item expand-separator label="Honorable mentions" >
+                                <q-item v-for="player in bestOffensiveOverall.slice(1, 4)" :key="player.id">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="player.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
 
-                <q-separator />
+                                    <q-item-section>
+                                        <q-item-label>{{player.nickname}}</q-item-label>
+                                    </q-item-section>
+                                    <q-item-section side>
+                                        <q-item-label>{{player.goalDone}}</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-expansion-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
 
-                <q-card-section>
-                    <q-list>
-                        <q-item>
-                            <q-item-section avatar>
-                                <q-avatar>
-                                    <q-img :src="bestDefensiveOverall[0].avatar" :ratio="1" />
-                                </q-avatar>
-                            </q-item-section>
+                <q-card class="my-card q-mb-md">
+                    <q-card-section>
+                        <div class="text-h6">Best defensive player overall</div>
+                        <div class="text-subtitle2">Players with the lowest goals received, no matter the role</div>
+                    </q-card-section>
 
-                            <q-item-section>
-                                <q-item-label>{{bestDefensiveOverall[0].nickname}}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side>
-                                <q-item-label>{{bestDefensiveOverall[0].goalReceived}}</q-item-label>
-                            </q-item-section>
-                        </q-item>
+                    <q-separator />
 
-                        <q-expansion-item expand-separator label="Honorable mentions" >
-                            <q-item v-for="player in bestDefensiveOverall.slice(1, 4)" :key="player.id">
+                    <q-card-section>
+                        <q-list>
+                            <q-item>
                                 <q-item-section avatar>
                                     <q-avatar>
-                                        <q-img :src="player.avatar" :ratio="1" />
+                                        <q-img :src="bestDefensiveOverall[0].avatar" :ratio="1" />
                                     </q-avatar>
                                 </q-item-section>
 
                                 <q-item-section>
-                                    <q-item-label>{{player.nickname}}</q-item-label>
+                                    <q-item-label>{{bestDefensiveOverall[0].nickname}}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
-                                    <q-item-label>{{player.goalReceived}}</q-item-label>
+                                    <q-item-label>{{bestDefensiveOverall[0].goalReceived}}</q-item-label>
                                 </q-item-section>
                             </q-item>
-                        </q-expansion-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
 
-            <q-card class="my-card q-mb-md">
-                <q-card-section>
-                    <div class="text-h6">Most effective player overall</div>
-                    <div class="text-subtitle2">Players with the highest win rate, no matter the role</div>
-                </q-card-section>
+                            <q-expansion-item expand-separator label="Honorable mentions" >
+                                <q-item v-for="player in bestDefensiveOverall.slice(1, 4)" :key="player.id">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="player.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
 
-                <q-separator />
+                                    <q-item-section>
+                                        <q-item-label>{{player.nickname}}</q-item-label>
+                                    </q-item-section>
+                                    <q-item-section side>
+                                        <q-item-label>{{player.goalReceived}}</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-expansion-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
 
-                <q-card-section>
-                    <q-list>
-                        <q-item>
-                            <q-item-section avatar>
-                                <q-avatar>
-                                    <q-img :src="mostEffectiveOverall[0].avatar" :ratio="1" />
-                                </q-avatar>
-                            </q-item-section>
+                <q-card class="my-card q-mb-md">
+                    <q-card-section>
+                        <div class="text-h6">Most effective player overall</div>
+                        <div class="text-subtitle2">Players with the highest win rate, no matter the role</div>
+                    </q-card-section>
 
-                            <q-item-section>
-                                <q-item-label>{{mostEffectiveOverall[0].nickname}}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side>
-                                <q-item-label>{{mostEffectiveOverall[0].winRateLabel}}</q-item-label>
-                            </q-item-section>
-                        </q-item>
+                    <q-separator />
 
-                        <q-expansion-item expand-separator label="Honorable mentions" >
-                            <q-item v-for="player in mostEffectiveOverall.slice(1, 4)" :key="player.id">
+                    <q-card-section>
+                        <q-list>
+                            <q-item>
                                 <q-item-section avatar>
                                     <q-avatar>
-                                        <q-img :src="player.avatar" :ratio="1" />
+                                        <q-img :src="mostEffectiveOverall[0].avatar" :ratio="1" />
                                     </q-avatar>
                                 </q-item-section>
 
                                 <q-item-section>
-                                    <q-item-label>{{player.nickname}}</q-item-label>
+                                    <q-item-label>{{mostEffectiveOverall[0].nickname}}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
-                                    <q-item-label>{{player.winRateLabel}}</q-item-label>
+                                    <q-item-label>{{mostEffectiveOverall[0].winRateLabel}}</q-item-label>
                                 </q-item-section>
                             </q-item>
-                        </q-expansion-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
 
-            <q-card class="my-card q-mb-md">
-                <q-card-section>
-                    <div class="text-h6">Player with less than {{minGame}} ganes</div>
-                    <div class="text-subtitle2">Those played are not taken in consideration in the above awards</div>
-                </q-card-section>
+                            <q-expansion-item expand-separator label="Honorable mentions" >
+                                <q-item v-for="player in mostEffectiveOverall.slice(1, 4)" :key="player.id">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="player.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
 
-                <q-separator />
+                                    <q-item-section>
+                                        <q-item-label>{{player.nickname}}</q-item-label>
+                                    </q-item-section>
+                                    <q-item-section side>
+                                        <q-item-label>{{player.winRateLabel}}</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-expansion-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
 
-                <q-card-section>
-                    <q-list>
-                        <q-expansion-item expand-separator label="Show players" >
-                            <q-item v-for="player in lowGamePlayers" :key="player.id">
-                                <q-item-section avatar>
-                                    <q-avatar>
-                                        <q-img :src="player.avatar" :ratio="1" />
-                                    </q-avatar>
-                                </q-item-section>
+                <q-card class="my-card q-mb-md">
+                    <q-card-section>
+                        <div class="text-h6">Player with less than {{minGame}} ganes</div>
+                        <div class="text-subtitle2">Those played are not taken in consideration in the above awards</div>
+                    </q-card-section>
 
-                                <q-item-section>
-                                    <q-item-label>{{player.nickname}}</q-item-label>
-                                </q-item-section>
-                                <q-item-section side>
-                                    <q-item-label>{{player.played}}</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                        </q-expansion-item>
-                    </q-list>
-                </q-card-section>
-            </q-card>
+                    <q-separator />
+
+                    <q-card-section>
+                        <q-list>
+                            <q-expansion-item expand-separator label="Show players" >
+                                <q-item v-for="player in lowGamePlayers" :key="player.id">
+                                    <q-item-section avatar>
+                                        <q-avatar>
+                                            <q-img :src="player.avatar" :ratio="1" />
+                                        </q-avatar>
+                                    </q-item-section>
+
+                                    <q-item-section>
+                                        <q-item-label>{{player.nickname}}</q-item-label>
+                                    </q-item-section>
+                                    <q-item-section side>
+                                        <q-item-label>{{player.played}}</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-expansion-item>
+                        </q-list>
+                    </q-card-section>
+                </q-card>
+            </template>
         </template>
     </div>
 </template>
@@ -310,10 +315,8 @@ import { mapGetters, mapActions } from "vuex"
 export default {
     data() {
         return {
-            minGame: 15,
-            nGamesPerAward: 1,
-            enrichedUsers: [],
-            sortBy: "winRate",
+            minGame: 15,      // number of games that users have to do to be taken in account in awards
+            nGamesPerAward: 1 // set this to 10 if you want to show statistics for 10 games (e.g. goals done every 10 games)
         }
     },
 
@@ -323,7 +326,11 @@ export default {
         ...mapGetters('Seasons', ['selectedSeason']),
 
         isReady() {
-            return !this.isLoading && this.activePlayers.length
+            return !this.isLoading && this.allRankingsArray.length
+        },
+
+        notEnoughData() {
+            return this.activePlayers.length < 1
         },
 
         /**
@@ -331,7 +338,7 @@ export default {
          */
         lowGamePlayers() {
             const lgp = this.allRankingsArray.filter(a => a.played <= this.minGame).sort((a, b) => b.played - a.played);
-            console.log(lgp);
+            // console.log(lgp);
             return lgp;
         },
 
@@ -340,7 +347,7 @@ export default {
          */
         activePlayers() {
             const actives = this.allRankingsArray.filter(a => a.played > this.minGame)
-            console.log(actives);
+            // console.log(actives);
             return actives;
         },
         
