@@ -197,23 +197,21 @@ exports.default = async function(snap, context, season, devMode = false) {
             const date = `${year}_${month}_${day}`; // e.g. 2019_12_07
             
             const historyDoc = await historyCollection.doc(date).get();
-            let historyDay;
-            if (historyDoc.exists()) {
-                // day is already in db, we just need to update rankings
-                historyDay = historyDoc.data();
-            } else {
-                // create day entry in db with rankings
-                historyDay = {}
-            }
+            let historyDay = historyDoc.exists ? historyDoc.data() : {}
             historyDay[blueKeeper.id] = blueKeeper;
             historyDay[blueStriker.id] = blueStriker;
             historyDay[redKeeper.id] = redKeeper;
             historyDay[redStriker.id] = redStriker;
 
             // update history day doc
-            await historyDoc.set(newGame);
+            await historyDoc.ref.set(historyDay);
         };
-        updateHistory(blueKeeper, blueStriker, redKeeper, redStriker, newGame);
+        try {
+            await updateHistory(blueKeeper, blueStriker, redKeeper, redStriker, newGame);
+        } catch(error) {
+            console.log("error in update history");
+            console.log(error);
+        }
         
         updateGamesPromise = Promise.all([updateGamePromise, updateGameCopyPromise]);
     } else {
