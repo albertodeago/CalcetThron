@@ -6,7 +6,8 @@ const { database } = require('./admin');
  * frontend to build an "history" graph or something like that.
  */
 exports.default = async function(blueKeeper, blueStriker, redKeeper, redStriker, game, season, devMode) {
-    const db = database
+    const db = database;
+    console.log(`[updateHistory] devMode: ${devMode} - gameId: ${snap.id} - season: ${season}`);
 
     // get history collection
     let historyCollection;
@@ -32,4 +33,5 @@ exports.default = async function(blueKeeper, blueStriker, redKeeper, redStriker,
 
     // update history day doc
     await historyDoc.ref.set(historyDay);
+    console.log(`[updateHistory] done successfully`);
 };

@@ -1,5 +1,5 @@
 const { database } = require('./admin');
-const updateHistory = require("./updateHistory");
+const updateHistory = require("./updateHistory").default;
 
 /**
  * Cloud function that given a season (optional) and a new game created it update the 
@@ -55,7 +55,6 @@ exports.default = async function(snap, context, season, devMode = false) {
     const redKeeperPromise = rankingsCollection.doc(newGame.redTeam.keeper).get();
     const redStrikerPromise = rankingsCollection.doc(newGame.redTeam.striker).get();
 
-    console.log(`[updateRankings] getting rankings of players: BK:${newGame.blueTeam.keeper} - BS:${newGame.blueTeam.striker} - RK:${newGame.redTeam.keeper} - RS:${newGame.redTeam.striker}`);
     const results = await Promise.all([blueKeeperPromise, blueStrikerPromise, redKeeperPromise, redStrikerPromise]);
 
     // log something to have some more info in dashboard logs
