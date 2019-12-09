@@ -7,7 +7,7 @@ const { database } = require('./admin');
  */
 exports.default = async function(blueKeeper, blueStriker, redKeeper, redStriker, game, season, devMode) {
     const db = database;
-    console.log(`[updateHistory] devMode: ${devMode} - gameId: ${snap.id} - season: ${season}`);
+    console.log(`[updateHistory] devMode: ${devMode} - gameId: ${game.id} - season: ${season}`);
 
     // get history collection
     let historyCollection;
