@@ -4,6 +4,7 @@
             <q-route-tab icon="list" name="games" to="/games" exact />
             <q-route-tab icon="bar_chart" name="statistics" to="/statistics" exact />
             <q-route-tab icon="whatshot" name="elo" to="/elo" exact v-if="selectedSeason && selectedSeason.number !== 0"/>
+            <q-route-tab icon="whatshot" name="history" to="/history" exact v-if="selectedSeason && selectedSeason.number  >= 3"/> <!-- TODO: should be >= 4 -->
         </q-tabs>
 
         <q-separator />
@@ -20,6 +21,10 @@
             <q-tab-panel name="elo">
                 <rankings></rankings>
             </q-tab-panel>
+
+            <q-tab-panel name="history">
+                <history></history>
+            </q-tab-panel>
         </q-tab-panels>
     </div>
 </template>
@@ -30,6 +35,7 @@ import { Game } from "../models"
 import GameComponent from "./Games.vue"
 import StatisticsComponent from "./Statistics.vue"
 import RankingsComponent from "./Rankings.vue"
+import HistoryComponent from "./History.vue"
 
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/darthron-6a632.appspot.com/o/avatars%2Fdefault_avatar.png?alt=media&token=ebd85bb5-b11c-4ca9-b7d3-4fab14d56d88"
 
@@ -42,7 +48,8 @@ export default {
     components: {
         "games": GameComponent,
         "statistics": StatisticsComponent,
-        "rankings": RankingsComponent
+        "rankings": RankingsComponent,
+        "history": HistoryComponent
     },
     computed: {
         ...mapGetters('Game', ['gamesArray']),
@@ -57,7 +64,7 @@ export default {
 
     watch: {
         selectedSeason(val) {
-            if (val.number === 0 && this.tab === "elo")
+            if (val.number === 0 && (this.tab === "elo" || this.tab === "history"))
                 this.tab = "games"
         }
     }

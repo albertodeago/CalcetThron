@@ -26,6 +26,10 @@ const routes = [{
             component: () => import("pages/SeasonView.vue")
         },
         {
+            path: "history",
+            component: () => import("pages/SeasonView.vue")
+        },
+        {
             path: 'login',
             component: () => import ('pages/Login.vue')
         },

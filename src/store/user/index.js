@@ -157,7 +157,7 @@ export default {
             }
         },
 
-        async getUser({ commit, rootState, dispatch }, firebaseUserUid) {
+        async getUser({ dispatch }, firebaseUserUid) {
             const db = firebase.firestore();
             const usersCollection = Config.devMode ? db.collection("DEV_users") : db.collection('users');
 

@@ -43,6 +43,7 @@ export default {
     ...mapActions('User', ['subscribeToUsers', 'getAllUsers']),
     ...mapActions('Seasons', ['getSeasons']),
     ...mapActions('Rankings', ['getRankings', 'subscribeToRankings']),
+    ...mapActions('History', ['getHistory']),
 
     dismissMessage() {
       // TODO: add transition to banner enter and exit
@@ -58,6 +59,7 @@ export default {
       this.getRankings().then(() => {
         this.subscribeToRankings()
       })
+      this.getHistory()
     }
   },
   
@@ -76,8 +78,9 @@ export default {
     })
 
     // download all useful informations (users, games.... )
-    this.getAllUsers();
-    this.getSeasons();
+    this.getAllUsers()
+    this.getSeasons()
+    this.getHistory()
   }
 }
 </script>
