@@ -2,7 +2,7 @@
     <div class="">
         <template  v-if="!isLoading">
             <q-list bordered padding>
-                <template v-for="(enrichedUser, index) in sortedRankings">
+                <template v-for="(enrichedUser, index) in enrichedForStatistics">
                     <q-item :key="enrichedUser.id" clickable @click="openUser(enrichedUser)">
                         <q-item-section top avatar>
                             <q-avatar>
@@ -12,10 +12,13 @@
 
                         <q-item-section>
                             <q-item-label>{{ enrichedUser.nickname }}</q-item-label>
-                            <q-item-label caption>Played games: {{ enrichedUser.played | tierize }}</q-item-label>
+                            <q-item-label caption>Played games: {{ enrichedUser.played }}</q-item-label>
                             <q-item-label caption>Goals done: {{ enrichedUser.goalDone }}</q-item-label>
+                            <q-item-label caption>Average per game: {{ enrichedUser.goalsDonePerGame }}</q-item-label>
                             <q-item-label caption>Goals received: {{ enrichedUser.goalReceived }}</q-item-label>
+                            <q-item-label caption>Average per game: {{ enrichedUser.goalsReceivedPerGame }}</q-item-label>
                             <q-item-label caption>Autogoals done: {{ enrichedUser.autogoalDone }}</q-item-label>
+                            <q-item-label caption>Average per game: {{ enrichedUser.autogoalsDonePerGame }}</q-item-label>
                         </q-item-section>
 
                         <q-item-section side top>
@@ -41,11 +44,11 @@ export default {
         }
     },
     
-    filters: {
-        tierize(value) {
-            return value > 100 ? "100+": ""+value
-        }
-    },
+    // filters: {
+    //     tierize(value) {
+    //         return value > 100 ? "100+": ""+value
+    //     }
+    // },
 
     computed: {
         ...mapGetters("Global", ["isLoading"]),
@@ -54,6 +57,17 @@ export default {
 
         sortedRankings() {
             return this.allRankingsArray.slice().sort((a, b) => parseInt(b[this.sortBy].slice(0, -1)) - parseInt(a[this.sortBy].slice(0, -1)))
+        },
+
+        enrichedForStatistics() {
+            return this.sortedRankings.map(rank => {
+                return {
+                    ...rank,
+                    goalsDonePerGame: (rank.goalDone / rank.played).toFixed(2),
+                    goalsReceivedPerGame: (rank.goalReceived / rank.played).toFixed(2),
+                    autogoalsDonePerGame: (rank.autogoalDone / rank.played).toFixed(2),
+                }
+            })
         }
     },
 
