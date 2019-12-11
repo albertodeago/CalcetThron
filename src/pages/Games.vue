@@ -409,12 +409,13 @@ export default {
 
         usersArray() {
             return this.allUsersArray.map(u => {
-                u.value = u.id,
-                u.label = u.nickname,
-                u.avatar = u.avatar,
-                u.disable = this.alreadySelectedUsers.indexOf(u.id) !== -1,
-                u.played = (this.allRankings && this.allRankings[u.id]) ? this.allRankings[u.id].played : 0 // user can have no rankings
-                return u
+                const newUser = Object.assign({}, u)
+                newUser.value = u.id
+                newUser.label = u.nickname
+                newUser.avatar = u.avatar
+                newUser.disable = this.alreadySelectedUsers.indexOf(u.id) !== -1
+                newUser.played = (this.allRankings && this.allRankings[u.id]) ? this.allRankings[u.id].played : 0 // user can have no rankings
+                return newUser
             }).sort((a,b) => {
                 const nickA = a.nickname.toLowerCase()
                 const nickB = b.nickname.toLowerCase()
