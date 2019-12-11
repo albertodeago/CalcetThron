@@ -9,9 +9,9 @@ This is a toy project and it's not intended to be used "professionally"
 ### How it's made
 
 The project consist in a frontend web application (and PWA) built by using the amazing [Quasar framework](https://v1.quasar-framework.org) and in a backend made with [Firebase](https://firebase.google.com/).  
-The following Firebase features are used_
+The following Firebase features are used:
  - [Hosting](https://firebase.google.com/products/hosting/): to host the application
- - [Authentication](https://firebase.google.com/products/auth/): to have an easy authenticaiton setup
+ - [Authentication](https://firebase.google.com/products/auth/): to have an easy authentication setup
  - [Storage](https://firebase.google.com/products/storage/): just to store the user profile pictures for now
  - [Firestore database](https://firebase.google.com/products/firestore/): as a database for all the data. Using collection, subcollection, queries, pagination, secure validaiton rules and realtime update subscriptions
  - [Cloud functions](https://firebase.google.com/products/functions/): to listen to database changes and update the user statistics and rankings
