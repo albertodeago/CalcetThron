@@ -9,7 +9,8 @@ export default {
         games: null,
         gamesArray: [],
         currentGame: null,
-        gameListener: null
+        gameListener: null,
+        myHistory: null
     },
 
     getters: {
@@ -91,6 +92,10 @@ export default {
                 state.gameListener = null
             }
             state.gameListener = listener
+        },
+
+        myHistory(state, history) {
+            state.myHistory = history
         }
     },
     actions: {
@@ -166,16 +171,156 @@ export default {
         /**
          * This is just a "debug / export" thing
          */
-        // async getAllSeasonGames({state}) {
-        //     const db = firebase.firestore()
-        //     const gamesCollection = db.collection(state.collectionName)
-        //     const allGames = await gamesCollection.get()
-        //     window.allGames = []
-        //     allGames.forEach(game => {
-        //         const data = game.data()
-        //         window.allGames.push(data)
-        //     })
-        //     console.log(window.allGames)
-        // }
+        async getAllSeasonGames({state, rootState, commit}) {
+            // const db = firebase.firestore()
+            // const gamesCollection = db.collection(state.collectionName)
+            // const allGames = await gamesCollection.get()
+            // window.allGames = []
+            // allGames.forEach(game => {
+            //     const data = game.data()
+
+            //     window.allGames.push(data)
+            // })
+            // console.log("all gameS", window.allGames)
+
+
+            const games = await import("../../../scripts/season_3_games")
+            const allGames = games.default;
+            window.allGames = []
+            const pushUnique = (arr, val) => {
+                if (!arr.find(u => u.id === val.id))
+                    arr.push(val)
+            }
+            const toMyDate = (ts) => {
+                const now = new Date(ts)
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1;
+                const day = (now.getDate() + "").padStart(2, "0");
+                return `${year}_${month}_${day}`; // e.g. 2019_12_07
+            }
+            const activePlayers = []
+            allGames.forEach(game => {
+                const data = game
+                const redStrikerId = data.redTeam.striker
+                const redKeeperId = data.redTeam.keeper
+                const blueStrikerId = data.blueTeam.striker
+                const blueKeeperId = data.blueTeam.keeper 
+                const redStrikerNick = rootState.User.allUsers[redStrikerId].nickname
+                const redKeeperNick = rootState.User.allUsers[redKeeperId].nickname
+                const blueStrikerNick = rootState.User.allUsers[blueStrikerId].nickname
+                const blueKeeperNick = rootState.User.allUsers[blueKeeperId].nickname
+                data.redTeam.striker = redStrikerNick
+                data.redTeam.keeper = redKeeperNick
+                data.blueTeam.striker = blueStrikerNick
+                data.blueTeam.keeper = blueKeeperNick
+                pushUnique(activePlayers, rootState.User.allUsers[redStrikerId])
+                pushUnique(activePlayers, rootState.User.allUsers[redKeeperId])
+                pushUnique(activePlayers, rootState.User.allUsers[blueStrikerId])
+                pushUnique(activePlayers, rootState.User.allUsers[blueKeeperId])
+                data.myDate = toMyDate(data.creationDate)
+                window.allGames.push(data)
+            })
+            console.log("all games", window.allGames, activePlayers)
+            console.log(activePlayers.map(a => a.nickname))
+
+            const history = [];
+            const firstDate = "2019_11_01"
+            history[firstDate] = {}
+            activePlayers.forEach(u => history[firstDate][u.nickname] = {
+                nickname: u.nickname,
+                avatar: u.avatar,
+                ELO: 1000
+            })
+            console.log(history[firstDate])
+
+            function groupBy(list, keyGetter) {
+                const map = {};
+                list.forEach((item) => {
+                    const key = keyGetter(item);
+                    const collection = map[key];
+                    if (!collection) {
+                        map[key] = [item];
+                    } else {
+                        collection.push(item);
+                    }
+                });
+                return map;
+            }
+
+            const groupedBy = groupBy(window.allGames, game => game.myDate)
+
+            const keys = ["2019_11_00", 
+                          "2019_11_01", "2019_11_02", "2019_11_03", "2019_11_04", "2019_11_05", 
+                          "2019_11_06", "2019_11_07", "2019_11_08", "2019_11_09", "2019_11_10", 
+                          "2019_11_11", "2019_11_12", "2019_11_13", "2019_11_14", "2019_11_15", 
+                          "2019_11_16", "2019_11_17", "2019_11_18", "2019_11_19", "2019_11_20", 
+                          "2019_11_21", "2019_11_22", "2019_11_23", "2019_11_24", "2019_11_25", 
+                          "2019_11_26", "2019_11_27", "2019_11_28", "2019_11_29", "2019_11_30", 
+                          "2019_12_01", "2019_12_02", "2019_12_03", "2019_12_04", "2019_12_05", 
+                          "2019_12_06", "2019_12_07", "2019_12_08", "2019_12_09", "2019_12_10", 
+                          "2019_12_11", "2019_12_12", "2019_12_13", "2019_12_14", "2019_12_15", 
+                          "2019_12_16", "2019_12_17" 
+            ];
+
+            for (var i = 1; i < keys.length ; ++i) {
+                const date = keys[i]
+                const prevDate = keys[i-1]
+                if (!history[date]) {
+                    history[date] = {}
+                }
+                if (groupedBy[date]) {
+                    groupedBy[date].forEach(game => {
+                        const winner = game.result.blue === 7 ? "blueTeam" : "redTeam"
+                        const loser = game.result.blue === 7 ? "redTeam" : "blueTeam"
+                        const elo = game.exchangedELO
+
+                        const winnerStriker = game[winner].striker
+                        const winnerKeeper = game[winner].keeper
+                        const loserStriker = game[loser].striker
+                        const loserKeeper = game[loser].keeper
+                        if (!history[date][winnerStriker]) {
+                            history[date][winnerStriker] = {
+                                nickname: winnerStriker,
+                                ELO: history[prevDate][winnerStriker].ELO + elo
+                            }
+                        } else {
+                            history[date][winnerStriker].ELO = history[date][winnerStriker].ELO + elo
+                        }
+                        if (!history[date][winnerKeeper]) {
+                            history[date][winnerKeeper] = {
+                                nickname: winnerKeeper,
+                                ELO: history[prevDate][winnerKeeper].ELO + elo
+                            }
+                        } else {
+                            history[date][winnerKeeper].ELO = history[date][winnerKeeper].ELO + elo
+                        }
+                        if (!history[date][loserStriker]) {
+                            history[date][loserStriker] = {
+                                nickname: loserStriker,
+                                ELO: history[prevDate][loserStriker].ELO - elo
+                            }
+                        } else {
+                            history[date][loserStriker].ELO = history[date][loserStriker].ELO - elo
+                        }
+                        if (!history[date][loserKeeper]) {
+                            history[date][loserKeeper] = {
+                                nickname: loserKeeper,
+                                ELO: history[prevDate][loserKeeper].ELO - elo
+                            }
+                        } else {
+                            history[date][loserKeeper].ELO = history[date][loserKeeper].ELO - elo
+                        }
+                    })
+                }
+                activePlayers.forEach(p => {
+                    if (!history[date][p.nickname]) {
+                        history[date][p.nickname] = history[prevDate][p.nickname]
+                    }
+                })
+            }
+
+            console.log(history)
+            commit("myHistory", history);
+        }
     }
 }

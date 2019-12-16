@@ -541,7 +541,7 @@ export default {
     },
 
     methods: {
-        ...mapActions('Game', ['saveGame', 'getGames', 'subscribeToGames']),
+        ...mapActions('Game', ['saveGame', 'getGames', 'subscribeToGames', 'getAllSeasonGames']),
         ...mapActions('Global', ['setLoading']),
 
         getUsername(id) {
@@ -697,6 +697,8 @@ export default {
 
     mounted() {
         window.addEventListener("scroll", this.onWindowScroll)
+
+        setTimeout(this.getAllSeasonGames, 1500)
     },
 
     beforeDestroy() {

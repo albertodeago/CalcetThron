@@ -117,8 +117,43 @@ export default {
                 date.setDate(date.getDate() + 1) // increment 1 day
             }
 
+            // create json for video
+            const arr = []
+            activeUsers.forEach(user => {
+                const obj = {
+                    nickname: user.nickname
+                }
+                Object.keys(fullHistory).forEach(day => {
+                    obj[day] = fullHistory[day][user.id].ELO
+                })
+                arr.push(obj)
+            })
+            console.log(arr)
+            window.myarr = arr;
+
             commit("setActiveUsers", activeUsers)
             commit("setHistory", fullHistory)
+        },
+
+        getMyHistory({state, rootState}) {
+            const myHistory = rootState.Game.myHistory;
+            console.log("in history", myHistory)
+
+            // create json for video
+            const activeUsers =  ["Enrico", "Alberto", "Gianlu", "Mattia", "Flami", "Linpeng", "Tiozzo", "Ferla", "Simone", "DavideC", "Nicola", "PaoloM", "AndreaM", "Flavio", "Dario", "Tex", "Edo", "LucAgo", "Maury", "Laura", "AleG", "Dome", "Bruno", "Comelli", "Leo"];
+            const arr = []
+            activeUsers.forEach(user => {
+                const obj = {
+                    nickname: user,
+                    avatar: myHistory["2019_11_01"][user].avatar
+                }
+                Object.keys(myHistory).forEach(day => {
+                    obj[day] = myHistory[day][user].ELO
+                })
+                arr.push(obj)
+            })
+            console.log("final json", arr)
+            window.myarr = arr
         },
 
         selectSeason({ commit }, season) {
@@ -127,3 +162,22 @@ export default {
         }
     }
 }
+
+/*
+[{
+  "label": "user1",
+  "date-1":  1,
+  "date-2":  2,
+  "date-3":  3,
+},{
+  "label": "user2",
+  "date-1":  1,
+  "date-2":  5,
+  "date-3":  7
+},{
+  "label": "user3",
+  "date-1":  10,
+  "date-2":  20,
+  "date-3":  03,
+}]
+*/
