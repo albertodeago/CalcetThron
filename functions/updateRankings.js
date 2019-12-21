@@ -1,4 +1,5 @@
 const { database } = require('./admin');
+const {getExchangedELO} = require('./ELO');
 
 /**
  * Cloud function that given a season (optional) and a new game created it update the 
@@ -162,7 +163,7 @@ exports.default = async function(snap, context, season, devMode = false) {
         let amountELO;
         if (newGame.result.blue === 7) {
             // blue team won
-            amountELO = Math.min(Math.max(25 - Math.round(((blueTeamELO - redTeamELO) * 2) / 25), 2), 40); // min 2 max 40
+            amountELO = getExchangedELO(blueTeamELO - redTeamELO);
             console.log("[updateRankings] - Blue won, amount of ELO exchanged is " + amountELO);
             blueKeeper.ELO += amountELO;
             blueStriker.ELO += amountELO;
@@ -170,7 +171,7 @@ exports.default = async function(snap, context, season, devMode = false) {
             redStriker.ELO -= amountELO
         } else {
             // red team won
-            amountELO = Math.min(Math.max(25 - Math.round(((redTeamELO - blueTeamELO) * 2) / 25), 2), 40); // min 2 max 40
+            amountELO = getExchangedELO(redTeamELO - blueTeamELO);
             console.log("[updateRankings] - Red won, amount of ELO exchanged is " + amountELO);
             blueKeeper.ELO -= amountELO;
             blueStriker.ELO -= amountELO;
