@@ -359,7 +359,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex"
 import { Game } from "../models"
-import { getExchangedELO } from "../../functions/ELO"
+import ELO from "../../functions/ELO"
 import Utils from "../Utils"
 
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/darthron-6a632.appspot.com/o/avatars%2Fdefault_avatar.png?alt=media&token=ebd85bb5-b11c-4ca9-b7d3-4fab14d56d88"
@@ -529,8 +529,8 @@ export default {
             // TODO: use ELO.js instead
             // let redWinELO = Math.min(Math.max(25 - Math.round(((redTeamELO - blueTeamELO) * 2) / 25), 2), 40);
             // let blueWinELO = Math.min(Math.max(25 - Math.round(((blueTeamELO - redTeamELO) * 2) / 25), 2), 40);
-            let redWinELO = getExchangedELO(redTeamELO, blueTeamELO)
-            let blueWinELO = getExchangedELO(blueTeamELO, redTeamELO)
+            let redWinELO = ELO.getExchangedELO(redTeamELO, blueTeamELO)
+            let blueWinELO = ELO.getExchangedELO(blueTeamELO, redTeamELO)
 
             return { red: redWinELO, blue: blueWinELO }
         }

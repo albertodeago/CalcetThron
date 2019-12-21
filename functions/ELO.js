@@ -26,4 +26,4 @@ const divisorFactor = 20;
  */
 const getExchangedELO = (team1Elo, team2ELO) => Math.min(Math.max(baseExchange - Math.round(((team1Elo - team2ELO)) / divisorFactor), minExchanged), maxExchanged);
 
-export { getExchangedELO };
+module.exports.getExchangedELO = getExchangedELO;
