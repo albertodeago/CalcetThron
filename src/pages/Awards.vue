@@ -9,6 +9,7 @@
                     <q-card-section>
                         <div class="text-h6">Best autogoller</div>
                         <div class="text-subtitle2">Players with the highest number of autogoal per game</div>
+                        <div class="text-body2">The average number of autogoals per game is shown</div>
                     </q-card-section>
 
                     <q-separator />
@@ -54,6 +55,7 @@
                     <q-card-section>
                         <div class="text-h6">Most effective strikers</div>
                         <div class="text-subtitle2">Players with the highest goals done as striker per game</div>
+                        <div class="text-body2">The average number of goals per game as striker is shown</div>
                     </q-card-section>
 
                     <q-separator />
@@ -99,6 +101,7 @@
                     <q-card-section>
                         <div class="text-h6">Most effective goalkeepers</div>
                         <div class="text-subtitle2">Players with the highest goals done as goalkeeper per game</div>
+                        <div class="text-body2">The average number of goals as goalkeeper per game is shown</div>
                     </q-card-section>
 
                     <q-separator />
@@ -143,7 +146,8 @@
                 <q-card class="my-card q-mb-md">
                     <q-card-section>
                         <div class="text-h6">Best offensive player overall</div>
-                        <div class="text-subtitle2">Players with the highest goals done, no matter the role</div>
+                        <div class="text-subtitle2">Players with the highest goals done per game, no matter the role</div>
+                        <div class="text-body2">The average number of goals per game is shown</div>
                     </q-card-section>
 
                     <q-separator />
@@ -188,7 +192,8 @@
                 <q-card class="my-card q-mb-md">
                     <q-card-section>
                         <div class="text-h6">Best defensive player overall</div>
-                        <div class="text-subtitle2">Players with the lowest goals received, no matter the role</div>
+                        <div class="text-subtitle2">Players with the lowest goals received per game, no matter the role</div>
+                        <div class="text-body2">The average number of goals taken per game is shown</div>
                     </q-card-section>
 
                     <q-separator />
@@ -234,6 +239,7 @@
                     <q-card-section>
                         <div class="text-h6">Most effective player overall</div>
                         <div class="text-subtitle2">Players with the highest win rate, no matter the role</div>
+                        <div class="text-body2">The win rate is shown</div>
                     </q-card-section>
 
                     <q-separator />
@@ -277,7 +283,7 @@
 
                 <q-card class="my-card q-mb-md">
                     <q-card-section>
-                        <div class="text-h6">Player with less than {{minGame}} ganes</div>
+                        <div class="text-h6">Player with less than {{minGame}} games</div>
                         <div class="text-subtitle2">Those played are not taken in consideration in the above awards</div>
                     </q-card-section>
 
