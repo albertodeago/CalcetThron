@@ -541,7 +541,7 @@ export default {
     },
 
     methods: {
-        ...mapActions('Game', ['saveGame', 'getGames', 'subscribeToGames']),
+        ...mapActions('Game', ['saveGame', 'getGames', 'subscribeToGames', 'getAllGames']),
         ...mapActions('Global', ['setLoading']),
 
         getUsername(id) {
@@ -574,6 +574,8 @@ export default {
         openGameDetails(game) {
             this.selectedGame = game
             this.showGameDetail = true
+
+            this.getAllGames()
         },
         
         closeGameDetails() {

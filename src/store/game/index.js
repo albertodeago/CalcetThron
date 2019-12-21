@@ -166,16 +166,16 @@ export default {
         /**
          * This is just a "debug / export" thing
          */
-        // async getAllSeasonGames({state}) {
-        //     const db = firebase.firestore()
-        //     const gamesCollection = db.collection(state.collectionName)
-        //     const allGames = await gamesCollection.get()
-        //     window.allGames = []
-        //     allGames.forEach(game => {
-        //         const data = game.data()
-        //         window.allGames.push(data)
-        //     })
-        //     console.log(window.allGames)
-        // }
+        async getAllGames({state}) {
+            const db = firebase.firestore()
+            const gamesCollection = db.collection(state.collectionName)
+            const allGames = await gamesCollection.get()
+            window.allGames = []
+            allGames.forEach(game => {
+                const data = game.data()
+                window.allGames.push(data)
+            })
+            console.log(window.allGames)
+        }
     }
 }
