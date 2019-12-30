@@ -14,7 +14,8 @@
         "axios": "^0.18.0",
         "firebase": "^6.1.0",
         "firebase-functions": "^3.0.2",
-        "quasar": "1.4.1"
+        "quasar": "1.4.1",
+        "ts-trueskill": "^2.5.2"
     },
     "devDependencies": {
         "@quasar/app": "1.2.3",

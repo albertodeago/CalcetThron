@@ -177,10 +177,8 @@
 
                     <template v-if="step === 2">
                         <div class="text-h6">Insert the scores of the match</div>
-                        <!-- <div class="ELO-exchange-preview text-h4">
-                            <span class="ELO-exchange-preview__red">{{eloExchangePreview.red}}</span>
-                            <span class="ELO-exchange-preview__blue">{{eloExchangePreview.blue}}</span>
-                        </div> -->
+                        <div class="text-h6" v-if="winProbability">Blue win probability: {{winProbability}}%</div>
+                        <div class="text-h6" v-else>Cannot get a win probability</div>
                         <q-input v-model="redGoalKeeperGoals"           class="q-mb-xs" filled type="number" :label="'Goals made by ' + redGoalKeeper.nickname" >
                             <template v-slot:append>
                                 <q-btn round dense flat icon="add"      @click="redGoalKeeperGoals = Math.min(redGoalKeeperGoals + 1, 7)" />
@@ -235,14 +233,6 @@
                     <template v-if="step === 3">
                         <div class="ELO-exchange-preview text-h6">
                             <span>Confirm data</span>
-                            <!-- <span class="text-h5">
-                                <template v-if="redTeamTotalGoals === 7">
-                                    <span class="ELO-exchange-preview__red">{{eloExchangePreview.red}}</span>
-                                </template>
-                                <template v-else>
-                                    <span class="ELO-exchange-preview__blue">{{eloExchangePreview.blue}}</span>
-                                </template>
-                            </span> -->
                         </div>
                         <div class="text-subtitle1">Red team</div>
                         <div>{{ redGoalKeeper.nickname }} - {{ redStriker.nickname }}</div>
@@ -357,6 +347,7 @@
 </template>
 
 <script>
+import { Rating, winProbability } from "ts-trueskill"
 import { mapActions, mapGetters } from "vuex"
 import { Game } from "../models"
 import ELO from "../../functions/ELO"
@@ -508,32 +499,30 @@ export default {
             return false
         },
 
-        // /**
-        //  * Preview of the amount of ELO that this game will exchange.
-        //  * @returns {Object<red: Number, blue: Number>} an object with red and blue properties. Red contains
-        //  * the amount of ELO exchanged in case of Red team wins, blue the other case.
-        //  * Can return an empty object in case the players are not yet selected.
-        //  */
-        // eloExchangePreview() {
-        //     if (!this.redGoalKeeper || !this.redStriker || !this.blueGoalKeeper || !this.blueStriker)
-        //         return {}
-            
-        //     // calculate the amount of ELO that this game will "exchange"
-        //     const blueKeeperELO = this.allRankings[this.blueGoalKeeper.id] ? this.allRankings[this.blueGoalKeeper.id].ELO : 1000
-        //     const blueStrikerELO = this.allRankings[this.blueStriker.id] ? this.allRankings[this.blueStriker.id].ELO : 1000
-        //     const redKeeperELO = this.allRankings[this.redGoalKeeper.id] ? this.allRankings[this.redGoalKeeper.id].ELO : 1000
-        //     const redStrikerELO = this.allRankings[this.redStriker.id] ? this.allRankings[this.redStriker.id].ELO : 1000
-        //     const blueTeamELO = blueKeeperELO + blueStrikerELO
-        //     const redTeamELO = redKeeperELO + redStrikerELO
-            
-        //     // TODO: use ELO.js instead
-        //     // let redWinELO = Math.min(Math.max(25 - Math.round(((redTeamELO - blueTeamELO) * 2) / 25), 2), 40);
-        //     // let blueWinELO = Math.min(Math.max(25 - Math.round(((blueTeamELO - redTeamELO) * 2) / 25), 2), 40);
-        //     let redWinELO = ELO.getExchangedELO(redTeamELO, blueTeamELO)
-        //     let blueWinELO = ELO.getExchangedELO(blueTeamELO, redTeamELO)
+        /**
+         * Win probability of the blue team
+         */
+        winProbability() {
+            if (!this.redGoalKeeper || !this.redStriker || !this.blueGoalKeeper || !this.blueStriker)
+                return null
 
-        //     return { red: redWinELO, blue: blueWinELO }
-        // }
+            const blueKeeperRankings = this.allRankings[this.blueGoalKeeper.id]
+            const blueStrikerRankings = this.allRankings[this.blueStriker.id]
+            const redKeeperRankings = this.allRankings[this.redGoalKeeper.id]
+            const redStrikerRankings = this.allRankings[this.redStriker.id]
+            if (!blueKeeperRankings || !blueStrikerRankings || !redKeeperRankings || !redStrikerRankings ||
+                !blueKeeperRankings.trueSkill || !blueStrikerRankings.trueSkill || !redKeeperRankings.trueSkill || !redStrikerRankings.trueSkill) {
+                return null
+            }
+
+            // create Ratings for trueskill system
+            const blueKeeperRating = new Rating(blueKeeperRankings.trueSkill.mu, blueKeeperRankings.trueSkill.sigma)
+            const blueStrikerRating = new Rating(blueStrikerRankings.trueSkill.mu, blueStrikerRankings.trueSkill.sigma)
+            const redKeeperRating = new Rating(redKeeperRankings.trueSkill.mu, redKeeperRankings.trueSkill.sigma)
+            const redStrikerRating = new Rating(redStrikerRankings.trueSkill.mu, redStrikerRankings.trueSkill.sigma)
+
+            return (winProbability([blueKeeperRating, blueStrikerRating], [redKeeperRating, redStrikerRating]) * 100).toFixed(0)
+        }
     },
 
     watch: {
@@ -772,14 +761,4 @@ export default {
     flex-wrap: wrap;
     justify-content: center;
 
-.ELO-exchange-preview 
-    display: flex
-    justify-content: space-between
-
-    &__red, &__blue
-        padding: 1rem
-    &__red
-        color: $secondary
-    &__blue
-        color: $primary
 </style>
