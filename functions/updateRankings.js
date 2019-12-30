@@ -1,5 +1,6 @@
 const { database } = require('./admin');
 const ELO = require('./ELO');
+const TrueSkill = require("./Trueskill");
 
 /**
  * Cloud function that given a season (optional) and a new game created it update the 
@@ -11,6 +12,7 @@ exports.default = async function(snap, context, season, devMode = false) {
     console.log(`[updateRankings] devMode: ${devMode} - gameId: ${snap.id} - season: ${season}`);
 
     // create the model to update the db value
+    const initialTrueSkill = TrueSkill.getInitial();
     const userRanking = {
         id: null,
         played: 0,
@@ -30,8 +32,12 @@ exports.default = async function(snap, context, season, devMode = false) {
         goalDoneAsGoalkeeper: 0,
         goalReceived: 0,
         autogoalDone: 0,
-        ELO: 1000
-    }
+        ELO: 1000,
+        trueSkill: {
+            mu: initialTrueSkill.mu,
+            sigma: initialTrueSkill.sigma
+        }
+    };
 
     // get ranking of the game players
     const db = database
@@ -178,6 +184,31 @@ exports.default = async function(snap, context, season, devMode = false) {
             redKeeper.ELO += amountELO;
             redStriker.ELO += amountELO;
         }
+
+        // calculate new TrueSkill fro players
+        let newTrueSkillValues;
+        if (newGame.result.blue === 7) {
+            newTrueSkillValues = TrueSkill.getTrueSkill(blueKeeper.trueSkill, blueStriker.trueSkill, redKeeper.trueSkill, redStriker.trueSkill);
+            blueKeeper.trueSkill.mu = newTrueSkillValues[0][0].mu;
+            blueKeeper.trueSkill.sigma = newTrueSkillValues[0][0].sigma;
+            blueStriker.trueSkill.mu = newTrueSkillValues[0][1].mu;
+            blueStriker.trueSkill.sigma = newTrueSkillValues[0][1].sigma;
+            redKeeper.trueSkill.mu = newTrueSkillValues[1][0].mu;
+            redKeeper.trueSkill.sigma = newTrueSkillValues[1][0].sigma;
+            redStriker.trueSkill.mu = newTrueSkillValues[1][1].mu;
+            redStriker.trueSkill.sigma = newTrueSkillValues[1][1].sigma;
+        } else {
+            newTrueSkillValues = TrueSkill.getTrueSkill(redKeeper.trueSkill, redStriker.trueSkill, blueKeeper.trueSkill, blueStriker.trueSkill);
+            redKeeper.trueSkill.mu = newTrueSkillValues[0][0].mu;
+            redKeeper.trueSkill.sigma = newTrueSkillValues[0][0].sigma;
+            redStriker.trueSkill.mu = newTrueSkillValues[0][1].mu;
+            redStriker.trueSkill.sigma = newTrueSkillValues[0][1].sigma;
+            blueKeeper.trueSkill.mu = newTrueSkillValues[1][0].mu;
+            blueKeeper.trueSkill.sigma = newTrueSkillValues[1][0].sigma;
+            blueStriker.trueSkill.mu = newTrueSkillValues[1][1].mu;
+            blueStriker.trueSkill.sigma = newTrueSkillValues[1][1].sigma;
+        }
+        // done, we now just save it later on db
 
         // Update the game doc with the ELO
         const updateGamePromise = snap.ref.update({

@@ -1,8 +1,8 @@
 <template>
     <div class="">
-        <template  v-if="!isLoading">
+        <template v-if="!isLoading">
             <q-list bordered padding>
-                <template v-for="(enrichedUser, i) in sortedRankings">
+                <template v-for="(enrichedUser, i) in rankingsToShow">
                 <q-item :key="enrichedUser.id">
                     <q-item-section avatar>
                         <q-avatar>
@@ -20,7 +20,7 @@
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-item-label class="text-body1">{{ enrichedUser.ELO }}</q-item-label>   
+                        <q-item-label class="text-body1">{{ enrichedUser.rankValue }}</q-item-label>   
                     </q-item-section>
                 </q-item>
                 <q-separator spaced inset="item" :key="enrichedUser.id + 'sep'"/>
@@ -36,7 +36,8 @@ import { mapGetters, mapActions } from "vuex"
 export default {
     data() {
         return {
-            
+            sigmaCorrectionFactor: 2, // correction factor for trueSkill rating system
+            seasonStartForTrueSkill: 4, // season start number for trueSkill rating system
         }
     },
 
@@ -45,16 +46,35 @@ export default {
         ...mapGetters("Rankings", ["allRankingsArray"]),
         ...mapGetters('Seasons', ['selectedSeason']),
 
-        sortedRankings() {
-            return this.allRankingsArray.slice().sort((a, b) => parseInt(b.ELO) - parseInt(a.ELO))
-        }
-    },
+        /**
+         * Rankings with "rankValue" property set using trueSkill rating system
+         */
+        trueSkillRankings() {
+            return this.allRankingsArray.slice().filter(r => r.trueSkill).map(r => {
+                return {
+                    rankValue: (r.trueSkill.mu - this.sigmaCorrectionFactor * r.trueSkill.sigma).toFixed(0),
+                    ...r
+                }
+            })
+        },
 
-    methods: {
-        ...mapActions('Global', ['setLoading' ]),
+        /**
+         * Rankings with "rankValue" property set using ELO rating system
+         */
+        ELORankings() {
+            return this.allRankingsArray.slice().map(r => {
+                return {
+                    rankValue: r.ELO,
+                    ...r
+                }
+            })
+        },
 
-        openUser(enrichedUser) {
-            this.$router.push(`user/${enrichedUser.id}`)
+        /**
+         * Rankings to show on the interface
+         */
+        rankingsToShow() {
+            return (this.selectedSeason.number >= this.seasonStartForTrueSkill ? this.trueSkillRankings : this.ELORankings).sort((a,b) => b.rankValue - a.rankValue)
         }
     }
 }
