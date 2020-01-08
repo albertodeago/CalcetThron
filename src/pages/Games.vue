@@ -267,7 +267,6 @@
                         <template v-else>
                             <span v-if="selectedGame.result.blue === 7">Blue team won</span>
                             <span v-else>Red team won</span>
-                            <span class="text-bold">{{ selectedGame.exchangedELO }} points</span>
                         </template>
                     </div>
                     <div class="text-subtitle2">Played: {{ selectedGame.creationDate | prettyDate }}</div>
