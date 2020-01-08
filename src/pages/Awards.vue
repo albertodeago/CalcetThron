@@ -336,7 +336,7 @@ export default {
         },
 
         notEnoughData() {
-            return this.activePlayers.length < 1
+            return this.activePlayers.length < 3
         },
 
         /**
