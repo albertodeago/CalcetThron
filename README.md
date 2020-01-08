@@ -61,4 +61,4 @@ firebase depoloy --only functions
 
 ### Licence
 
-MIT
+Licensed under MIT, but the application uses a port of the BSD licensed python TrueSkill package by Heungsub Lee. The TrueSkill™ brand is not very permissive. Microsoft permits only Xbox Live games or non-commercial projects to use TrueSkill™.
