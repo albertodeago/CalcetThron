@@ -10,10 +10,10 @@ exports.default = async function(snap, context, devMode = false) {
     const newGame = snap.data();
     console.log(`[updateSeason] devMode: ${devMode} - gameId: ${snap.id} - date: ${newGame.creationDate}`);
 
-    // Understand what season is it. the first season starts on 1° june 2019 TODO: write down the right 1° season date
+    // Understand what season is it. the first season starts on 1° june 2019
     // A season is 2 month long
     const startSeasonYear = 2019;
-    const seasonOffset = 3; // because we started seasons not in january TODO: when deciding when actually the season will start update this value
+    const seasonOffset = 3; // because we started seasons not in january but in june
     const seasonMonthDuration = 2;
 
     const gameDate = new Date(newGame.creationDate);

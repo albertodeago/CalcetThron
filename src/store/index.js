@@ -5,6 +5,7 @@ import Game from './game'
 import Global from './global'
 import Rankings from './rankings'
 import Seasons from './season'
+import History from './history'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ export default function() {
             Global,
             Game,
             Rankings,
-            Seasons
+            Seasons,
+            History
         },
 
         // enable strict mode (adds overhead!)

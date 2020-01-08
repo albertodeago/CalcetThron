@@ -1,6 +1,7 @@
 const { database } = require('./admin');
 const ELO = require('./ELO');
 const TrueSkill = require("./Trueskill");
+const updateHistory = require("./updateHistory").default;
 
 /**
  * Cloud function that given a season (optional) and a new game created it update the 
@@ -61,7 +62,6 @@ exports.default = async function(snap, context, season, devMode = false) {
     const redKeeperPromise = rankingsCollection.doc(newGame.redTeam.keeper).get();
     const redStrikerPromise = rankingsCollection.doc(newGame.redTeam.striker).get();
 
-    console.log(`[updateRankings] getting rankings of players: BK:${newGame.blueTeam.keeper} - BS:${newGame.blueTeam.striker} - RK:${newGame.redTeam.keeper} - RS:${newGame.redTeam.striker}`);
     const results = await Promise.all([blueKeeperPromise, blueStrikerPromise, redKeeperPromise, redStrikerPromise]);
 
     // log something to have some more info in dashboard logs
@@ -224,6 +224,14 @@ exports.default = async function(snap, context, season, devMode = false) {
             updateGameCopyPromise = db.collection("seasons").doc(season).collection("games").doc(snap.id).update({
                 "exchangedELO": amountELO
             });
+        }
+
+        // wrapper in try catch because if it fails the rest of the operations will continue as usual
+        try {
+            await updateHistory(blueKeeper, blueStriker, redKeeper, redStriker, newGame, season, devMode);
+        } catch(error) {
+            console.log("error in update history");
+            console.log(error);
         }
         
         updateGamesPromise = Promise.all([updateGamePromise, updateGameCopyPromise]);

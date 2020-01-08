@@ -45,6 +45,7 @@ export default {
         setSeason({ commit, dispatch }, season) {
             dispatch("Game/selectSeason", season, { root: true })
             dispatch("Rankings/selectSeason", season, { root: true })
+            dispatch("History/selectSeason", season, { root: true })
             commit("setSelectedSeason", season)
         }
     }
