@@ -20,7 +20,17 @@
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-item-label class="text-body1">{{ enrichedUser.rankValue }}</q-item-label>   
+                        <q-item-label class="text-body1 text-weight-bold">
+                            {{ enrichedUser.rankValue }}
+                        </q-item-label>   
+                        <q-popup-proxy>
+                            <q-banner>
+                                <template v-slot:avatar>
+                                    <q-icon name="info" color="primary" />
+                                </template>
+                                Raw points {{ enrichedUser.rawRank }} - {{ enrichedUser.sigma * sigmaCorrectionFactor }} Indecision
+                            </q-banner>
+                        </q-popup-proxy>
                     </q-item-section>
                 </q-item>
                 <q-separator spaced inset="item" :key="enrichedUser.id + 'sep'"/>
@@ -53,6 +63,8 @@ export default {
             return this.allRankingsArray.slice().filter(r => r.trueSkill).map(r => {
                 return {
                     rankValue: (r.trueSkill.mu - this.sigmaCorrectionFactor * r.trueSkill.sigma).toFixed(0),
+                    rawRank: r.trueSkill.mu.toFixed(0),
+                    sigma: r.trueSkill.sigma.toFixed(0),
                     ...r
                 }
             })

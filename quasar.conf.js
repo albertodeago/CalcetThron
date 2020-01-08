@@ -63,7 +63,8 @@ module.exports = function(ctx) {
                 'QSelect',
                 'QBadge',
                 'QChip',
-                'QExpansionItem'
+                'QExpansionItem',
+                'QPopupProxy'
             ],
 
             directives: [
