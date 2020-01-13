@@ -3,7 +3,7 @@
         <transition-group enter-active-class="animated slideInRight" tag="div"
                           class="transition-container row items-start q-gutter-md text-white"
         >   
-            <q-card class="my-card" v-for="game in renderedGames" :key="game.id" @click="openGameDetails(game)" :class="{'without-elo': game.exchangedELO === null}">
+            <q-card class="my-card" v-for="game in renderedGames" :key="game.id" @click="openGameDetails(game)" :class="{'without-elo': (!game.trueSkillChanges && !game.exchangedELO)}">
                 <q-card-section v-ripple>
                     <div class="game">
                         <div class="game__back game__back--red"></div>
@@ -26,7 +26,6 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="game__team__elo" v-if="game.exchangedELO">{{ game.exchangedELO }}</div> -->
                             <div class="game__team__mid text-h3">{{ game.result.red }}</div>
 
                             <div class="game__team__bottom">
@@ -62,7 +61,6 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="game__team__elo" v-if="game.exchangedELO">{{ game.exchangedELO }}</div> -->
                             <div class="game__team__mid text-h3">{{ game.result.blue }}</div>
 
                             <div class="game__team__bottom">
@@ -261,7 +259,7 @@
 
                 <q-card-section>
                     <div class="text-subtitle1" style="display: flex; align-items: center; justify-content: space-between">
-                        <div v-if="selectedGame.exchangedELO === null">
+                        <div v-if="!selectedGame.trueSkillChanges">
                             Game not elaborated yet, wait
                         </div>
                         <template v-else>
@@ -276,11 +274,19 @@
                     <q-item>
                         <q-item-section avatar>
                             <q-avatar>
-                                <q-img :src="selecteGameBlueKeeper.avatar" :ratio="1" />
+                                <q-img :src="selectedGameBlueKeeper.avatar" :ratio="1" />
                             </q-avatar>
                         </q-item-section>
                         <q-item-section>
-                            <q-item-label v-html="selecteGameBlueKeeper.nickname" />
+                            <q-item-label v-html="selectedGameBlueKeeper.nickname" />
+                            <template v-if="selectedGame.trueSkillChanges">
+                                <q-item-label caption>
+                                    <span class="text-bold">Points: {{ selectedGame.trueSkillChanges[selectedGameBlueKeeper.id].muDifference.toFixed(0) }}</span>
+                                </q-item-label>
+                                <q-item-label caption>
+                                    <span class="text-bold">Confidence: {{ -selectedGame.trueSkillChanges[selectedGameBlueKeeper.id].sigmaDifference.toFixed(0) }}</span>
+                                </q-item-label>
+                            </template>
                         </q-item-section>
                         <q-item-section side top>
                             <q-item-label caption>goals done: {{ selectedGame.blueKeeperGoals }}</q-item-label>
@@ -293,11 +299,19 @@
                     <q-item>
                         <q-item-section avatar>
                             <q-avatar>
-                                <q-img :src="selecteGameBlueStriker.avatar" :ratio="1" />
+                                <q-img :src="selectedGameBlueStriker.avatar" :ratio="1" />
                             </q-avatar>
                         </q-item-section>
                         <q-item-section>
-                            <q-item-label v-html="selecteGameBlueStriker.nickname" />
+                            <q-item-label v-html="selectedGameBlueStriker.nickname" />
+                            <template v-if="selectedGame.trueSkillChanges">
+                                <q-item-label caption>
+                                    <span class="text-bold">Points: {{ selectedGame.trueSkillChanges[selectedGameBlueStriker.id].muDifference.toFixed(0) }}</span>
+                                </q-item-label>
+                                <q-item-label caption>
+                                    <span class="text-bold">Confidence: {{ -selectedGame.trueSkillChanges[selectedGameBlueStriker.id].sigmaDifference.toFixed(0) }}</span>
+                                </q-item-label>
+                            </template>
                         </q-item-section>
                         <q-item-section side top>
                             <q-item-label caption>goals done: {{ selectedGame.blueStrikerGoals }}</q-item-label>
@@ -310,11 +324,19 @@
                     <q-item>
                         <q-item-section avatar>
                             <q-avatar>
-                                <q-img :src="selecteGameRedKeeper.avatar" :ratio="1" />
+                                <q-img :src="selectedGameRedKeeper.avatar" :ratio="1" />
                             </q-avatar>
                         </q-item-section>
                         <q-item-section>
-                            <q-item-label v-html="selecteGameRedKeeper.nickname" />
+                            <q-item-label v-html="selectedGameRedKeeper.nickname" />
+                            <template v-if="selectedGame.trueSkillChanges">
+                                <q-item-label caption>
+                                    <span class="text-bold">Points: {{ selectedGame.trueSkillChanges[selectedGameRedKeeper.id].muDifference.toFixed(0) }}</span>
+                                </q-item-label>
+                                <q-item-label caption>
+                                    <span class="text-bold">Confidence: {{ -selectedGame.trueSkillChanges[selectedGameRedKeeper.id].sigmaDifference.toFixed(0) }}</span>
+                                </q-item-label>
+                            </template>
                         </q-item-section>
                         <q-item-section side top>
                             <q-item-label caption>goals done: {{ selectedGame.redKeeperGoals }}</q-item-label>
@@ -327,11 +349,19 @@
                     <q-item>
                         <q-item-section avatar>
                             <q-avatar>
-                                <q-img :src="selecteGameRedStriker.avatar" :ratio="1" />
+                                <q-img :src="selectedGameRedStriker.avatar" :ratio="1" />
                             </q-avatar>
                         </q-item-section>
                         <q-item-section>
-                            <q-item-label v-html="selecteGameRedStriker.nickname" />
+                            <q-item-label v-html="selectedGameRedStriker.nickname" />
+                            <template v-if="selectedGame.trueSkillChanges">
+                                <q-item-label caption>
+                                    <span class="text-bold">Points: {{ selectedGame.trueSkillChanges[selectedGameRedStriker.id].muDifference.toFixed(0) }}</span>
+                                </q-item-label>
+                                <q-item-label caption>
+                                    <span class="text-bold">Confidence: {{ -selectedGame.trueSkillChanges[selectedGameRedStriker.id].sigmaDifference.toFixed(0) }}</span>
+                                </q-item-label>
+                            </template>
                         </q-item-section>
                         <q-item-section side top>
                             <q-item-label caption>goals done: {{ selectedGame.redStrikerGoals }}</q-item-label>
@@ -426,22 +456,22 @@ export default {
             // this.allRankingsArray.slice().filter(a => this.alreadySelectedUsers.indexOf(a.id) === -1).sort((a,b) => b.played - a.played).slice(0,8)
         },
 
-        selecteGameBlueKeeper() {
+        selectedGameBlueKeeper() {
             if (!this.selectedGame) return null  
             return this.allUsers[this.selectedGame.blueTeam.keeper]
         },
         
-        selecteGameBlueStriker() {
+        selectedGameBlueStriker() {
             if (!this.selectedGame) return null  
             return this.allUsers[this.selectedGame.blueTeam.striker]
         },
         
-        selecteGameRedKeeper() {
+        selectedGameRedKeeper() {
             if (!this.selectedGame) return null  
             return this.allUsers[this.selectedGame.redTeam.keeper]
         },
         
-        selecteGameRedStriker() {
+        selectedGameRedStriker() {
             if (!this.selectedGame) return null  
             return this.allUsers[this.selectedGame.redTeam.striker]
         },

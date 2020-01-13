@@ -185,44 +185,90 @@ exports.default = async function(snap, context, season, devMode = false) {
             redStriker.ELO += amountELO;
         }
 
-        // calculate new TrueSkill fro players
+        // calculate new TrueSkill for players
         let newTrueSkillValues;
+        let trueSkillChanges = {};
+
         if (newGame.result.blue === 7) {
             newTrueSkillValues = TrueSkill.getTrueSkill(blueKeeper.trueSkill, blueStriker.trueSkill, redKeeper.trueSkill, redStriker.trueSkill);
+            
+            trueSkillChanges[blueKeeper.id] = {
+                muDifference: newTrueSkillValues[0][0].mu - blueKeeper.trueSkill.mu,
+                sigmaDifference: newTrueSkillValues[0][0].sigma - blueKeeper.trueSkill.sigma
+            };
             blueKeeper.trueSkill.mu = newTrueSkillValues[0][0].mu;
             blueKeeper.trueSkill.sigma = newTrueSkillValues[0][0].sigma;
+
+            
+            trueSkillChanges[blueStriker.id] = {
+                muDifference: newTrueSkillValues[0][1].mu - blueStriker.trueSkill.mu,
+                sigmaDifference: newTrueSkillValues[0][1].sigma - blueStriker.trueSkill.sigma
+            };
             blueStriker.trueSkill.mu = newTrueSkillValues[0][1].mu;
             blueStriker.trueSkill.sigma = newTrueSkillValues[0][1].sigma;
+            
+            trueSkillChanges[redKeeper.id] = {
+                muDifference: newTrueSkillValues[1][0].mu - redKeeper.trueSkill.mu,
+                sigmaDifference: newTrueSkillValues[1][0].sigma - redKeeper.trueSkill.sigma
+            };
             redKeeper.trueSkill.mu = newTrueSkillValues[1][0].mu;
             redKeeper.trueSkill.sigma = newTrueSkillValues[1][0].sigma;
+            
+            trueSkillChanges[redStriker.id] = {
+                muDifference: newTrueSkillValues[1][1].mu - redStriker.trueSkill.mu,
+                sigmaDifference: newTrueSkillValues[1][1].sigma - redStriker.trueSkill.sigma
+            };
             redStriker.trueSkill.mu = newTrueSkillValues[1][1].mu;
             redStriker.trueSkill.sigma = newTrueSkillValues[1][1].sigma;
         } else {
             newTrueSkillValues = TrueSkill.getTrueSkill(redKeeper.trueSkill, redStriker.trueSkill, blueKeeper.trueSkill, blueStriker.trueSkill);
+            
+            trueSkillChanges[redKeeper.id] = {
+                muDifference: newTrueSkillValues[0][0].mu - redKeeper.trueSkill.mu,
+                sigmaDifference: newTrueSkillValues[0][0].sigma - redKeeper.trueSkill.sigma
+            };
             redKeeper.trueSkill.mu = newTrueSkillValues[0][0].mu;
             redKeeper.trueSkill.sigma = newTrueSkillValues[0][0].sigma;
+            
+            trueSkillChanges[redStriker.id] = {
+                muDifference: newTrueSkillValues[0][1].mu - redStriker.trueSkill.mu,
+                sigmaDifference: newTrueSkillValues[0][1].sigma - redStriker.trueSkill.sigma
+            };
             redStriker.trueSkill.mu = newTrueSkillValues[0][1].mu;
             redStriker.trueSkill.sigma = newTrueSkillValues[0][1].sigma;
+            
+            trueSkillChanges[blueKeeper.id] = {
+                muDifference: newTrueSkillValues[1][0].mu - blueKeeper.trueSkill.mu,
+                sigmaDifference: newTrueSkillValues[1][0].sigma - blueKeeper.trueSkill.sigma
+            };
             blueKeeper.trueSkill.mu = newTrueSkillValues[1][0].mu;
             blueKeeper.trueSkill.sigma = newTrueSkillValues[1][0].sigma;
+            
+            trueSkillChanges[blueStriker.id] = {
+                muDifference: newTrueSkillValues[1][1].mu - blueStriker.trueSkill.mu,
+                sigmaDifference: newTrueSkillValues[1][1].sigma - blueStriker.trueSkill.sigma
+            };
             blueStriker.trueSkill.mu = newTrueSkillValues[1][1].mu;
             blueStriker.trueSkill.sigma = newTrueSkillValues[1][1].sigma;
         }
         // done, we now just save it later on db
 
-        // Update the game doc with the ELO
+        // Update the game doc with the ELO and Trueskill differences
         const updateGamePromise = snap.ref.update({
-            "exchangedELO": amountELO
+            "exchangedELO": amountELO,
+            "trueSkillChanges": trueSkillChanges
         });
 
         let updateGameCopyPromise;
         if (devMode) {
             updateGameCopyPromise = db.collection("DEV_seasons").doc(season).collection("DEV_games").doc(snap.id).update({
-                "exchangedELO": amountELO
+                "exchangedELO": amountELO,
+                "trueSkillChanges": trueSkillChanges
             });
         } else {
             updateGameCopyPromise = db.collection("seasons").doc(season).collection("games").doc(snap.id).update({
-                "exchangedELO": amountELO
+                "exchangedELO": amountELO,
+                "trueSkillChanges": trueSkillChanges
             });
         }
 

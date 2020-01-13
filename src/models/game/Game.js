@@ -41,7 +41,8 @@ export class Game {
         blueKeeperAutogoals,
         blueStrikerGoals,
         blueStrikerAutogoals,
-        exchangedELO = null
+        exchangedELO = null,
+        trueSkillChanges = null
     }) {
 
         this.id = id;
@@ -60,6 +61,7 @@ export class Game {
         this.blueStrikerAutogoals = blueStrikerAutogoals
 
         this.exchangedELO = exchangedELO
+        this.trueSkillChanges = trueSkillChanges
     }
 
     toJSON() {
