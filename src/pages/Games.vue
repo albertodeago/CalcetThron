@@ -174,9 +174,8 @@
                     </template>
 
                     <template v-if="step === 2">
-                        <div class="text-h6">Insert the scores of the match</div>
-                        <div class="text-h6" v-if="winProbability">Blue win probability: {{winProbability}}%</div>
-                        <div class="text-h6" v-else>Cannot get a win probability</div>
+                        <div class="text-h6 q-mb-md">Insert the scores of the match</div>
+
                         <q-input v-model="redGoalKeeperGoals"           class="q-mb-xs" filled type="number" :label="'Goals made by ' + redGoalKeeper.nickname" >
                             <template v-slot:append>
                                 <q-btn round dense flat icon="add"      @click="redGoalKeeperGoals = Math.min(redGoalKeeperGoals + 1, 7)" />
@@ -226,6 +225,82 @@
                                 <q-btn round dense flat icon="remove"   @click="blueStrikerAutogoals = Math.max(blueStrikerAutogoals -1, 0)" />
                             </template>
                         </q-input>
+
+                        <q-separator style="margin: 20px 0" />
+
+                        <q-expansion-item dense dense-toggle icon="people" label="Game information">
+                            <q-card>
+                                <q-card-section>
+                                    
+                                    <div class="text-weight-bold" v-if="winProbability">Blue win probability: {{winProbability}}%</div>
+                                    <div class="text-weight-bold" v-else>Cannot get a win probability</div>
+
+                                    <q-list v-if="trueSkillExchange">
+                                        <q-item>
+                                            <q-item-section avatar>
+                                                <q-avatar>
+                                                    <q-img :src="redGoalKeeper.avatar" :ratio="1" />
+                                                </q-avatar>
+                                            </q-item-section>
+                                            <q-item-section>
+                                                <q-item-label>{{redGoalKeeper.nickname}}</q-item-label>
+                                                <q-item-label caption>
+                                                    <span class="color-red">{{trueSkillExchange.redWin[redGoalKeeper.id].diff}}</span> 
+                                                    - 
+                                                    <span class="color-blue">{{trueSkillExchange.blueWin[redGoalKeeper.id].diff}}</span>
+                                                </q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section avatar>
+                                                <q-avatar>
+                                                    <q-img :src="redStriker.avatar" :ratio="1" />
+                                                </q-avatar>
+                                            </q-item-section>
+                                            <q-item-section>
+                                                <q-item-label>{{redStriker.nickname}}</q-item-label>
+                                                <q-item-label caption>
+                                                    <span class="color-red">{{trueSkillExchange.redWin[redStriker.id].diff}}</span> 
+                                                    - 
+                                                    <span class="color-blue">{{trueSkillExchange.blueWin[redStriker.id].diff}}</span>
+                                                </q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section avatar>
+                                                <q-avatar>
+                                                    <q-img :src="blueGoalKeeper.avatar" :ratio="1" />
+                                                </q-avatar>
+                                            </q-item-section>
+                                            <q-item-section>
+                                                <q-item-label>{{blueGoalKeeper.nickname}}</q-item-label>
+                                                <q-item-label caption>
+                                                    <span class="color-red">{{trueSkillExchange.redWin[blueGoalKeeper.id].diff}}</span> 
+                                                    - 
+                                                    <span class="color-blue">{{trueSkillExchange.blueWin[blueGoalKeeper.id].diff}}</span>
+                                                </q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section avatar>
+                                                <q-avatar>
+                                                    <q-img :src="blueStriker.avatar" :ratio="1" />
+                                                </q-avatar>
+                                            </q-item-section>
+                                            <q-item-section>
+                                                <q-item-label>{{blueStriker.nickname}}</q-item-label>
+                                                <q-item-label caption>
+                                                    <span class="color-red">{{trueSkillExchange.redWin[blueStriker.id].diff}}</span> 
+                                                    - 
+                                                    <span class="color-blue">{{trueSkillExchange.blueWin[blueStriker.id].diff}}</span>
+                                                </q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </q-card-section>
+                            </q-card>
+                        </q-expansion-item>
+                        
                     </template>
 
                     <template v-if="step === 3">
@@ -364,7 +439,7 @@
 </template>
 
 <script>
-import { Rating, winProbability } from "ts-trueskill"
+import { Rating, winProbability, TrueSkill } from "ts-trueskill"
 import { mapActions, mapGetters } from "vuex"
 import { Game } from "../models"
 import ELO from "../../functions/ELO"
@@ -539,6 +614,110 @@ export default {
             const redStrikerRating = new Rating(redStrikerRankings.trueSkill.mu, redStrikerRankings.trueSkill.sigma)
 
             return (winProbability([blueKeeperRating, blueStrikerRating], [redKeeperRating, redStrikerRating]) * 100).toFixed(0)
+        },
+
+        /**
+         * TrueSkill value exchange for selected players.
+         * Returns null if something prevent the calculation (like an unranked player)
+         * Returns an object with redWin and blueWin properties. Each contain all player ids as keys.
+         * Each playerId contain oldMu, newMu and diff
+         */
+        trueSkillExchange() {
+            if (!this.redGoalKeeper || !this.redStriker || !this.blueGoalKeeper || !this.blueStriker)
+                return null
+
+            // create a model like in the backend
+            const initialRating = 1000;
+            const calcetThronTrueskill = new TrueSkill(initialRating);
+            calcetThronTrueskill.drawProbability = 0; // calcetto games cannot be draws
+
+            // create all current player rankings for our Trueskill model
+            const bgkRankings = this.allRankings[this.blueGoalKeeper.id];
+            const bsRankings = this.allRankings[this.blueStriker.id];
+            const rgkRankings = this.allRankings[this.redGoalKeeper.id];
+            const rsRankings = this.allRankings[this.redStriker.id];
+
+            if (!bgkRankings || !bsRankings || !rgkRankings || !rsRankings)
+                return null
+
+            const bgk = bgkRankings.trueSkill;
+            const bs = bsRankings.trueSkill;
+            const rgk = rgkRankings.trueSkill;
+            const rs = rsRankings.trueSkill;
+
+            const trueSkillBlueKeeper = new Rating(bgk.mu, bgk.sigma);
+            const trueSkillBlueStriker = new Rating(bs.mu, bs.sigma);
+            const trueSkillRedKeeper = new Rating(rgk.mu, rgk.sigma);
+            const trueSkillRedStriker = new Rating(rs.mu, rs.sigma);
+            
+            // blue team win case:
+            const blueWinRankings = calcetThronTrueskill.rate([
+                [
+                    trueSkillBlueKeeper,
+                    trueSkillBlueStriker,
+                ],[
+                    trueSkillRedKeeper,
+                    trueSkillRedStriker
+                ]
+            ]);
+
+            // red team win case:
+            const redWinRankings = calcetThronTrueskill.rate([
+                [
+                    trueSkillRedKeeper,
+                    trueSkillRedStriker
+                ], [
+                    trueSkillBlueKeeper,
+                    trueSkillBlueStriker,
+                ]
+            ]);
+
+            return {
+                blueWin: {
+                    [this.blueGoalKeeper.id]: {
+                        oldMu: (bgk.mu).toFixed(0),
+                        newMu: (blueWinRankings[0][0].mu).toFixed(0),
+                        diff: (blueWinRankings[0][0].mu - bgk.mu).toFixed(0)
+                    },
+                    [this.blueStriker.id]: {
+                        oldMu: (bs.mu).toFixed(0),
+                        newMu: (blueWinRankings[0][1].mu).toFixed(0),
+                        diff: (blueWinRankings[0][1].mu - bs.mu).toFixed(0)
+                    },
+                    [this.redGoalKeeper.id]: {
+                        oldMu: (rgk.mu).toFixed(0),
+                        newMu: (blueWinRankings[1][0].mu).toFixed(0),
+                        diff: (blueWinRankings[1][0].mu - rgk.mu).toFixed(0)
+                    },
+                    [this.redStriker.id]: {
+                        oldMu: (rs.mu).toFixed(0),
+                        newMu: (blueWinRankings[1][1].mu).toFixed(0),
+                        diff: (blueWinRankings[1][1].mu - rs.mu).toFixed(0)
+                    },
+                },
+                redWin: {
+                    [this.redGoalKeeper.id]: {
+                        oldMu: (rgk.mu).toFixed(0),
+                        newMu: (redWinRankings[0][0].mu).toFixed(0),
+                        diff: (redWinRankings[0][0].mu - rgk.mu).toFixed(0)
+                    },
+                    [this.redStriker.id]: {
+                        oldMu: (rs.mu).toFixed(0),
+                        newMu: (redWinRankings[0][1].mu).toFixed(0),
+                        diff: (redWinRankings[0][1].mu - rs.mu).toFixed(0)
+                    },
+                    [this.blueGoalKeeper.id]: {
+                        oldMu: (bgk.mu).toFixed(0),
+                        newMu: (redWinRankings[1][0].mu).toFixed(0),
+                        diff: (redWinRankings[1][0].mu - bgk.mu).toFixed(0)
+                    },
+                    [this.blueStriker.id]: {
+                        oldMu: (bs.mu).toFixed(0),
+                        newMu: (redWinRankings[1][1].mu).toFixed(0),
+                        diff: (redWinRankings[1][1].mu - bs.mu).toFixed(0)
+                    },
+                },
+            }
         }
     },
 
@@ -778,4 +957,9 @@ export default {
     flex-wrap: wrap;
     justify-content: center;
 
+.color-red 
+    color: $secondary
+
+.color-blue
+    color: $primary
 </style>
