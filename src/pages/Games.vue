@@ -232,8 +232,8 @@
                             <q-card>
                                 <q-card-section>
                                     
-                                    <div class="text-weight-bold" v-if="winProbability">Blue win probability: {{winProbability}}%</div>
-                                    <div class="text-weight-bold" v-else>Cannot get a win probability</div>
+                                    <div class="text-weight-bold q-mb-md" v-if="winProbability">Blue win probability: {{winProbability}}%</div>
+                                    <div class="text-weight-bold q-mb-md" v-else>Cannot get a win probability</div>
 
                                     <q-list v-if="trueSkillExchange">
                                         <q-item>
@@ -245,8 +245,7 @@
                                             <q-item-section>
                                                 <q-item-label>{{redGoalKeeper.nickname}}</q-item-label>
                                                 <q-item-label caption>
-                                                    <span class="color-red">{{trueSkillExchange.redWin[redGoalKeeper.id].diff}}</span> 
-                                                    - 
+                                                    <span class="color-red" style="margin-right: 1rem">{{trueSkillExchange.redWin[redGoalKeeper.id].diff}}</span>
                                                     <span class="color-blue">{{trueSkillExchange.blueWin[redGoalKeeper.id].diff}}</span>
                                                 </q-item-label>
                                             </q-item-section>
@@ -260,8 +259,7 @@
                                             <q-item-section>
                                                 <q-item-label>{{redStriker.nickname}}</q-item-label>
                                                 <q-item-label caption>
-                                                    <span class="color-red">{{trueSkillExchange.redWin[redStriker.id].diff}}</span> 
-                                                    - 
+                                                    <span class="color-red" style="margin-right: 1rem">{{trueSkillExchange.redWin[redStriker.id].diff}}</span>
                                                     <span class="color-blue">{{trueSkillExchange.blueWin[redStriker.id].diff}}</span>
                                                 </q-item-label>
                                             </q-item-section>
@@ -275,8 +273,7 @@
                                             <q-item-section>
                                                 <q-item-label>{{blueGoalKeeper.nickname}}</q-item-label>
                                                 <q-item-label caption>
-                                                    <span class="color-red">{{trueSkillExchange.redWin[blueGoalKeeper.id].diff}}</span> 
-                                                    - 
+                                                    <span class="color-red" style="margin-right: 1rem">{{trueSkillExchange.redWin[blueGoalKeeper.id].diff}}</span>
                                                     <span class="color-blue">{{trueSkillExchange.blueWin[blueGoalKeeper.id].diff}}</span>
                                                 </q-item-label>
                                             </q-item-section>
@@ -290,8 +287,7 @@
                                             <q-item-section>
                                                 <q-item-label>{{blueStriker.nickname}}</q-item-label>
                                                 <q-item-label caption>
-                                                    <span class="color-red">{{trueSkillExchange.redWin[blueStriker.id].diff}}</span> 
-                                                    - 
+                                                    <span class="color-red" style="margin-right: 1rem">{{trueSkillExchange.redWin[blueStriker.id].diff}}</span>
                                                     <span class="color-blue">{{trueSkillExchange.blueWin[blueStriker.id].diff}}</span>
                                                 </q-item-label>
                                             </q-item-section>
