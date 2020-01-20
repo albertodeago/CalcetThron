@@ -55,17 +55,20 @@ export default {
             const gameInObj = state.games[game.id]
             if (gameInObj) {
                 gameInObj.exchangedELO = game.exchangedELO
+                gameInObj.trueSkillChanges = game.trueSkillChanges
             }
 
             // update array state
             const gameInArray = state.gamesArray.find(g => g.id === game.id)
             if (gameInArray) {
                 gameInArray.exchangedELO = game.exchangedELO
+                gameInArray.trueSkillChanges = game.trueSkillChanges
             }
 
             // If we selected this game, update that reference too!
             if (state.currentGame && state.currentGame.id === game.id) {
                 state.currentGame.exchangedELO = game.exchangedELO
+                state.currentGame.trueSkillChanges = game.trueSkillChanges
             }
         },
 

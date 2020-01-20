@@ -283,9 +283,6 @@
                                 <q-item-label caption>
                                     <span class="text-bold">Points: {{ selectedGame.trueSkillChanges[selectedGameBlueKeeper.id].muDifference.toFixed(0) }}</span>
                                 </q-item-label>
-                                <q-item-label caption>
-                                    <span class="text-bold">Confidence: {{ -selectedGame.trueSkillChanges[selectedGameBlueKeeper.id].sigmaDifference.toFixed(0) }}</span>
-                                </q-item-label>
                             </template>
                         </q-item-section>
                         <q-item-section side top>
@@ -307,9 +304,6 @@
                             <template v-if="selectedGame.trueSkillChanges">
                                 <q-item-label caption>
                                     <span class="text-bold">Points: {{ selectedGame.trueSkillChanges[selectedGameBlueStriker.id].muDifference.toFixed(0) }}</span>
-                                </q-item-label>
-                                <q-item-label caption>
-                                    <span class="text-bold">Confidence: {{ -selectedGame.trueSkillChanges[selectedGameBlueStriker.id].sigmaDifference.toFixed(0) }}</span>
                                 </q-item-label>
                             </template>
                         </q-item-section>
@@ -333,9 +327,6 @@
                                 <q-item-label caption>
                                     <span class="text-bold">Points: {{ selectedGame.trueSkillChanges[selectedGameRedKeeper.id].muDifference.toFixed(0) }}</span>
                                 </q-item-label>
-                                <q-item-label caption>
-                                    <span class="text-bold">Confidence: {{ -selectedGame.trueSkillChanges[selectedGameRedKeeper.id].sigmaDifference.toFixed(0) }}</span>
-                                </q-item-label>
                             </template>
                         </q-item-section>
                         <q-item-section side top>
@@ -357,9 +348,6 @@
                             <template v-if="selectedGame.trueSkillChanges">
                                 <q-item-label caption>
                                     <span class="text-bold">Points: {{ selectedGame.trueSkillChanges[selectedGameRedStriker.id].muDifference.toFixed(0) }}</span>
-                                </q-item-label>
-                                <q-item-label caption>
-                                    <span class="text-bold">Confidence: {{ -selectedGame.trueSkillChanges[selectedGameRedStriker.id].sigmaDifference.toFixed(0) }}</span>
                                 </q-item-label>
                             </template>
                         </q-item-section>
