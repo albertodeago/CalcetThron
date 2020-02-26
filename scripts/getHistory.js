@@ -80,7 +80,8 @@ const buildHistory = function(seasonNumber) {
                 // filter out users that have never played this season
                 users = users.filter(user => activeUserIds.indexOf(user.id) !== -1);
         
-                const result = [];
+                const resultELO = [];
+                const resultTS = [];
                 let prevDay = Object.keys(history)[0]; // save the previous day (initially is the first day)
 
                 // initialize the "initial" ELO for each users
@@ -90,31 +91,42 @@ const buildHistory = function(seasonNumber) {
                         avatar: user.avatar
                     }
                     userObj[prevDay] = 1000;
-                    result.push(userObj);
+                    resultELO.push(Object.assign({}, userObj));
+                    resultTS.push(Object.assign({}, userObj));
                 });
-                // console.log("init", result);
+                // console.log("init", resultELO);
 
                 // now calculate the real "history". If we don't find a user someday we look back at the previous day.
                 users.forEach((user, index) => {
-                    const userObj = {
+                    const userObjELO = {
+                        nickname: user.nickname,
+                        avatar: user.avatar
+                    };
+                    const userObjTS = {
                         nickname: user.nickname,
                         avatar: user.avatar
                     };
                     Object.keys(history).forEach(day => {
                         if (history[day][user.id]) {
                             // the user played this day... he has an entry in history
-                            userObj[day] = history[day][user.id].ELO;
+                            userObjELO[day] = history[day][user.id].ELO;
+                            userObjTS[day] = (history[day][user.id].trueSkill.mu - (2 * history[day][user.id].trueSkill.sigma));
                         } else {
                             // get the previous day value if the player didn't played today, 1000 fallback for the first day.
-                            userObj[day] = userObj[prevDay] || 1000;
+                            userObjELO[day] = userObjELO[prevDay] || 1000;
+                            userObjTS[day] = userObjTS[prevDay] || 1000;
                         }
                         prevDay = day;
                     });
-                    result.push(userObj);
+                    resultELO.push(userObjELO);
+                    resultTS.push(userObjTS)
                     prevDay = Object.keys(history)[0];
                 });
         
-                resolve(result)
+                resolve({
+                    ELO: resultELO,
+                    TS: resultTS
+                })
             });
         });
     })

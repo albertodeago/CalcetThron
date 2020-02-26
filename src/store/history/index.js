@@ -119,6 +119,8 @@ export default {
 
             commit("setActiveUsers", activeUsers)
             commit("setHistory", fullHistory)
+            window.activeUsers = activeUsers
+            window.fullHistory = fullHistory
         },
 
         selectSeason({ commit }, season) {

@@ -726,8 +726,9 @@ export default {
     },
 
     methods: {
-        ...mapActions('Game', ['saveGame', 'getGames', 'subscribeToGames']),
+        ...mapActions('Game', ['saveGame', 'getGames', 'subscribeToGames', 'getAllGames']),
         ...mapActions('Global', ['setLoading']),
+        ...mapActions('History', ['getHistory']),
 
         getUsername(id) {
             return this.allUsers === null ? "Loading" : this.allUsers[id].nickname
@@ -882,6 +883,9 @@ export default {
 
     mounted() {
         window.addEventListener("scroll", this.onWindowScroll)
+
+        // setTimeout(() => this.getAllGames(), 250);
+        // setTimeout(() => this.getHistory(), 2500);
     },
 
     beforeDestroy() {
