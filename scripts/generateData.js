@@ -3,22 +3,19 @@ const {getAllSeasonGames, analyzeGames} = require("./getAllGames");
 // const {buildHistory} = require("./getHistory");
 const usersMap = require("./users");
 
-// let rawGames = fs.readFileSync('allgames.json');
-// let allGames = JSON.parse(rawGames);
 
 let rawSeasonGames = fs.readFileSync('season-4-all-games.json');
 let seasonGames = JSON.parse(rawSeasonGames);
 
-// let rawHistory = fs.readFileSync('history.json');
-// let fullHistory = JSON.parse(rawHistory);
 
-//getAllSeasonGames(4).then(games => fs.writeFileSync('season-4-all-games.json', JSON.stringify(games, null, 2)));
+// getAllSeasonGames(4).then(games => fs.writeFileSync('season-4-all-games.json', JSON.stringify(games, null, 2)));
 
 // buildHistory(4).then(histories => {
 //     fs.writeFileSync('history-for-video-ELO.json', JSON.stringify(histories.ELO));
 //     fs.writeFileSync('history-for-video-TS.json', JSON.stringify(histories.TS));
 // });
 
+// analyzeGames(seasonGames);
 
 const users = Object.values(usersMap).map(u => ({
     id: u.id,
@@ -26,7 +23,8 @@ const users = Object.values(usersMap).map(u => ({
     totalPlayed: 0,
     played6a6: 0,
     won6A6: 0,
-    percentage6a6: 0
+    percentage6a6: 0,
+    percentage6a6Won: 0
 }));
 
 
@@ -63,12 +61,20 @@ const getNumOf6a6 = () => {
 
             redK.percentage6a6 = redK.totalPlayed === 0 ? 0 : parseFloat((redK.played6a6 / redK.totalPlayed).toFixed(2))
             redS.percentage6a6 = redS.totalPlayed === 0 ? 0 : parseFloat((redS.played6a6 / redS.totalPlayed).toFixed(2))
+            
+            redK.percentage6a6Won = redK.played6a6 === 0 ? 0 : parseFloat((redK.won6a6 / redK.played6a6).toFixed(2));
+            redS.percentage6a6Won = redS.played6a6 === 0 ? 0 : parseFloat((redS.won6a6 / redS.played6a6).toFixed(2));
+
             blueK.percentage6a6 = blueK.totalPlayed === 0 ? 0 : parseFloat((blueK.played6a6 / blueK.totalPlayed).toFixed(2))
             blueS.percentage6a6 = blueS.totalPlayed === 0 ? 0 : parseFloat((blueS.played6a6 / blueS.totalPlayed).toFixed(2))
+    
+            blueK.percentage6a6Won = blueK.played6a6 === 0 ? 0 : parseFloat((blueK.won6a6 / blueK.played6a6).toFixed(2));
+            blueS.percentage6a6Won = blueS.played6a6 === 0 ? 0 : parseFloat((blueS.won6a6 / blueS.played6a6).toFixed(2));
         }
     });
     fs.writeFileSync('6a6annunciato-stats.json', JSON.stringify({"totalGames": seasonGames.length, "stats": users}, null, 2))
 }
+// getNumOf6a6();
 
 
 const getCoupleWithRolesStats = () => {
@@ -208,7 +214,7 @@ getSpecialGames = () => {
         "games7a0": games7a0
     }, null, 2));
 }
-getSpecialGames();
+// getSpecialGames();
 
 /*
 blueKeeperAutogoals:0
