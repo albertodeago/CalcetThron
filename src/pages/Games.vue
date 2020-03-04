@@ -85,7 +85,7 @@
             </q-card>
         </transition-group>
 
-        <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="user && user.gameManager">
+        <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="canAddGame">
             <q-btn fab icon="add" color="secondary" @click="openModal" />
         </q-page-sticky>
 
@@ -486,6 +486,10 @@ export default {
         ...mapGetters('User', ['allUsersArray', 'allUsers', 'user']),
         ...mapGetters('Seasons', ['selectedSeason']),
         ...mapGetters('Rankings', ['allRankings', 'allRankingsArray']),
+
+        canAddGame() {
+            return this.user && this.user.gameManager
+        },
 
         usersArray() {
             return this.allUsersArray.map(u => {

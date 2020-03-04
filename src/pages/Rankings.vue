@@ -1,41 +1,78 @@
 <template>
     <div class="">
         <template v-if="!isLoading">
-            <q-list bordered padding>
-                <template v-for="(enrichedUser, i) in rankingsToShow">
-                <q-item :key="enrichedUser.id">
-                    <q-item-section avatar>
-                        <q-avatar>
-                            <q-img :src="enrichedUser.avatar" :ratio="1" />
-                        </q-avatar>
-                    </q-item-section>
+            <q-tab-panels v-model="activeRankingSystem"
+                          animated
+                          swipeable
+                          infinite>
+                <q-tab-panel name="trueskill">
+                    <q-list bordered padding>
+                        <template v-for="(enrichedUser, i) in rankingsToShow">
+                        <q-item :key="enrichedUser.id">
+                            <q-item-section avatar>
+                                <q-avatar>
+                                    <q-img :src="enrichedUser.avatar" :ratio="1" />
+                                </q-avatar>
+                            </q-item-section>
 
-                    <q-item-section>
-                        <q-item-label class="nickname">
-                            <span class="text-body1">{{ enrichedUser.nickname }}</span>
-                            <q-icon class="q-ml-sm medal medal--gold" name="star" v-if="i === 0"/>
-                            <q-icon class="q-ml-sm medal medal--silver" name="star" v-if="i === 1"/>
-                            <q-icon class="q-ml-sm medal medal--bronze" name="star" v-if="i === 2"/>
-                        </q-item-label>
-                    </q-item-section>
+                            <q-item-section>
+                                <q-item-label class="nickname">
+                                    <span class="text-body1">{{ enrichedUser.nickname }}</span>
+                                    <q-icon class="q-ml-sm medal medal--gold" name="star" v-if="i === 0"/>
+                                    <q-icon class="q-ml-sm medal medal--silver" name="star" v-if="i === 1"/>
+                                    <q-icon class="q-ml-sm medal medal--bronze" name="star" v-if="i === 2"/>
+                                </q-item-label>
+                            </q-item-section>
 
-                    <q-item-section side>
-                        <q-item-label class="text-body1 text-weight-bold">
-                            {{ enrichedUser.rankValue }}
-                        </q-item-label>   
-                        <q-popup-proxy>
-                            <q-banner>
-                                <template v-slot:avatar>
-                                    <q-icon name="info" color="primary" />
-                                </template>
-                                Raw points {{ enrichedUser.rawRank }} - {{ enrichedUser.sigma * sigmaCorrectionFactor }} Indecision
-                            </q-banner>
-                        </q-popup-proxy>
-                    </q-item-section>
-                </q-item>
-                <q-separator spaced inset="item" :key="enrichedUser.id + 'sep'"/>
-                </template>
-            </q-list>
+                            <q-item-section side>
+                                <q-item-label class="text-body1 text-weight-bold">
+                                    {{ enrichedUser.rankValue }}
+                                </q-item-label>   
+                                <q-popup-proxy>
+                                    <q-banner>
+                                        <template v-slot:avatar>
+                                            <q-icon name="info" color="primary" />
+                                        </template>
+                                        Raw points {{ enrichedUser.rawRank }} - {{ enrichedUser.sigma * trueskillData.sigmaCorrectionFactor }} Indecision
+                                    </q-banner>
+                                </q-popup-proxy>
+                            </q-item-section>
+                        </q-item>
+                        <q-separator spaced inset="item" :key="enrichedUser.id + 'sep'"/>
+                        </template>
+                    </q-list>
+                </q-tab-panel>
+
+                <q-tab-panel name="ELO">
+                    <q-list bordered padding>
+                        <template v-for="(enrichedUser, i) in rankingsToShow">
+                        <q-item :key="enrichedUser.id">
+                            <q-item-section avatar>
+                                <q-avatar>
+                                    <q-img :src="enrichedUser.avatar" :ratio="1" />
+                                </q-avatar>
+                            </q-item-section>
+
+                            <q-item-section>
+                                <q-item-label class="nickname">
+                                    <span class="text-body1">{{ enrichedUser.nickname }}</span>
+                                    <q-icon class="q-ml-sm medal medal--gold" name="star" v-if="i === 0"/>
+                                    <q-icon class="q-ml-sm medal medal--silver" name="star" v-if="i === 1"/>
+                                    <q-icon class="q-ml-sm medal medal--bronze" name="star" v-if="i === 2"/>
+                                </q-item-label>
+                            </q-item-section>
+
+                            <q-item-section @click="onUserELOPoints(enrichedUser)" side>
+                                <q-item-label class="text-body1 text-weight-bold">
+                                    {{ enrichedUser.rankValue }} <!-- TODO: fischietto flavio al click su flavio, COLPA di edo al click su edo -->
+                                </q-item-label>
+                            </q-item-section>
+                        </q-item>
+                        <q-separator spaced inset="item" :key="enrichedUser.id + 'sep'"/>
+                        </template>
+                    </q-list>
+                </q-tab-panel>
+            </q-tab-panels>
         </template>
     </div>
 </template>
@@ -46,8 +83,13 @@ import { mapGetters, mapActions } from "vuex"
 export default {
     data() {
         return {
-            sigmaCorrectionFactor: 2, // correction factor for trueSkill rating system
-            seasonStartForTrueSkill: 4, // season start number for trueSkill rating system
+            activeRankingSystem: "trueskill",
+            trueskillData: {
+                sigmaCorrectionFactor: 2, // correction factor for trueSkill rating system
+                seasonStartForTrueSkill: 4, // season start number for trueSkill rating system
+            },
+
+            numberOfGamesToEnterRanks: 5
         }
     },
 
@@ -62,7 +104,7 @@ export default {
         trueSkillRankings() {
             return this.allRankingsArray.slice().filter(r => r.trueSkill).map(r => {
                 return {
-                    rankValue: (r.trueSkill.mu - this.sigmaCorrectionFactor * r.trueSkill.sigma).toFixed(0),
+                    rankValue: (r.trueSkill.mu - this.trueskillData.sigmaCorrectionFactor * r.trueSkill.sigma).toFixed(0),
                     rawRank: r.trueSkill.mu.toFixed(0),
                     sigma: r.trueSkill.sigma.toFixed(0),
                     ...r
@@ -86,8 +128,23 @@ export default {
          * Rankings to show on the interface
          */
         rankingsToShow() {
-            return (this.selectedSeason.number >= this.seasonStartForTrueSkill ? this.trueSkillRankings : this.ELORankings).sort((a,b) => b.rankValue - a.rankValue)
+            const shouldSeeELO = this.selectedSeason.number < this.trueskillData.seasonStartForTrueSkill || this.activeRankingSystem === "ELO"
+            return (shouldSeeELO ? this.ELORankings : this.trueSkillRankings).filter(rank => rank.played >= this.numberOfGamesToEnterRanks).sort((a,b) => b.rankValue - a.rankValue)
         }
+    },
+
+    methods: {
+
+        onUserELOPoints(enrichedUser) {
+            if (enrichedUser.nickname === "Edo") {
+                const speech = new SpeechSynthesisUtterance("Colpa di Edo!");
+                window.speechSynthesis.speak(speech);
+            }
+            if (enrichedUser.nickname === "Flavio") {
+                var audio = new Audio('https://firebasestorage.googleapis.com/v0/b/darthron-6a632.appspot.com/o/others%2FFischiettoFlavio_1.mp3?alt=media&token=bde553cb-5417-45ca-bb45-0f86d9a1786a');
+                audio.play();
+            }
+        },
     }
 }
 </script>

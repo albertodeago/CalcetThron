@@ -321,7 +321,7 @@ import { mapGetters, mapActions } from "vuex"
 export default {
     data() {
         return {
-            minGame: 15,      // number of games that users have to do to be taken in account in awards
+            minGame: 10,      // number of games that users have to do to be taken in account in awards
             nGamesPerAward: 1 // set this to 10 if you want to show statistics for 10 games (e.g. goals done every 10 games)
         }
     },
@@ -343,7 +343,7 @@ export default {
          * Players with less than the minimum amount of game to be considered
          */
         lowGamePlayers() {
-            const lgp = this.allRankingsArray.filter(a => a.played <= this.minGame).sort((a, b) => b.played - a.played);
+            const lgp = this.allRankingsArray.filter(a => a.played < this.minGame).sort((a, b) => b.played - a.played);
             // console.log(lgp);
             return lgp;
         },
@@ -352,7 +352,7 @@ export default {
          * Players considered active (played enough games)
          */
         activePlayers() {
-            const actives = this.allRankingsArray.filter(a => a.played > this.minGame)
+            const actives = this.allRankingsArray.filter(a => a.played >= this.minGame)
             // console.log(actives);
             return actives;
         },
